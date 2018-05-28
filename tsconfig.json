@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"noImplicitAny": true,
+		"target": "es2015",
+		"lib": [ "es2015", "dom" ],
+		"allowJs": true,
+		"outDir": "dist",
+		"typeRoots" : ["./types", "./node_modules/@types"]
+	},
+	"files": [
+		"src/index.ts",
+		"types/aframe.d.ts"
+	]
+}

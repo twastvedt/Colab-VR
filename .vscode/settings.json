@@ -1,0 +1,9 @@
+{
+	"eslint.enable": false,
+	"cSpell.words": [
+		"componentchanged",
+		"easyrtc",
+		"easyrtcid",
+		"get"
+	]
+}

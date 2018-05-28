@@ -1,0 +1,40 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "firefox",
+			"request": "launch",
+			"reAttach": true,
+			"name": "Launch localhost in Firefox",
+			"url": "http://localhost:8080",
+			"webRoot": "${workspaceFolder}/dist"
+		},
+		{
+			"type": "firefox",
+			"request": "attach",
+			"name": "Attach to Firefox",
+			"webRoot": "${workspaceFolder}/dist",
+			"url": "http://localhost/index.html",
+			"reloadOnChange": {
+				"watch": [ "${workspaceFolder}/dist/*" ]
+			}
+		},
+		{
+			"type": "chrome",
+			"request": "attach",
+			"name": "Attach to Chrome",
+			"port": 9222,
+			"webRoot": "${workspaceFolder}/dist"
+		},
+		{
+			"type": "chrome",
+			"request": "launch",
+			"name": "Launch localhost in Chrome",
+			"url": "http://localhost:8080",
+			"webRoot": "${workspaceFolder}/dist"
+		}
+	]
+}
