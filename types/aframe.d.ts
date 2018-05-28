@@ -41,7 +41,7 @@ declare namespace AFrame {
 		registerElement(name: string, element: ANode): void;
 		registerGeometry<T extends Geometry>(name: string, geometry: GeometryDefinition<T>): GeometryConstructor<T>;
 		registerPrimitive(name: string, primitive: PrimitiveDefinition): void;
-		registerShader<T extends Shader>(name: string, shader: T): ShaderConstructor<T>;
+		registerShader<T extends Shader>(name: string, shader: ShaderDefinition<T>): ShaderConstructor<T>;
 		registerSystem<T extends System>(name: string, definition: SystemDefinition<T>): SystemConstructor<T>;
 		schema: SchemaUtils;
 		shaders: { [ key: string ]: ShaderDescriptor };

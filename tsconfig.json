@@ -9,6 +9,7 @@
 	},
 	"files": [
 		"src/index.ts",
-		"types/aframe.d.ts"
+		"types/aframe.d.ts",
+		"types/glslify.d.ts"
 	]
 }

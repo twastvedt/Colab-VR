@@ -10,12 +10,17 @@ import { GridComp } from "./components/Grid.component";
 import { LockedPointerComp } from "./components/LockedPointer.component";
 import { SnapComp } from "./components/Snap.component";
 
+import { GridMaterial } from "./components/GridMaterial.component";
+
 import { DrawingSystem } from "./systems/Drawing.system";
 
 
 AFRAME.registerPrimitive('a-grid', GridComp);
+
 AFRAME.registerComponent('locked-pointer', LockedPointerComp);
 AFRAME.registerComponent('snap', SnapComp);
+
+AFRAME.registerShader('grid', GridMaterial);
 
 AFRAME.registerSystem('drawing', DrawingSystem);
 
