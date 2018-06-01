@@ -1,9 +1,7 @@
 AFRAME = require('aframe');
 
-const glsl = require('glslify');
-
-const gridVert = glsl.file('../shaders/grid.vert.glsl');
-const gridFrag = glsl.file('../shaders/grid.frag.glsl');
+const gridVert = require('../shaders/grid.vert.glsl');
+const gridFrag = require('../shaders/grid.frag.glsl');
 
 export const GridMaterial: AFrame.ShaderDefinition = {
   schema: {

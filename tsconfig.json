@@ -8,7 +8,7 @@
 		"typeRoots" : ["./types", "./node_modules/@types"]
 	},
 	"files": [
-		"src/index.ts",
+		"client/index.ts",
 		"types/aframe.d.ts",
 		"types/glslify.d.ts"
 	]

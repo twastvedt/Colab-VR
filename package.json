@@ -11,31 +11,21 @@
     "@types/mousetrap": "^1.6.0",
     "@types/socket.io": "^1.4.33",
     "@types/three": "^0.92.0",
+    "@types/tween.js": "^16.9.0",
     "aframe": "^0.8.2",
     "aframe-extras": "^4.1.1",
-    "globstar": "^1.0.0",
-    "glslify": "^6.1.1",
     "mousetrap": "^1.6.1",
     "networked-aframe": "^0.6.1",
-    "npm-watch": "^0.3.0",
-    "parallelshell": "^3.0.2",
-    "tsify": "^4.0.0",
+    "nodemon": "^1.17.5",
+    "parcel": "^1.8.1",
     "tslint": "^5.10.0",
-    "typescript": "^2.8.3",
-    "watch-cli": "^0.2.3",
-    "watchify": "^3.11.0"
-  },
-  "scripts": {
-    "start": "node ./dist/easyrtc-server.js",
-    "build:ts": "browserify src/index.ts -t glslify -p [ tsify --global ] -o dist/bundle.js",
-    "build:ts-dev": "npm run build:ts -- --debug",
-    "watch:ts": "rm -f dist/bundle.js && watchify src/index.ts -v -t glslify -p [ tsify --global ] -o dist/bundle.js --debug --ignore-watch=\"dist/**/**\"",
-    "dev": "parallelshell \"npm run watch:ts\" \"npm start\""
-  },
-  "devDependencies": {
-    "@types/tween.js": "^16.9.0",
+    "typescript": "^2.9.0",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
-    "babelify": "^8.0.0"
+    "babelify": "^8.0.0",
+    "glslify": "6.1.1"
+  },
+  "scripts": {
+    "start": "nodemon --ignore client/ --ignore dist/ index.js"
   }
 }
