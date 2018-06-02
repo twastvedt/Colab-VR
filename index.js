@@ -1,10 +1,9 @@
 const http = require("http");
 const express = require("express");
-const serveStatic = require('serve-static');
 const socketIo = require("socket.io");
 const easyrtc = require("easyrtc");
-
-const Bundler = require('parcel')
+const Bundler = require('parcel');
+const livereload = require('livereload');
 
 
 // Set process name
@@ -12,6 +11,10 @@ process.title = "node-easyrtc";
 
 // Get port or default to 8080
 const port = process.env.PORT || 8080;
+
+// Setup livereload server.
+const server = livereload.createServer();
+server.watch(__dirname + "/dist");
 
 // Setup and configure Express http server.
 const app = express();
@@ -23,7 +26,8 @@ const bundler = new Bundler('client/index.html', {
 
 app.use('index', bundler.middleware());
 
-app.use(serveStatic('dist', {'index': ['index.html']}));
+app.use(express.static('dist'));
+app.use('/assets', express.static('client/assets'));
 
 // Start Express http server
 var webServer = http.createServer(app);
