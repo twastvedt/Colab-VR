@@ -14,16 +14,17 @@
     "@types/tween.js": "^16.9.0",
     "aframe": "^0.8.2",
     "aframe-extras": "^4.1.1",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babelify": "^8.0.0",
+    "glslify": "6.1.1",
+    "livereload": "^0.7.0",
     "mousetrap": "^1.6.1",
     "networked-aframe": "^0.6.1",
     "nodemon": "^1.17.5",
     "parcel": "^1.8.1",
     "tslint": "^5.10.0",
-    "typescript": "^2.9.0",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "babelify": "^8.0.0",
-    "glslify": "6.1.1"
+    "typescript": "^2.9.0"
   },
   "scripts": {
     "start": "nodemon --ignore client/ --ignore dist/ index.js"

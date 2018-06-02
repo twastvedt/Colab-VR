@@ -1,15 +1,42 @@
-#extension GL_OES_standard_derivatives : enable
+uniform sampler2D gridTex;
+uniform float gridSize;
+uniform float gridStrength;
+uniform vec3 gridColor;
 
-varying vec3 vPosition;
+uniform sampler2D texture;
+uniform vec2 repeat;
+uniform vec2 offset;
+uniform int useTex;
+uniform vec3 color;
+uniform float opacity;
+
+varying vec2 vUV;
+varying vec4 vWPos;
+varying vec4 vNormal;
+varying vec4 vNormalA;
+
+void setColor(float x, float y) {
+	vec4 baseTex = vec4(color, opacity);
+
+	if (useTex == 1) {
+		baseTex *= texture2D(texture, vec2(vUV.x / repeat.x + offset.x, vUV.y / repeat.y + offset.y));
+	}
+
+	vec4 gridTex = texture2D(gridTex, vec2(x / gridSize, y / gridSize)) * vec4(gridColor, 1.0);
+
+	gl_FragColor = mix(baseTex, gridTex, gridStrength);
+}
 
 void main() {
-  // Pick a coordinate to visualize in a grid
-  vec2 coord = vPosition.xz;
-
-  // Compute anti-aliased world-space grid lines
-  vec2 grid = abs(fract(coord - 0.5) - 0.5) / fwidth(coord);
-  float line = min(grid.x, grid.y);
-
-  // Just visualize the grid lines directly
-  gl_FragColor = vec4(vec3(1.0 - min(line, 1.0)), 1.0);
+	if (vNormalA.x > vNormalA.y) {
+		if (vNormalA.x > vNormalA.z) {
+			setColor(vWPos.z, vWPos.y);
+		} else {
+			setColor(vWPos.x, vWPos.y);
+		}
+	} else if (vNormalA.y > vNormalA.z) {
+		setColor(vWPos.x, vWPos.z);
+	} else {
+		setColor(vWPos.x, vWPos.y);
+	}
 }
