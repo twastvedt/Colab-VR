@@ -4,6 +4,8 @@ import { htmlToElement } from "../tools";
 
 import { Drawing, DrawShape } from "../systems/Drawing.system";
 
+import { GridMatComp } from "../components/GridMaterial.component";
+
 let cursorPos = new AFRAME.THREE.Vector3(),
 	tempVec: THREE.Vector3,
 	step: number,
@@ -37,7 +39,7 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 			case 0:
 				this.system.addAnchor(cursorPos);
 
-				newObject = htmlToElement<AFrame.Entity>(`<a-box mixin="shape" material="transparent: true"></a-box>`);
+				newObject = htmlToElement<AFrame.Entity>(`<a-box grid-mat="opacity: 0.2"></a-box>`);
 
 				this.system.el.appendChild(newObject);
 
@@ -54,10 +56,8 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 				break;
 
 			case 2:
-				newObject.setAttribute('material', {
-					transparent: false,
-					opacity: 1
-				});
+				newObject.setAttribute('grid-mat', 'opacity', 1);
+				newObject.setAttribute('shadow', '');
 
 				newObject = undefined;
 

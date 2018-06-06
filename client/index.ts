@@ -10,19 +10,19 @@ import { LockedPointerComp } from "./components/LockedPointer.component";
 import { SnapComp } from "./components/Snap.component";
 import { TestRotateComp } from "./components/TestRotate.component";
 
-import { GridMaterial } from "./components/GridMaterial.component";
+import { GridMatCompDef } from "./components/GridMaterial.component";
 
-import { GridMatSys } from "./systems/GridMaterial.system";
+import { GridMatSysDef } from "./systems/GridMaterial.system";
 import { DrawingSystem } from "./systems/Drawing.system";
 
 
 AFRAME.registerComponent('locked-pointer', LockedPointerComp);
 AFRAME.registerComponent('snap', SnapComp);
 
-AFRAME.registerComponent('grid', GridMaterial);
+AFRAME.registerComponent('grid-mat', GridMatCompDef);
 AFRAME.registerComponent('test-rotate', TestRotateComp);
 
-AFRAME.registerSystem('grid', GridMatSys);
+AFRAME.registerSystem('grid-mat', GridMatSysDef);
 AFRAME.registerSystem('drawing', DrawingSystem);
 
 document.addEventListener('load', () => {
