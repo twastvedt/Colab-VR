@@ -13,7 +13,9 @@ process.title = "node-easyrtc";
 const port = process.env.PORT || 8080;
 
 // Setup livereload server.
-const server = livereload.createServer();
+const server = livereload.createServer({
+	delay: 200
+});
 server.watch(__dirname + "/dist");
 
 // Setup and configure Express http server.
@@ -22,6 +24,7 @@ const app = express();
 // Use parcel to bundle javascript.
 const bundler = new Bundler('client/index.html', {
 //	cache: false
+	sourceMaps: true
 });
 
 app.use('index', bundler.middleware());

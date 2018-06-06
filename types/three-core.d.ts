@@ -1,5 +1,7 @@
 // cp types\three-core.d.ts node_modules\@types\three\
 
+// Adds missing properties to UniformsLib. Not sure it's possible to merge additional properties into UniformsLib, so copying into node_modules for now. Todo: PR to DefinitelyTyped.
+
 export const REVISION: string;
 
 // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent.button
