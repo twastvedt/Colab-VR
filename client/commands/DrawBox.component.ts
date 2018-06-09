@@ -10,7 +10,8 @@ let cursorPos = new AFRAME.THREE.Vector3(),
 	tempVec: THREE.Vector3,
 	step: number,
 	startPoint: THREE.Vector3,
-	newObject: AFrame.Entity,
+	newParent: AFrame.Entity,
+	newBox: AFrame.Entity,
 	boundStep: () => void;
 
 interface DrawBox extends DrawShape {
@@ -21,11 +22,28 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 	schema: {
 	},
 
+	NAFSchema: {
+		template: '#box-template',
+		components: [
+			'position',
+			'rotation',
+			'scale',
+			{
+				selector: '.box',
+				component: 'grid-mat'
+			},
+			{
+				selector: '.box',
+				component: 'shadow'
+			}
+		]
+	},
+
 	name: 'draw-box',
 
 	init: function() {
 		cursorPos = this.el.object3D.position;
-		newObject = undefined;
+		newParent = undefined;
 		step = 0;
 
 		this.system = document.querySelector('a-scene').systems['drawing'] as Drawing;
@@ -39,9 +57,15 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 			case 0:
 				this.system.addAnchor(cursorPos);
 
-				newObject = htmlToElement<AFrame.Entity>(`<a-box grid-mat="opacity: 0.2"></a-box>`);
+				newParent = htmlToElement<AFrame.Entity>(`
+					<a-entity
+						class="drawn static"
+						position="0 0 0" rotation="0 0 0" scale="0 0 0"
+						networked="template:#box-template">
+					</a-entity>
+				`);
 
-				this.system.el.appendChild(newObject);
+				this.system.el.appendChild(newParent);
 
 				startPoint = cursorPos.clone();
 
@@ -53,13 +77,18 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 					isPlane: false
 				});
 
+				newBox = newParent.children[0] as AFrame.Entity;
+
 				break;
 
 			case 2:
-				newObject.setAttribute('grid-mat', 'opacity', 1);
-				newObject.setAttribute('shadow', '');
+				newBox.setAttribute('grid-mat', 'opacity', 1);
+				newBox.setAttribute('shadow', {
+					cast: true,
+					receive: true
+				});
 
-				newObject = undefined;
+				newParent = undefined;
 
 				this.system.endCommand(this);
 		}
@@ -76,24 +105,24 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 		});
 
 		// Remove temp element if present.
-		if (newObject) {
-			newObject.parentNode.removeChild(newObject);
+		if (newParent) {
+			newParent.parentNode.removeChild(newParent);
 		}
 
 		this.system.stopDrawing();
 	},
 
 	tick: function() {
-		if (newObject && newObject.object3D) {
+		if (newParent && newParent.object3D) {
 			tempVec = cursorPos.clone().add(startPoint).divideScalar(2);
-			newObject.object3D.position.set(tempVec.x, tempVec.y, tempVec.z);
+			newParent.object3D.position.set(tempVec.x, tempVec.y, tempVec.z);
 
 			tempVec.sub(startPoint).multiplyScalar(2);
-			newObject.object3D.scale.set(tempVec.x, tempVec.y, tempVec.z);
+			newParent.object3D.scale.set(tempVec.x, tempVec.y, tempVec.z);
 
 			// If we're creating the base of the box, add a small height so that the box is visible.
 			if (step === 1) {
-				newObject.object3D.scale.setY(0.01);
+				newParent.object3D.scale.setY(0.01);
 			}
 		}
 	}

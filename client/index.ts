@@ -2,7 +2,7 @@ AFRAME = require('aframe');
 
 require('aframe-extras/src/controls');
 
-const NAF = require('networked-aframe');
+require('networked-aframe');
 
 require('mousetrap');
 

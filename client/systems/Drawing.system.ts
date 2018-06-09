@@ -23,7 +23,8 @@ export interface DrawShape extends AFrame.Component {
 	data: { },
 	name: string,
 	doStep: (this: DrawShape) => void,
-	system: Drawing
+	system: Drawing,
+	NAFSchema: any
 }
 
 export const DrawingSystem: AFrame.SystemDefinition<Drawing> = {
@@ -40,6 +41,10 @@ export const DrawingSystem: AFrame.SystemDefinition<Drawing> = {
 
 		this.components.forEach((comp, key) => {
 			AFRAME.registerComponent(comp.name, comp);
+
+			if (comp.NAFSchema) {
+				NAF.schemas.add(comp.NAFSchema);
+			}
 
 			Mousetrap.bind(key, () => this.startCommand(comp));
 		});
