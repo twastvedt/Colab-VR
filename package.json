@@ -1,7 +1,7 @@
 {
-  "name": "3drp",
+  "name": "colab-vr",
   "version": "0.1.0",
-  "description": "3D Role-Playing",
+  "description": "Collaborative VR Modeling",
   "main": "index.js",
   "author": "Trygve Wastvedt",
   "license": "MIT",
