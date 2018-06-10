@@ -5869,13 +5869,18 @@ export let UniformsLib: {
         diffuse: IUniform;
         opacity: IUniform;
         map: IUniform;
-        offsetRepeat: IUniform;
-        specularMap: IUniform;
+        uvTransform: IUniform;
         alphaMap: IUniform;
+    };
+    specularmap: {
+        specularMap: IUniform;
+    };
+    envmap: {
         envMap: IUniform;
         flipEnvMap: IUniform;
         reflectivity: IUniform;
-        refractionRation: IUniform;
+        refractionRatio: IUniform;
+        maxMipLevel: IUniform;
     };
     aomap: {
         aoMap: IUniform;
@@ -5885,7 +5890,9 @@ export let UniformsLib: {
         lightMap: IUniform;
         lightMapIntensity: IUniform;
     };
-    emissivemap: { emissiveMap: IUniform };
+    emissivemap: {
+        emissiveMap: IUniform
+    };
     bumpmap: {
         bumpMap: IUniform;
         bumpScale: IUniform;
@@ -5899,8 +5906,15 @@ export let UniformsLib: {
         displacementScale: IUniform;
         displacementBias: IUniform;
     };
-    roughnessmap: { roughnessMap: IUniform };
-    metalnessmap: { metalnessMap: IUniform };
+    roughnessmap: {
+        roughnessMap: IUniform
+    };
+    metalnessmap: {
+        metalnessMap: IUniform
+    };
+    gradientmap: {
+        gradientMap: IUniform
+    };
     fog: {
         fogDensity: IUniform;
         fogNear: IUniform;
@@ -5955,7 +5969,7 @@ export let UniformsLib: {
         };
         pointShadowMap: IUniform;
         pointShadowMatrix: IUniform;
-        hemisphereLigtts: {
+        hemisphereLights: {
             value: any[];
             properties: {
                 direction: {};
@@ -5963,6 +5977,15 @@ export let UniformsLib: {
                 groundColor: {};
             };
         };
+        rectAreaLights: {
+            value: any[];
+            properties: {
+                color: {};
+                position: {};
+                width: {};
+                height: {};
+            }
+        }
     };
     points: {
         diffuse: IUniform;
@@ -5970,7 +5993,7 @@ export let UniformsLib: {
         size: IUniform;
         scale: IUniform;
         map: IUniform;
-        offsetRepeat: IUniform;
+        uvTransform: IUniform;
     };
 };
 
