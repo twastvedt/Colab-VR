@@ -1,5 +1,4 @@
 /node_modules
 /.cache
 /server-example
-/dist/*
-!/dist/test-2.html
+/dist

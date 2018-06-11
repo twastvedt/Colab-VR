@@ -31,6 +31,7 @@
   },
   "scripts": {
     "dev": "nodemon --ignore client/ --ignore dist/ index.js",
-    "start": "node index.js"
+    "fix": "cp fixes/three-core.d.ts node_modules/@types/three/ && cp fixes/movement-controls.js node_modules/aframe-extras/src/controls/",
+    "start": "npm run fix && node index.js"
   }
 }

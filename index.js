@@ -22,7 +22,7 @@ server.watch(__dirname + "/dist");
 const app = express();
 
 // Use parcel to bundle javascript.
-const bundler = new Bundler('client/index.html', {
+const bundler = new Bundler('client/test-2.html', {
 //	cache: false
 	sourceMaps: true
 });
