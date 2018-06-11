@@ -5,6 +5,8 @@ Right now, you can make boxes. Press 'b' and then click to start drawing.
 
 ![Demo GIF](https://raw.githubusercontent.com/twastvedt/Colab-VR/master/docs/demo.gif)
 
+Try it out here: https://colab-vr.herokuapp.com/ (Running on a free server, so there may be a startup delay since the server goes to sleep.)
+
 ## Install
 
 1. `npm i`.
