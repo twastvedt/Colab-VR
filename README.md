@@ -1,7 +1,7 @@
 ## What
 Collaborative 3D modeling in VR! This project builds on [Networked A-Frame](https://github.com/networked-aframe/networked-aframe) to create a 3D modeling environment.
 
-Right now, you can make boxes. Press 'b' and then click to start drawing.
+Right now, you can make boxes. Press 'b' and then click to start drawing. WASD to move around.
 
 ![Demo GIF](https://raw.githubusercontent.com/twastvedt/Colab-VR/master/docs/demo.gif)
 
