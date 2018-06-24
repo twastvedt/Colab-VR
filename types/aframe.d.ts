@@ -66,10 +66,46 @@ declare namespace AFrame {
 		to: number;
 	}
 
-	interface ANode extends HTMLElement {
+	interface ANode<C = ObjectMap<Component>> extends HTMLElement {
+		components: C & DefaultComponents;
+		isPlaying: boolean;
+		object3D: THREE.Object3D;
+		object3DMap: ObjectMap<Object>;
+		sceneEl?: Scene;
+		hasLoaded: boolean;
+
+		addState(name: string): void;
+		flushToDOM(recursive?: boolean): void;
+		/**
+		 * @deprecated since 0.4.0
+		 */
+		getComputedAttribute(attr: string): Component;
+		getDOMAttribute(attr: string): any;
+		getObject3D(type: string): Object;
+		getOrCreateObject3D(type: string, construct: any): Object;
+		is(stateName: string): boolean;
+		pause(): void;
+		play(): void;
+		setObject3D(type: string, obj: THREE.Object3D): void;
+		removeAttribute(attr: string, property?: string): void;
+		removeObject3D(type: string): void;
+		removeState(stateName: string): void;
+
+		// getAttribute specific usages
+		getAttribute(type: string): any;
+		getAttribute(type: 'position' | 'rotation' | 'scale'): Coordinate;
+
+		// setAttribute specific usages
+		setAttribute(attr: string, value: any): void;
+		setAttribute(attr: string, property: string, componentAttrValue?: any): void;
+		setAttribute(type: 'position' | 'rotation' | 'scale', value: Coordinate): void;
+
+		// addEventListener specific usages
+		addEventListener<K extends keyof EntityEventMap>(type: K, listener: (event: Event & EntityEventMap[K]) => void, useCapture?: boolean): void;
+		addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+
 		closestScene(): Scene;
 		closest(selector: string): ANode;
-		hasLoaded: boolean;
 		load(cb?: () => void, childFilter?: (el: Element) => boolean): void;
 		registerMixin(id: string): void;
 		setAttribute(type: string, newValue: any): void;
@@ -78,10 +114,6 @@ declare namespace AFrame {
 		attachMixinListener(mixin: HTMLElement): void;
 		emit(name: string, detail?: any, bubbles?: boolean): void;
 		emitter(name: string, detail?: any, bubbles?: boolean): () => void;
-	}
-
-	interface Behavior {
-		tick(): void;
 	}
 
 	interface Component<T extends { [key: string]: any } = any, S extends System = System> {
@@ -138,42 +170,8 @@ declare namespace AFrame {
 		scale: Component<Coordinate>;
 	}
 
-	interface Entity<C = ObjectMap<Component>> extends ANode {
-		components: C & DefaultComponents;
-		isPlaying: boolean;
-		object3D: THREE.Object3D;
-		object3DMap: ObjectMap<THREE.Object3D>;
-		sceneEl?: Scene;
-
-		addState(name: string): void;
-		flushToDOM(recursive?: boolean): void;
-		/**
-		 * @deprecated since 0.4.0
-		 */
-		getComputedAttribute(attr: string): Component;
-		getDOMAttribute(attr: string): any;
-		getObject3D(type: string): THREE.Object3D;
-		getOrCreateObject3D(type: string, construct: any): THREE.Object3D;
-		is(stateName: string): boolean;
-		pause(): void;
-		play(): void;
-		setObject3D(type: string, obj: THREE.Object3D): void;
-		removeAttribute(attr: string, property?: string): void;
-		removeObject3D(type: string): void;
-		removeState(stateName: string): void;
-
-		// getAttribute specific usages
-		getAttribute(type: string): any;
-		getAttribute(type: 'position' | 'rotation' | 'scale'): Coordinate;
-
-		// setAttribute specific usages
-		setAttribute(attr: string, value: any): void;
-		setAttribute(attr: string, property: string, componentAttrValue?: any): void;
-		setAttribute(type: 'position' | 'rotation' | 'scale', value: Coordinate): void;
-
-		// addEventListener specific usages
-		addEventListener<K extends keyof EntityEventMap>(type: K, listener: (event: Event & EntityEventMap[K]) => void, useCapture?: boolean): void;
-		addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+	interface Entity<C = ObjectMap<Component>> extends ANode<C> {
+		object3D: Object
 	}
 
 	type DetailEvent<D> = Event & {
@@ -241,8 +239,11 @@ declare namespace AFrame {
 
 	type SceneEvents = 'enter-vr' | 'exit-vr' | 'loaded' | 'renderstart';
 
-	interface Scene extends Entity {
-		behaviors: Behavior[];
+	interface Scene extends ANode {
+		behaviors: {
+			tick: Component[],
+			tock: Component[]
+		};
 		camera: THREE.Camera;
 		canvas: HTMLCanvasElement;
 		effect: THREE.VREffect;
