@@ -30,7 +30,7 @@ export const GridMatSysDef: AFrame.SystemDefinition<GridMatSys> = {
 
 	init: function () {
 		this.loader = new AFRAME.THREE.TextureLoader();
-		this.gridMap = this.loader.load( 'assets/grid-64.png' );
+		this.gridMap = this.loader.load( 'assets/grid-128.png' );
 
 		this.gridMap.wrapS = this.gridMap.wrapT = AFRAME.THREE.RepeatWrapping;
 

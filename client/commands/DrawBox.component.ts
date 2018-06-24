@@ -1,17 +1,16 @@
 AFRAME = require('aframe');
 
 import { htmlToElement } from "../tools";
-
 import { Drawing, DrawShape } from "../systems/Drawing.system";
 
-import { GridMatComp } from "../components/GridMaterial.component";
 
 let cursorPos = new AFRAME.THREE.Vector3(),
-	tempVec: THREE.Vector3,
+	tempVec = new AFRAME.THREE.Vector3(),
 	step: number,
 	startPoint: THREE.Vector3,
 	newParent: AFrame.Entity,
 	newBox: AFrame.Entity,
+	worldQuaternion = new AFRAME.THREE.Quaternion(),
 	boundStep: () => void;
 
 interface DrawBox extends DrawShape {
@@ -39,6 +38,8 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 		]
 	},
 
+	tickOrder: 600,
+
 	name: 'draw-box',
 
 	init: function() {
@@ -50,12 +51,25 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 		boundStep = () => this.doStep();
 
 		window.addEventListener('click', boundStep);
+
+		this.el.setAttribute('cursor-geo', 'state', 'drawing-plane');
 	},
 
 	doStep: function() {
 		switch (step) {
 			case 0:
 				this.system.addAnchor(cursorPos);
+
+				this.el.object3D.getWorldQuaternion( worldQuaternion );
+				tempVec.copy( this.el.object3D.up ).applyQuaternion( worldQuaternion );
+
+				this.el.setAttribute('sliding-pointer', 'pause', true);
+
+				this.el.setAttribute('locked-pointer', {
+					vector: tempVec,
+					position: this.el.object3D.position,
+					pause: false
+				});
 
 				newParent = htmlToElement<AFrame.Entity>(`
 					<a-entity
@@ -73,9 +87,11 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 
 			case 1:
 				this.el.setAttribute('locked-pointer', {
-					position: cursorPos.clone(),
+					position: cursorPos,
 					isPlane: false
 				});
+
+				this.el.setAttribute('cursor-geo', 'state', 'drawing-line');
 
 				newBox = newParent.children[0] as AFrame.Entity;
 
@@ -99,11 +115,6 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 	remove: function() {
 		window.removeEventListener('click', boundStep);
 
-		this.el.setAttribute('locked-pointer', {
-			position: {x: 0, y: 0, z: 0},
-			isPlane: true
-		});
-
 		// Remove temp element if present.
 		if (newParent) {
 			newParent.parentNode.removeChild(newParent);
@@ -112,18 +123,17 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 		this.system.stopDrawing();
 	},
 
+	play: function() {
+		this.system.tickSystem.playComp(this);
+	},
+
 	tick: function() {
 		if (newParent && newParent.object3D) {
 			tempVec = cursorPos.clone().add(startPoint).divideScalar(2);
 			newParent.object3D.position.set(tempVec.x, tempVec.y, tempVec.z);
 
 			tempVec.sub(startPoint).multiplyScalar(2);
-			newParent.object3D.scale.set(tempVec.x, tempVec.y, tempVec.z);
-
-			// If we're creating the base of the box, add a small height so that the box is visible.
-			if (step === 1) {
-				newParent.object3D.scale.setY(0.01);
-			}
+			newParent.object3D.scale.set(Math.max(0.01, Math.abs(tempVec.x)), Math.max(0.01, Math.abs(tempVec.y)), Math.max(0.01, Math.abs(tempVec.z)));
 		}
 	}
 };

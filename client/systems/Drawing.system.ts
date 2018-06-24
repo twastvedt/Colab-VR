@@ -1,11 +1,12 @@
 AFRAME = require('aframe');
 
 import { htmlToElement } from "../tools";
-
 import { DrawBoxComp } from "../commands/DrawBox.component";
+import { OrderedTickComponent, TickOrderSys } from "../systems/TickOrder.system";
 
-let cursorLoc: THREE.Vector3,
-	cursor: AFrame.Entity,
+
+let cursor: AFrame.Entity,
+	cursorLoc: THREE.Vector3,
 	tempObjects: AFrame.Entity[] = [];
 
 export interface Drawing extends AFrame.System {
@@ -16,10 +17,11 @@ export interface Drawing extends AFrame.System {
 	endCommand: (this: Drawing, comp: AFrame.ComponentDefinition<DrawShape>) => void,
 	stopDrawing: (this: Drawing) => void,
 	activeObject: AFrame.Entity,
-	components: Map<string, AFrame.ComponentDefinition<DrawShape>>
+	components: Map<string, AFrame.ComponentDefinition<DrawShape>>,
+	tickSystem: TickOrderSys
 }
 
-export interface DrawShape extends AFrame.Component {
+export interface DrawShape extends OrderedTickComponent {
 	data: { },
 	name: string,
 	doStep: (this: DrawShape) => void,
@@ -33,6 +35,9 @@ export const DrawingSystem: AFrame.SystemDefinition<Drawing> = {
 	},
 
 	init: function() {
+		window.setTimeout(() => {
+			this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
+		}, 0);
 
 		// List of drawing components: [keyboard shortcut, component definition].
 		this.components = new Map([
@@ -60,8 +65,6 @@ export const DrawingSystem: AFrame.SystemDefinition<Drawing> = {
 		console.log(`Start command '${comp.name}'.`);
 
 		cursor.setAttribute(comp.name, {});
-
-		cursor.setAttribute('material', 'color', 'blue');
 	},
 
 	endCommand: function(comp) {
@@ -77,7 +80,10 @@ export const DrawingSystem: AFrame.SystemDefinition<Drawing> = {
 
 		tempObjects = [];
 
-		cursor.setAttribute('material', 'color', 'gray');
+		cursor.setAttribute('cursor-geo', 'state', 'inactive');
+
+		cursor.setAttribute('locked-pointer', 'pause', true);
+		cursor.setAttribute('sliding-pointer', 'pause', false);
 	},
 
 	addAnchor: function(loc) {

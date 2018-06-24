@@ -1,20 +1,23 @@
 AFRAME = require('aframe');
 
+import { OrderedTickComponent, TickOrderSys } from "../systems/TickOrder.system";
+
+
 let pointer: THREE.Object3D,
 	pointerVec = new AFRAME.THREE.Vector3(),
 	pointerPos = new AFRAME.THREE.Vector3(),
 	tempPos = new AFRAME.THREE.Vector3(),
 	d = 0,
-	W: THREE.Vector3,
 	targetVec: AFrame.Coordinate,
 	targetPos: AFrame.Coordinate;
 
-interface LockedPointer extends AFrame.Component {
+interface LockedPointer extends OrderedTickComponent {
 	data: {
 		pointerSelector: string,
 		vector: AFrame.Coordinate,
 		position: AFrame.Coordinate,
-		isPlane: boolean
+		isPlane: boolean,
+		pause: boolean
 	}
 }
 
@@ -28,12 +31,23 @@ export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
 		// Default to y=0 ground plane.
 		vector: {type: 'vec3', default: {x: 0, y: 1, z: 0}},
 		position: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
-		isPlane: {default: true}
+		isPlane: {default: true},
+		pause: {default: true}
 	},
+
+	tickOrder: 200,
 
 	updateSchema: function(newData) {
 		targetVec = newData.vector;
 		targetPos = newData.position;
+
+		if (this.data && newData.pause !== this.data.pause) {
+			if (newData.pause) {
+				this.pause();
+			} else {
+				this.play();
+			}
+		}
 	},
 
 	init: function() {
@@ -41,6 +55,16 @@ export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
 
 		targetVec = this.data.vector;
 		targetPos = this.data.position;
+
+		if (this.data.pause) {
+			this.pause();
+		}
+
+		this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
+	},
+
+	play: function() {
+		this.tickSystem.playComp(this);
 	},
 
 	tick: function() {

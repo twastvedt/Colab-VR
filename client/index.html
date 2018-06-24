@@ -23,6 +23,11 @@
 			adapter: easyrtc;"
 		>
 			<a-assets>
+				<img id="icon-arrowUp" src="./assets/icon-arrowUp.png">
+				<img id="icon-arrowUpDown" src="./assets/icon-arrowUpDown.png">
+				<img id="icon-circle" src="./assets/icon-circle.png">
+
+				<a-asset-item id="double-cone" src="./assets/double-cone.glb"></a-asset-item>
 
 				<template id="avatar-template">
 					<a-entity class="avatar">
@@ -61,7 +66,7 @@
 
 				<template id="box-template">
 					<a-entity>
-						<a-box class="box" grid-mat="opacity: 0.2" shadow="cast: false; receive: false"></a-box>
+						<a-box class="box draw-base" grid-mat="opacity: 0.2" shadow="cast: false; receive: false"></a-box>
 					</a-entity>
 				</template>
 
@@ -73,14 +78,46 @@
 				castShadow: true; shadowCameraTop: 30; shadowCameraRight: 30;
 				shadowCameraBottom: -30; shadowCameraLeft: -30; shadowMapHeight: 2048; shadowMapWidth: 2048" position="2 5 3"></a-entity>
 
-			<a-plane shadow grid-mat width="75" height="75" rotation="-90 0 0"></a-plane>
+			<a-plane class="draw-base" shadow="cast: false; receive: true" grid-mat width="75" height="75" rotation="-90 0 0"></a-plane>
 
 			<a-entity id="camera" position="0 1.3 0"
 				camera look-controls="pointerLockEnabled: true" movement-controls
 				networked="template:#avatar-template;attachTemplateToLocal:false;"
-			></a-entity>
+			>
+				<a-entity id="pointer" laser-controls raycaster="objects: .draw-base"></a-entity>
+			</a-entity>
 
-			<a-sphere id="cursor" locked-pointer="pointerSelector: #camera; vector: 0 1 0; position: 0 0 0" snap scale="0.08 0.08 0.08" material="color: gray"></a-sphere>
+			<a-entity id="cursor"
+				cursor-geo="state: inactive"
+				sliding-pointer="pointerSelector: #pointer"
+				locked-pointer="pointerSelector: #pointer; pause: true"
+				snap
+			>
+				<a-circle id="cursor-inactive"
+					position="0 0.01 0" rotation="-90 0 0"
+					radius="0.06"
+					material="shader: flat; color: white; transparent: true; opacity: 0.5"
+					visible=""
+				>
+					<a-ring radius-outer="0.07" radius-inner="0.06"
+						material="shader: flat; color: black; transparent: true; opacity: 0.5"></a-ring>
+				</a-circle>
+
+				<a-gltf-model id="cursor-drawing-line" src="#double-cone"
+					constant-scale="0.03 0.03 0.03"
+					material="shader: flat; color: white;" apply-material outline="width: 0.08"
+					visible=""></a-gltf-model>
+
+				<a-circle id="cursor-drawing-plane"
+					position="0 0.01 0" rotation="-90 0 0"
+					radius="0.06"
+					material="shader: flat; color: white"
+					visible=""
+				>
+					<a-ring radius-outer="0.07" radius-inner="0.06"
+						material="shader: flat; color: black"></a-ring>
+				</a-circle>
+			</a-entity>
 
 		</a-scene>
 	</body>
