@@ -198,7 +198,24 @@ declare namespace AFrame {
 		'stateadded': DetailEvent<{ state: string }>;
 		'stateremoved': DetailEvent<{ state: string }>;
 		'schemachanged': DetailEvent<{ componentName: string }>;
+		'raycaster-intersection': DetailEvent<{
+			els: Entity[],
+			intersections: RaycasterIntersectionDetail[],
+			target: Entity
+		}>;
 	}
+
+	interface RaycasterIntersectionDetail {
+		distance: number,
+		face: THREE.Face3,
+		faceIndex: number,
+		index: number,
+		object: Object,
+		point: THREE.Vector3,
+		uv: THREE.Vector2
+	}
+
+	type Object = THREE.Object3D & {el: Entity};
 
 	interface Geometry {
 		name: string;
