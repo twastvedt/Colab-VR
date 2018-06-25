@@ -10,28 +10,46 @@
   },
   "dependencies": {
     "@types/browserify": "^12.0.33",
-    "@types/express": "^4.11.1",
+    "@types/express": "4.16.0",
     "@types/mousetrap": "^1.6.0",
-    "@types/socket.io": "^1.4.33",
-    "@types/three": "^0.92.0",
+    "@types/socket.io": "1.4.36",
+    "@types/three": "0.92.8",
     "@types/tween.js": "^16.9.0",
     "aframe": "^0.8.2",
-    "aframe-extras": "^4.1.1",
+    "aframe-extras": "4.1.2",
+    "aframe-sprite-component": "0.1.1",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "babelify": "^8.0.0",
+    "browserify": "16.2.2",
+    "globstar": "1.0.0",
     "glslify": "6.1.1",
     "livereload": "^0.7.0",
-    "mousetrap": "^1.6.1",
+    "mousetrap": "1.6.2",
     "networked-aframe": "^0.6.1",
     "nodemon": "^1.17.5",
-    "parcel": "^1.8.1",
-    "tslint": "^5.10.0",
-    "typescript": "^2.9.0"
+    "onchange": "4.0.0",
+    "rimraf": "2.6.2",
+    "stringify": "5.2.0",
+    "tsify": "4.0.0",
+    "typescript": "2.8.4",
+    "watchify": "3.11.0"
   },
   "scripts": {
-    "dev": "nodemon --ignore client/ --ignore dist/ index.js",
-    "fix": "cp fixes/three-core.d.ts node_modules/@types/three/ && cp fixes/movement-controls.js node_modules/aframe-extras/src/controls/",
-    "start": "npm run fix && node index.js"
+    "postinstall": "cp fixes/three-core.d.ts node_modules/@types/three/ && cp fixes/movement-controls.js node_modules/aframe-extras/src/controls/",
+    "start": "node index.js",
+    "copy": "cp -r client/assets client/*.html dist/",
+    "build:ts": "browserify client/app.ts -p [ tsify --global ] -t [ stringify --extensions [.glsl] ] -o dist/app.js",
+    "build:ts-dev": "npm run build:ts -- --debug",
+    "build": "npm run clean && npm run copy && npm run build:ts",
+    "clean": "rimraf dist/*",
+    "watch:ts": "rm -f dist/app.js && watchify client/app.ts -v -p [ tsify --global ] -t [ stringify --extensions [.glsl] ] -o dist/app.js --debug --ignore-watch=\"dist/**/**\"",
+    "watch:static": "onchange \"client/assets/**\" \"client/*.html\" -i -- npm run copy",
+    "dev": "npm run clean && parallelshell \"npm run watch:static\" \"npm run watch:ts\" \"npm run start-dev\"",
+    "start-dev": "nodemon --ignore client/ --ignore dist/ index.js"
+  },
+  "devDependencies": {
+    "parallelshell": "3.0.2",
+    "tslint": "5.10.0"
   }
 }

@@ -1,12 +1,17 @@
 {
 	"compilerOptions": {
 		"noImplicitAny": true,
-		"target": "es2015",
+		"target": "es5",
 		"lib": [ "es2015", "dom" ],
 		"allowJs": true,
 		"outDir": "dist"
 	},
 	"exclude": [
 		"dist/"
+	],
+	"files": [
+		"client/app.ts",
+		"types/aframe.d.ts",
+		"types/globals.d.ts"
 	]
 }

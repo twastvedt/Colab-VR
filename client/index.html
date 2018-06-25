@@ -2,13 +2,9 @@
 	<head>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
 
-			<script src="./index.ts"></script>
+			<script src="./app.js"></script>
 
-			<!-- <script src="./lib/easyrtc/easyrtc.js"></script> -->
-			<!-- Write dynamically to avoid Parcel parsing. -->
-			<script>
-				document.write('<script' + ' src="/easyrtc/easyrtc.js"></' + 'script>');
-			</script>
+			<script src="/easyrtc/easyrtc.js"></script>
 
 			<script>
 				document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +

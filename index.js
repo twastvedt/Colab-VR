@@ -2,7 +2,6 @@ const http = require("http");
 const express = require("express");
 const socketIo = require("socket.io");
 const easyrtc = require("easyrtc");
-const Bundler = require('parcel');
 const livereload = require('livereload');
 
 
@@ -20,14 +19,6 @@ server.watch(__dirname + "/dist");
 
 // Setup and configure Express http server.
 const app = express();
-
-// Use parcel to bundle javascript.
-const bundler = new Bundler('client/test-2.html', {
-//	cache: false
-	sourceMaps: true
-});
-
-app.use('index', bundler.middleware());
 
 app.use(express.static('dist'));
 app.use('/assets', express.static('client/assets'));
