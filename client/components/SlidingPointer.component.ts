@@ -1,6 +1,6 @@
 AFRAME = require('aframe');
 
-import { OrderedTickComponent, TickOrderSys } from "../systems/TickOrder.system";
+import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
 let pointer: AFrame.Entity,
@@ -12,8 +12,8 @@ let pointer: AFrame.Entity,
 interface SlidingPointer extends OrderedTickComponent {
 	data: {
 		pointerSelector: string
-	},
-	getNearestIntersection: (this: SlidingPointer, intersections: AFrame.RaycasterIntersectionDetail[]) => AFrame.RaycasterIntersectionDetail
+	};
+	getNearestIntersection: (this: SlidingPointer, intersections: AFrame.RaycasterIntersectionDetail[]) => AFrame.RaycasterIntersectionDetail;
 }
 
 export const SlidingPointerComp: AFrame.ComponentDefinition<SlidingPointer> = {

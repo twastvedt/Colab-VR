@@ -1,6 +1,6 @@
 AFRAME = require('aframe');
 
-import { htmlToElement } from "../tools";
+import { htmlToElement } from '../tools';
 
 
 interface OutlineMatComp extends AFrame.Component {
@@ -65,13 +65,13 @@ export const OutlineMatCompDef: AFrame.ComponentDefinition<OutlineMatComp> = {
 		return false;
 	},
 
-	dilateGeo: function(geometry, length){
+	dilateGeo: function(geometry, length) {
 		// https://github.com/jeromeetienne/threex.geometricglow/blob/master/threex.dilategeometry.js
 
 		// gather vertexNormals from geometry.faces
 		const vertexNormals	= new Array(geometry.vertices.length);
 
-		geometry.faces.forEach(function(face){
+		geometry.faces.forEach(function(face) {
 			if ( face instanceof AFRAME.THREE.Face3 ) {
 				vertexNormals[face.a] = face.vertexNormals[0];
 				vertexNormals[face.b] = face.vertexNormals[1];
@@ -81,8 +81,8 @@ export const OutlineMatCompDef: AFrame.ComponentDefinition<OutlineMatComp> = {
 			}
 		});
 		// modify the vertices according to vertexNormal
-		geometry.vertices.forEach(function(vertex, idx){
-			var vertexNormal = vertexNormals[idx];
+		geometry.vertices.forEach(function(vertex, idx) {
+			const vertexNormal = vertexNormals[idx];
 			vertex.x += vertexNormal.x * length;
 			vertex.y += vertexNormal.y * length;
 			vertex.z += vertexNormal.z * length;

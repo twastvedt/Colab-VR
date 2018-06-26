@@ -1,8 +1,8 @@
 AFRAME = require('aframe');
 
-import { htmlToElement } from "../tools";
-import { DrawBoxComp } from "../commands/DrawBox.component";
-import { OrderedTickComponent, TickOrderSys } from "../systems/TickOrder.system";
+import { htmlToElement } from '../tools';
+import { DrawBoxComp } from '../commands/DrawBox.component';
+import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
 let cursor: AFrame.Entity,
@@ -10,23 +10,22 @@ let cursor: AFrame.Entity,
 	tempObjects: AFrame.Entity[] = [];
 
 export interface Drawing extends AFrame.System {
-	data: {
-	},
-	addAnchor: (this: Drawing, loc: THREE.Vector3) => void,
-	startCommand: (this: Drawing, comp: AFrame.ComponentDefinition<DrawShape>) => void,
-	endCommand: (this: Drawing, comp: AFrame.ComponentDefinition<DrawShape>) => void,
-	stopDrawing: (this: Drawing) => void,
-	activeObject: AFrame.Entity,
-	components: Map<string, AFrame.ComponentDefinition<DrawShape>>,
-	tickSystem: TickOrderSys
+	data: { };
+	addAnchor: (this: Drawing, loc: THREE.Vector3) => void;
+	startCommand: (this: Drawing, comp: AFrame.ComponentDefinition<DrawShape>) => void;
+	endCommand: (this: Drawing, comp: AFrame.ComponentDefinition<DrawShape>) => void;
+	stopDrawing: (this: Drawing) => void;
+	activeObject: AFrame.Entity;
+	components: Map<string, AFrame.ComponentDefinition<DrawShape>>;
+	tickSystem: TickOrderSys;
 }
 
 export interface DrawShape extends OrderedTickComponent {
-	data: { },
-	name: string,
-	doStep: (this: DrawShape) => void,
-	system: Drawing,
-	NAFSchema: any
+	data: { };
+	name: string;
+	doStep: (this: DrawShape) => void;
+	system: Drawing;
+	NAFSchema: any;
 }
 
 export const DrawingSystem: AFrame.SystemDefinition<Drawing> = {

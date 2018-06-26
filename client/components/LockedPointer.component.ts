@@ -1,6 +1,6 @@
 AFRAME = require('aframe');
 
-import { OrderedTickComponent, TickOrderSys } from "../systems/TickOrder.system";
+import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
 let pointer: THREE.Object3D,
@@ -17,7 +17,7 @@ interface LockedPointer extends OrderedTickComponent {
 		vector: AFrame.Coordinate,
 		position: AFrame.Coordinate,
 		isPlane: boolean
-	}
+	};
 }
 
 export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
@@ -80,7 +80,7 @@ export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
 				x: pointerVec.y * targetVec.z - pointerVec.z * targetVec.y,
 				y: pointerVec.z * targetVec.x - pointerVec.x * targetVec.z,
 				z: pointerVec.x * targetVec.y - pointerVec.y * targetVec.x
-			}
+			};
 
 			let t1 =
 			(

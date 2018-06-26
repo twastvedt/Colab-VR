@@ -9,7 +9,7 @@ enum CursorStates {
 interface CursorGeo extends AFrame.Component {
 	data: {
 		state: CursorStates
-	}
+	};
 }
 
 export const CursorGeoComp: AFrame.ComponentDefinition<CursorGeo> = {

@@ -1,6 +1,6 @@
 AFRAME = require('aframe');
 
-import { shaderParse } from "../tools";
+import { shaderParse } from '../tools';
 
 let gridVert = require('../shaders/grid.vert.glsl'),
 	gridFrag = require('../shaders/grid.frag.glsl');
@@ -38,18 +38,18 @@ export const GridMatSysDef: AFrame.SystemDefinition<GridMatSys> = {
 		gridFrag = shaderParse(gridFrag);
 
 		const uniforms = AFRAME.THREE.UniformsUtils.merge([
-			AFRAME.THREE.UniformsLib[ "common" ],
-			AFRAME.THREE.UniformsLib[ "envmap" ],
-			AFRAME.THREE.UniformsLib[ "aomap" ],
-			AFRAME.THREE.UniformsLib[ "lightmap" ],
-			AFRAME.THREE.UniformsLib[ "emissivemap" ],
-			AFRAME.THREE.UniformsLib[ "bumpmap" ],
-			AFRAME.THREE.UniformsLib[ "normalmap" ],
-			AFRAME.THREE.UniformsLib[ "displacementmap" ],
-			AFRAME.THREE.UniformsLib[ "roughnessmap" ],
-			AFRAME.THREE.UniformsLib[ "metalnessmap" ],
-			AFRAME.THREE.UniformsLib[ "fog" ],
-			AFRAME.THREE.UniformsLib[ "lights" ]
+			AFRAME.THREE.UniformsLib[ 'common' ],
+			AFRAME.THREE.UniformsLib[ 'envmap' ],
+			AFRAME.THREE.UniformsLib[ 'aomap' ],
+			AFRAME.THREE.UniformsLib[ 'lightmap' ],
+			AFRAME.THREE.UniformsLib[ 'emissivemap' ],
+			AFRAME.THREE.UniformsLib[ 'bumpmap' ],
+			AFRAME.THREE.UniformsLib[ 'normalmap' ],
+			AFRAME.THREE.UniformsLib[ 'displacementmap' ],
+			AFRAME.THREE.UniformsLib[ 'roughnessmap' ],
+			AFRAME.THREE.UniformsLib[ 'metalnessmap' ],
+			AFRAME.THREE.UniformsLib[ 'fog' ],
+			AFRAME.THREE.UniformsLib[ 'lights' ]
 		]);
 
 		Object.assign(uniforms, {

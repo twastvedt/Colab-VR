@@ -1,6 +1,6 @@
 AFRAME = require('aframe');
 
-import { OrderedTickComponent, TickOrderSys } from "../systems/TickOrder.system";
+import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
 let target: THREE.Object3D,
@@ -17,7 +17,7 @@ interface LockedTrack extends OrderedTickComponent {
 		to: number,
 		reverse: boolean,
 		lock: number
-	}
+	};
 }
 
 export const LockedTrackComp: AFrame.ComponentDefinition<LockedTrack> = {

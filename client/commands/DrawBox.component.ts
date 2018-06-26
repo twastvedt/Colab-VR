@@ -1,7 +1,7 @@
 AFRAME = require('aframe');
 
-import { htmlToElement } from "../tools";
-import { Drawing, DrawShape } from "../systems/Drawing.system";
+import { htmlToElement } from '../tools';
+import { Drawing, DrawShape } from '../systems/Drawing.system';
 
 
 let cursorPos = new AFRAME.THREE.Vector3(),

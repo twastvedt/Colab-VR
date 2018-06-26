@@ -1,6 +1,7 @@
 {
 	"eslint.enable": false,
 	"cSpell.words": [
+		"colab",
 		"componentchanged",
 		"easyrtc",
 		"easyrtcid",

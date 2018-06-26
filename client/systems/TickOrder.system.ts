@@ -1,12 +1,12 @@
 AFRAME = require('aframe');
 
 export interface OrderedTickComponent extends AFrame.Component {
-	tickOrder: number,
-	tickSystem: TickOrderSys
+	tickOrder: number;
+	tickSystem: TickOrderSys;
 }
 
 export interface TickOrderSys extends AFrame.System {
-	playComp: (this: TickOrderSys, comp: OrderedTickComponent) => void
+	playComp: (this: TickOrderSys, comp: OrderedTickComponent) => void;
 }
 
 export const TickOrderSysDef: AFrame.SystemDefinition<TickOrderSys> = {

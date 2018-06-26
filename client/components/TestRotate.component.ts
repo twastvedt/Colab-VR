@@ -16,4 +16,4 @@ export const TestRotateComp: AFrame.ComponentDefinition = {
 			oldRot.z + speed
 		);
 	}
-}
+};
