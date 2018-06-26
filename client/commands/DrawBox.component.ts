@@ -63,13 +63,15 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 				this.el.object3D.getWorldQuaternion( worldQuaternion );
 				tempVec.copy( this.el.object3D.up ).applyQuaternion( worldQuaternion );
 
-				this.el.setAttribute('sliding-pointer', 'pause', true);
+				this.el.components['sliding-pointer'].pause();
 
 				this.el.setAttribute('locked-pointer', {
 					vector: tempVec,
 					position: this.el.object3D.position,
-					pause: false
+					isPlane: true,
+					pointerSelector: '#pointer'
 				});
+				this.el.components['locked-pointer'].play();
 
 				newParent = htmlToElement<AFrame.Entity>(`
 					<a-entity

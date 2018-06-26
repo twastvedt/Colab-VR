@@ -11,8 +11,7 @@ let pointer: AFrame.Entity,
 
 interface SlidingPointer extends OrderedTickComponent {
 	data: {
-		pointerSelector: string,
-		pause: boolean
+		pointerSelector: string
 	},
 	getNearestIntersection: (this: SlidingPointer, intersections: AFrame.RaycasterIntersectionDetail[]) => AFrame.RaycasterIntersectionDetail
 }
@@ -20,29 +19,14 @@ interface SlidingPointer extends OrderedTickComponent {
 export const SlidingPointerComp: AFrame.ComponentDefinition<SlidingPointer> = {
 
 	schema: {
-		pointerSelector: {default: '#camera'},
-		pause: {default: false}
+		pointerSelector: {default: '#camera'}
 	},
 
 	tickOrder: 200,
 
-	updateSchema: function(newData) {
-		if (this.data && newData.pause !== this.data.pause) {
-			if (newData.pause) {
-				this.pause();
-			} else {
-				this.play();
-			}
-		}
-	},
-
 	init: function() {
 		pointer = document.querySelector(this.data.pointerSelector);
 		raycaster = pointer.components['raycaster'] as any;
-
-		if (this.data.pause) {
-			this.pause();
-		}
 
 		this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
 	},

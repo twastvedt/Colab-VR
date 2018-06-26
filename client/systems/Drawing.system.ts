@@ -82,8 +82,8 @@ export const DrawingSystem: AFrame.SystemDefinition<Drawing> = {
 
 		cursor.setAttribute('cursor-geo', 'state', 'inactive');
 
-		cursor.setAttribute('locked-pointer', 'pause', true);
-		cursor.setAttribute('sliding-pointer', 'pause', false);
+		cursor.components['locked-pointer'].pause();
+		cursor.components['sliding-pointer'].play();
 	},
 
 	addAnchor: function(loc) {

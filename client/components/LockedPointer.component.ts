@@ -16,8 +16,7 @@ interface LockedPointer extends OrderedTickComponent {
 		pointerSelector: string,
 		vector: AFrame.Coordinate,
 		position: AFrame.Coordinate,
-		isPlane: boolean,
-		pause: boolean
+		isPlane: boolean
 	}
 }
 
@@ -31,8 +30,7 @@ export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
 		// Default to y=0 ground plane.
 		vector: {type: 'vec3', default: {x: 0, y: 1, z: 0}},
 		position: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
-		isPlane: {default: true},
-		pause: {default: true}
+		isPlane: {default: true}
 	},
 
 	tickOrder: 200,
@@ -40,14 +38,6 @@ export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
 	updateSchema: function(newData) {
 		targetVec = newData.vector;
 		targetPos = newData.position;
-
-		if (this.data && newData.pause !== this.data.pause) {
-			if (newData.pause) {
-				this.pause();
-			} else {
-				this.play();
-			}
-		}
 	},
 
 	init: function() {
@@ -55,10 +45,6 @@ export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
 
 		targetVec = this.data.vector;
 		targetPos = this.data.position;
-
-		if (this.data.pause) {
-			this.pause();
-		}
 
 		this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
 	},
