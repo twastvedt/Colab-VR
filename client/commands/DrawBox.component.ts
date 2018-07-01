@@ -75,7 +75,7 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 
 				newParent = htmlToElement<AFrame.Entity>(`
 					<a-entity
-						class="drawn static"
+						class="drawn static collide"
 						position="0 0 0" rotation="0 0 0" scale="0 0 0"
 						networked="template:#box-template">
 					</a-entity>

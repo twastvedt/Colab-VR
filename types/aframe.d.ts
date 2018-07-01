@@ -354,5 +354,12 @@ declare namespace AFrame {
 
 		throttle(tickFunction: () => void, minimumInterval: number, optionalContext?: {}): (t: number, dt: number) => void;
 		throttleTick(tickFunction: (t: number, dt: number) => void, minimumInterval: number, optionalContext?: {}): (t: number, dt: number) => void;
+
+		/**
+		 * Returns whether we should capture this keyboard event for keyboard shortcuts.
+		 * @param {Event} event Event object.
+		 * @returns {Boolean} Whether the key event should be captured.
+		 */
+		shouldCaptureKeyEvent(event: KeyboardEvent): boolean;
 	}
 }
