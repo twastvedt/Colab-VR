@@ -5,6 +5,7 @@ import { shaderParse } from '../tools';
 let gridVert = require('../shaders/grid.vert.glsl'),
 	gridFrag = require('../shaders/grid.frag.glsl');
 
+
 export interface GridMatSys extends AFrame.System {
 	data: {
 		gridSize: number,

@@ -1,5 +1,6 @@
 AFRAME = require('aframe');
 
+
 export interface OrderedTickComponent extends AFrame.Component {
 	tickOrder: number;
 	tickSystem: TickOrderSys;

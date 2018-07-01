@@ -3,30 +3,26 @@ AFRAME = require('aframe');
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
-let pointer: AFrame.Entity,
-	raycaster: AFrame.Component & {intersections: AFrame.RaycasterIntersectionDetail[]},
-	intersection: AFrame.RaycasterIntersectionDetail,
-	mat = new AFRAME.THREE.Matrix3,
+const quaternion = new AFRAME.THREE.Quaternion(),
 	globalNormal = new AFRAME.THREE.Vector3();
 
 interface SlidingPointer extends OrderedTickComponent {
 	data: {
-		pointerSelector: string
+		pointerSelector: AFrame.Entity
 	};
-	getNearestIntersection: (this: SlidingPointer, intersections: AFrame.RaycasterIntersectionDetail[]) => AFrame.RaycasterIntersectionDetail;
+	raycaster: AFrame.Component & {intersections: AFrame.RaycasterIntersectionDetail[]};
 }
 
 export const SlidingPointerComp: AFrame.ComponentDefinition<SlidingPointer> = {
 
 	schema: {
-		pointerSelector: {default: '#camera'}
+		pointerSelector: {default: '#camera', type: 'selector'}
 	},
 
 	tickOrder: 200,
 
 	init: function() {
-		pointer = document.querySelector(this.data.pointerSelector);
-		raycaster = pointer.components['raycaster'] as any;
+		this.raycaster = this.data.pointerSelector.components['raycaster'] as any;
 
 		this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
 	},
@@ -37,17 +33,19 @@ export const SlidingPointerComp: AFrame.ComponentDefinition<SlidingPointer> = {
 
 	tick: function() {
 
-		if (!raycaster.intersections.length) { return; }
-		intersection = raycaster.intersections[0];
+		if (!this.raycaster.intersections.length) { return; }
+		const intersection = this.raycaster.intersections[0];
 
-		// a matrix which represents item's movement, rotation and scale on global world
-		mat = new AFRAME.THREE.Matrix3().getNormalMatrix( intersection.object.matrixWorld );
+		intersection.object.getWorldQuaternion(quaternion);
 
 		// change local normal into global normal
-		globalNormal = intersection.face.normal.clone().applyMatrix3(mat).normalize();
+		globalNormal.copy(intersection.face.normal)
+			.applyQuaternion(quaternion)
+			.normalize();
 
 		this.el.object3D.quaternion.setFromUnitVectors(this.el.object3D.up, globalNormal);
 
-		this.el.object3D.position.set(intersection.point.x, intersection.point.y, intersection.point.z);
+		const point = intersection.point;
+		this.el.object3D.position.set(point.x, point.y, point.z);
 	}
 };

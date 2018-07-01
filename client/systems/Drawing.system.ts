@@ -6,8 +6,9 @@ import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system'
 
 
 let cursor: AFrame.Entity,
-	cursorLoc: THREE.Vector3,
-	tempObjects: AFrame.Entity[] = [];
+	cursorLoc: THREE.Vector3;
+
+const tempObjects: AFrame.Entity[] = [];
 
 export interface Drawing extends AFrame.System {
 	data: { };
@@ -77,7 +78,7 @@ export const DrawingSystem: AFrame.SystemDefinition<Drawing> = {
 			ob.parentNode.removeChild(ob);
 		});
 
-		tempObjects = [];
+		tempObjects.length = 0;
 
 		cursor.setAttribute('cursor-geo', 'state', 'inactive');
 

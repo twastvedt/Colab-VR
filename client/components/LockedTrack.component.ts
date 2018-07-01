@@ -3,21 +3,21 @@ AFRAME = require('aframe');
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
-let target: THREE.Object3D,
-	selfPos = new AFRAME.THREE.Vector3(),
+const selfPos = new AFRAME.THREE.Vector3(),
 	targetPos = new AFRAME.THREE.Vector3(),
-	planeNormal: THREE.Vector3,
+	planeNormal = new AFRAME.THREE.Vector3(),
 	tempVec = new AFRAME.THREE.Vector3(),
 	tempVec2 = new AFRAME.THREE.Vector3(),
 	toVec = new AFRAME.THREE.Vector3();
 
 interface LockedTrack extends OrderedTickComponent {
 	data: {
-		targetSelector: string,
+		targetSelector: AFrame.Entity,
 		to: number,
 		reverse: boolean,
 		lock: number
 	};
+	target: THREE.Object3D;
 }
 
 export const LockedTrackComp: AFrame.ComponentDefinition<LockedTrack> = {
@@ -26,7 +26,7 @@ export const LockedTrackComp: AFrame.ComponentDefinition<LockedTrack> = {
 	 */
 
 	schema: {
-		targetSelector: {default: '#camera'},
+		targetSelector: {default: '#camera', type: 'selector'},
 		// Default to only rotate around y axis.
 		to: {default: 2},
 		reverse: {default: true},
@@ -36,25 +36,25 @@ export const LockedTrackComp: AFrame.ComponentDefinition<LockedTrack> = {
 	tickOrder: 200,
 
 	play: function() {
-		planeNormal = new AFRAME.THREE.Vector3(0, 0, 0);
-		planeNormal.setComponent(this.data.lock, 1);
-		planeNormal.transformDirection(this.el.object3D.matrixWorld);
+		planeNormal.set(0, 0, 0);
+		planeNormal.setComponent( this.data.lock, 1 );
+		planeNormal.transformDirection( this.el.object3D.matrixWorld );
 
-		toVec = new AFRAME.THREE.Vector3(0, 0, 0);
-		toVec.setComponent(this.data.to, this.data.reverse ? -1 : 1);
-		toVec.transformDirection(this.el.object3D.matrixWorld);
+		toVec.set(0, 0, 0);
+		toVec.setComponent( this.data.to, this.data.reverse ? -1 : 1 );
+		toVec.transformDirection( this.el.object3D.matrixWorld );
 
 		this.tickSystem.playComp(this);
 	},
 
 	init: function() {
-		target = document.querySelector(this.data.targetSelector).object3D;
+		this.target = this.data.targetSelector.object3D;
 
 		this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
 	},
 
 	tick: function() {
-		target.getWorldPosition(targetPos);
+		this.target.getWorldPosition(targetPos);
 		this.el.object3D.getWorldPosition(selfPos);
 
 		tempVec.subVectors(targetPos, selfPos);
@@ -65,6 +65,6 @@ export const LockedTrackComp: AFrame.ComponentDefinition<LockedTrack> = {
 
 		tempVec.sub(tempVec2);
 
-		this.el.object3D.quaternion.setFromUnitVectors(toVec, tempVec.normalize());
+		this.el.object3D.quaternion.setFromUnitVectors( toVec, tempVec.normalize() );
 	}
 };

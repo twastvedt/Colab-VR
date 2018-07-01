@@ -1,8 +1,7 @@
 AFRAME = require('aframe');
 
-let tempScale = {x: 1, y: 1, z: 1};
-let location = new AFRAME.THREE.Vector3();
-let distance = 0;
+const tempScale = {x: 1, y: 1, z: 1},
+	location = new AFRAME.THREE.Vector3();
 
 interface ConstantScale extends AFrame.Component {
 	data: { x: number, y: number, z: number };
@@ -18,7 +17,7 @@ export const ConstantScaleComp: AFrame.ComponentDefinition<ConstantScale> = {
 
 	tick: function(this: ConstantScale) {
 		this.el.object3D.getWorldPosition(location);
-		distance = location.distanceTo(this.cameraLocation);
+		const distance = location.distanceTo(this.cameraLocation);
 
 		tempScale.x = distance * this.data.x;
 		tempScale.y = distance * this.data.y;

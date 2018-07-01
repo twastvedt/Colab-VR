@@ -2,8 +2,8 @@ AFRAME = require('aframe');
 
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
-let oldPos = new AFRAME.THREE.Vector3(),
-	gridSize = 1;
+
+const oldPos = new AFRAME.THREE.Vector3();
 
 interface Snap extends OrderedTickComponent {
 	data: {
@@ -20,13 +20,7 @@ export const SnapComp: AFrame.ComponentDefinition<Snap> = {
 	tickOrder: 400,
 
 	init: function() {
-		gridSize = this.data.gridSize;
-
 		this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
-	},
-
-	updateSchema: function(newData) {
-		gridSize = newData.gridSize;
 	},
 
 	play: function() {
@@ -34,8 +28,8 @@ export const SnapComp: AFrame.ComponentDefinition<Snap> = {
 	},
 
 	tick: function() {
-		oldPos = this.el.object3D.position;
-
+		const oldPos = this.el.object3D.position,
+			gridSize = this.data.gridSize;
 
 		this.el.object3D.position.set(
 			Math.round(oldPos.x / gridSize) * gridSize,

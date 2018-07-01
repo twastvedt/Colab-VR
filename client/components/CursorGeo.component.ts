@@ -32,9 +32,5 @@ export const CursorGeoComp: AFrame.ComponentDefinition<CursorGeo> = {
 				(child as AFrame.Entity).pause();
 			}
 		}
-	},
-
-	init: function() {
-
 	}
 };

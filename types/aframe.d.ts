@@ -312,7 +312,7 @@ declare namespace AFrame {
 
 	interface SinglePropertySchema<T> {
 		type?: PropertyTypes;
-		'default'?: T;
+		'default'?: string | T;
 		parse?(value: string): T;
 		stringify?(value: T): string;
 	}
