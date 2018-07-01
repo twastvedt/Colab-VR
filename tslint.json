@@ -11,7 +11,6 @@
         ],
         "no-duplicate-variable": true,
         "no-eval": true,
-        "no-trailing-whitespace": true,
         "no-unsafe-finally": true,
         "one-line": [
             true,
@@ -20,7 +19,7 @@
         ],
         "quotemark": [
             true,
-            "double"
+            "single"
         ],
         "semicolon": [
             true,
@@ -55,7 +54,6 @@
         ],
         "no-eval": true,
         "no-internal-module": true,
-        "no-trailing-whitespace": true,
         "no-unsafe-finally": true,
         "no-var-keyword": true,
         "one-line": [
