@@ -244,10 +244,9 @@ declare namespace AFrame {
 	};
 
 	interface PrimitiveDefinition {
-		defaultComponents?: any; // TODO cleanup type
+		defaultComponents?: DefaultComponents | { [key: string]: { [key: string]: any } };
 		deprecated?: boolean;
-		mappings?: any; // TODO cleanup type
-		transforms?: any; // TODO cleanup type
+		mappings?: { [key: string]: string };
 	}
 
 	type PropertyTypes = 'array' | 'asset' | 'audio' | 'boolean' | 'color' |
