@@ -2,7 +2,7 @@ AFRAME = require('aframe');
 
 import { GridMatSys } from '../systems/GridMaterial.system';
 
-export interface GridMatComp extends AFrame.Component {
+interface GridMatComp extends AFrame.Component {
 	data: {
 		map: string;
 		opacity: number;

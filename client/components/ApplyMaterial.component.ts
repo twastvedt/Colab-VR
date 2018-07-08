@@ -1,6 +1,6 @@
 AFRAME = require('aframe');
 
-export interface ApplyMatComp extends AFrame.Component {
+interface ApplyMatComp extends AFrame.Component {
 	material: THREE.Material;
 
 	applyToMesh: () => void;
