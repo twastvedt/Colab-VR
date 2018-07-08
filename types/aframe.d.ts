@@ -279,7 +279,7 @@ declare namespace AFrame {
 		addEventListener(type: SceneEvents, listener: EventListener, useCapture?: boolean): void;
 	}
 
-	type Schema<T = { [key: string]: any }> = SinglePropertySchema<T> | MultiPropertySchema<T>;
+	type Schema<T = any> = T extends { [key: string]: any } ? MultiPropertySchema<T> | SinglePropertySchema<T> : SinglePropertySchema<T>;
 
 	interface SchemaUtils {
 		isSingleProperty(schema: Schema): boolean;
