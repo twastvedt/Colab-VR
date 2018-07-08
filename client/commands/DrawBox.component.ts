@@ -1,23 +1,24 @@
 AFRAME = require('aframe');
 
 import { htmlToElement } from '../tools';
-import { Drawing, DrawShape } from '../systems/Drawing.system';
+import { CommandBaseCompDef, CommandBase } from './CommandBase.component';
+import { CommandSystem } from '../systems/Command.system';
 
 
 let cursorPos = new AFRAME.THREE.Vector3(),
 	tempVec = new AFRAME.THREE.Vector3(),
-	step: number,
 	startPoint: THREE.Vector3,
 	newParent: AFrame.Entity,
 	newBox: AFrame.Entity,
-	worldQuaternion = new AFRAME.THREE.Quaternion(),
-	boundStep: () => void;
+	worldQuaternion = new AFRAME.THREE.Quaternion();
 
-interface DrawBox extends DrawShape {
+interface DrawBox extends CommandBase {
 
 }
 
-export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
+const drawBoxExtension = Object.create(CommandBaseCompDef);
+
+Object.assign(drawBoxExtension, {
 	schema: {
 	},
 
@@ -38,25 +39,17 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 		]
 	},
 
-	tickOrder: 600,
-
 	name: 'draw-box',
 
 	init: function() {
+		CommandBaseCompDef.init.bind(this)();
+
 		cursorPos = this.el.object3D.position;
 		newParent = undefined;
-		step = 0;
-
-		this.system = document.querySelector('a-scene').systems['drawing'] as Drawing;
-		boundStep = () => this.doStep();
-
-		window.addEventListener('click', boundStep);
-
-		this.el.setAttribute('cursor-geo', 'state', 'drawing-plane');
 	},
 
 	doStep: function() {
-		switch (step) {
+		switch (this.currentStep) {
 			case 0:
 				this.system.addAnchor(cursorPos);
 
@@ -75,7 +68,7 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 
 				newParent = htmlToElement<AFrame.Entity>(`
 					<a-entity
-						class="drawn static collide"
+						class="drawn static collidable"
 						position="0 0 0" rotation="0 0 0" scale="0 0 0"
 						networked="template:#box-template">
 					</a-entity>
@@ -111,22 +104,16 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 				this.system.endCommand(this);
 		}
 
-		step++;
+		this.currentStep++;
 	},
 
 	remove: function() {
-		window.removeEventListener('click', boundStep);
-
 		// Remove temp element if present.
 		if (newParent) {
 			newParent.parentNode.removeChild(newParent);
 		}
 
-		this.system.stopDrawing();
-	},
-
-	play: function() {
-		this.system.tickSystem.playComp(this);
+		CommandBaseCompDef.remove.bind(this)();
 	},
 
 	tick: function() {
@@ -138,4 +125,6 @@ export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = {
 			newParent.object3D.scale.set(Math.max(0.01, Math.abs(tempVec.x)), Math.max(0.01, Math.abs(tempVec.y)), Math.max(0.01, Math.abs(tempVec.z)));
 		}
 	}
-};
+} as AFrame.ComponentDefinition<DrawBox>);
+
+export const DrawBoxComp = drawBoxExtension;

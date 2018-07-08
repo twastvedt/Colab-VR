@@ -8,7 +8,8 @@ const quaternion = new AFRAME.THREE.Quaternion(),
 
 interface SlidingPointer extends OrderedTickComponent {
 	data: {
-		pointerSelector: AFrame.Entity
+		pointerSelector: AFrame.Entity,
+		classFilter: string
 	};
 	raycaster: AFrame.Component & {intersections: AFrame.RaycasterIntersectionDetail[]};
 }
@@ -16,7 +17,8 @@ interface SlidingPointer extends OrderedTickComponent {
 export const SlidingPointerComp: AFrame.ComponentDefinition<SlidingPointer> = {
 
 	schema: {
-		pointerSelector: {default: '#camera', type: 'selector'}
+		pointerSelector: {default: '#camera', type: 'selector'},
+		classFilter: {default: ''}
 	},
 
 	tickOrder: 200,
@@ -33,7 +35,10 @@ export const SlidingPointerComp: AFrame.ComponentDefinition<SlidingPointer> = {
 
 	tick: function() {
 
-		if (!this.raycaster.intersections.length) { return; }
+		if ( !this.raycaster.intersections.length
+				|| this.data.classFilter.length && !this.raycaster.intersections[0].object.el.classList.contains(this.data.classFilter) ) {
+			return;
+		}
 		const intersection = this.raycaster.intersections[0];
 
 		intersection.object.getWorldQuaternion(quaternion);

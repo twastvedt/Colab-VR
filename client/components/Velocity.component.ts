@@ -1,7 +1,7 @@
 AFRAME = require('aframe');
 
 
-const obstacleClass = 'collide',
+const obstacleClass = 'collidable',
 	rayCaster = new AFRAME.THREE.Raycaster(),
 	tempVec2 = new AFRAME.THREE.Vector3(),
 	tempVec = new AFRAME.THREE.Vector3(),

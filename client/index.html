@@ -55,7 +55,7 @@
 
 				<template id="box-template">
 					<a-entity>
-						<a-box class="box draw-base" grid-mat="opacity: 0.2" shadow="cast: false; receive: false"></a-box>
+						<a-box class="box hoverable env-world" grid-mat="opacity: 0.2" shadow="cast: false; receive: false"></a-box>
 					</a-entity>
 				</template>
 
@@ -67,30 +67,45 @@
 				castShadow: true; shadowCameraTop: 30; shadowCameraRight: 30;
 				shadowCameraBottom: -30; shadowCameraLeft: -30; shadowMapHeight: 2048; shadowMapWidth: 2048" position="2 5 3"></a-entity>
 
-			<a-plane class="draw-base collide" shadow="cast: false; receive: true" grid-mat width="75" height="75" position="0 -3 0" rotation="-90 0 0"></a-plane>
+			<a-plane id="ground" class="hoverable env-world collidable" shadow="cast: false; receive: true" grid-mat width="75" height="75" rotation="-90 0 0"></a-plane>
 
-			<a-entity
+			<a-entity id="player"
 				position="0 0.9 0"
 				movement-controls="controls: gamepad, trackpad, keyboard, touch; fly: true"
 				velocity
-				networked="template:#avatar-template;attachTemplateToLocal:false;"
 			>
+				<a-entity id="player-frame"
+					hdd copy-rotation="parent: #camera; mask: 0 1 0;"
+					networked="template:#avatar-template;attachTemplateToLocal:false;"
+				>
+					<a-shelf id="tools" size="0.03" position="0 0.26 -0.1">
+						<a-shelf-item class="hoverable env-hud" command="drawBox">
+							<a-box class="icon" rotation="0 20 0"></a-box>
+						</a-shelf-item>
 
-				<a-entity class="collision" visible=""
+						<a-shelf-item class="hoverable env-hud">
+							<a-sphere class="icon"></a-sphere>
+						</a-shelf-item>
+					</a-shelf>
+				</a-entity>
+
+				<a-entity id="player-collision" class="collision" visible=""
 						geometry="primitive: box; buffer: false; width: 0.75; depth: 0.75; height: 1.8"></a-entity>
 
 				<a-entity id="camera" position="0 0.4 0"
 					camera
 					look-controls="pointerLockEnabled: true"
 				>
-					<a-entity id="pointer" laser-controls raycaster="objects: .draw-base"></a-entity>
+					<a-entity id="pointer" laser-controls cursor raycaster="objects: .hoverable; recursive: false">
+						<a-ring position="0 0 -0.1" radius-outer="0.001" radius-inner="0.0007" material="transparent: true; opacity: 0.5; color: #444444"></ring>
+					</a-entity>
 				</a-entity>
 
 			</a-entity>
 
 			<a-entity id="cursor"
 				cursor-geo="state: inactive"
-				sliding-pointer="pointerSelector: #pointer"
+				sliding-pointer="pointerSelector: #pointer; classFilter: env-world"
 				snap
 			>
 				<a-circle id="cursor-inactive"
