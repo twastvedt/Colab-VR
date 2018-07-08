@@ -203,6 +203,34 @@ declare namespace AFrame {
 			intersections: RaycasterIntersectionDetail[],
 			target: Entity
 		}>;
+		'raycaster-intersection-cleared': DetailEvent<{
+			clearedEls: Entity[],
+		}>;
+		'raycaster-intersected': DetailEvent<{
+			el: Entity,
+			intersection: RaycasterIntersectionDetail
+		}>;
+		'raycaster-intersected-cleared': DetailEvent<{
+			el: Entity
+		}>;
+		'click': DetailEvent<{
+			intersection: RaycasterIntersectionDetail
+		}>;
+		'fusing': DetailEvent<{
+			intersection: RaycasterIntersectionDetail
+		}>;
+		'mousedown': DetailEvent<{
+			intersection: RaycasterIntersectionDetail
+		}>;
+		'mouseenter': DetailEvent<{
+			intersection: RaycasterIntersectionDetail
+		}>;
+		'mouseleave': DetailEvent<{
+			intersection: RaycasterIntersectionDetail
+		}>;
+		'mouseup': DetailEvent<{
+			intersection: RaycasterIntersectionDetail
+		}>;
 	}
 
 	interface RaycasterIntersectionDetail {
