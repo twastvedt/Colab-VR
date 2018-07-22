@@ -6,5 +6,15 @@
 		"easyrtc",
 		"easyrtcid",
 		"get"
-	]
+	],
+
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/jspm_packages": true,
+		"**/.meteor": true,
+		"**/.git": true,
+		"**/typings": true,
+		"*/.cache": true,
+		"dist": true
+	},
 }

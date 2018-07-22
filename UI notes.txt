@@ -1,0 +1,19 @@
+Modes
+
+Desktop
+	Orbit
+		Mouse control
+		Key - toggle hud visibility, locked to screen
+
+	FPS/Gamepad
+		Pointerlock
+
+Headset
+	Gamepad
+		Same as Desktop->FPS?
+
+	Positional controls
+		Future
+
+Mobile
+	Future

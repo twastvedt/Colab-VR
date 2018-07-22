@@ -11,6 +11,10 @@ AFRAME.registerComponent('command', CommandCompDef);
 
 const tempObjects: AFrame.Entity[] = [];
 
+export enum CommandNames {
+	draw_box = 'draw_box'
+}
+
 export interface CommandSystem extends AFrame.System {
 	data: { };
 	addAnchor: (this: CommandSystem, loc: THREE.Vector3) => void;
@@ -18,10 +22,7 @@ export interface CommandSystem extends AFrame.System {
 	endCommand: (this: CommandSystem, comp: AFrame.ComponentDefinition<CommandBase>) => void;
 	stopDrawing: (this: CommandSystem) => void;
 	activeObject: AFrame.Entity;
-	components: Map<string, {
-		definition: AFrame.ComponentDefinition<CommandBase>;
-		shortcut: string
-	}>;
+	components: Map<CommandNames, AFrame.ComponentDefinition<CommandBase>>;
 	cursor: AFrame.Entity;
 	cursorLoc: THREE.Vector3;
 	pointer: AFrame.Entity;
@@ -34,19 +35,16 @@ export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 			this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
 		}, 0);
 
-		// List of all commands.
 		this.components = new Map([
-			['drawBox', { definition: DrawBoxComp, shortcut: 'b' }]
+			[CommandNames.draw_box, DrawBoxComp]
 		]);
 
-		this.components.forEach(comp => {
-			AFRAME.registerComponent(comp.definition.name, comp.definition);
+		this.components.forEach((comp, name) => {
+			AFRAME.registerComponent(comp.name, comp);
 
-			if (comp.definition.NAFSchema) {
-				NAF.schemas.add(comp.definition.NAFSchema);
+			if (comp.NAFSchema) {
+				NAF.schemas.add(comp.NAFSchema);
 			}
-
-			Mousetrap.bind(comp.shortcut, () => this.startCommand(comp.definition));
 		});
 
 		const onLoaded = () => {

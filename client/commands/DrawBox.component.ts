@@ -39,7 +39,7 @@ Object.assign(drawBoxExtension, {
 		]
 	},
 
-	name: 'draw-box',
+	name: 'draw_box',
 
 	init: function() {
 		CommandBaseCompDef.init.bind(this)();
@@ -127,4 +127,4 @@ Object.assign(drawBoxExtension, {
 	}
 } as AFrame.ComponentDefinition<DrawBox>);
 
-export const DrawBoxComp = drawBoxExtension;
+export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = drawBoxExtension;

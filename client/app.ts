@@ -1,8 +1,9 @@
 AFRAME = require('aframe');
 
 require('aframe-extras/src/controls');
+// require('aframe-orbit-controls-component-2');
 
-require('aframe-sprite-component');
+// require('aframe-sprite-component');
 require('aframe-template-component');
 
 require('networked-aframe');
@@ -24,6 +25,7 @@ import { ConstantScaleComp } from './components/ConstantScale.component';
 import { VelocityCompDef } from './components/Velocity.component';
 import { CopyRotationComp } from './components/CopyRotation.component';
 import { HDDComp } from './components/HDD.component';
+import { EditorControlsComp } from './components/EditorControls.component';
 
 import { GridMatCompDef } from './components/GridMaterial.component';
 import { OutlineMatCompDef } from './components/OutlineMaterial.component';
@@ -32,11 +34,13 @@ import { ApplyMatCompDef } from './components/ApplyMaterial.component';
 import { GridMatSysDef } from './systems/GridMaterial.system';
 import { CommandSystemDef } from './systems/Command.system';
 import { TickOrderSysDef } from './systems/TickOrder.system';
+import { UISystemDef } from './systems/UI.system';
 
 
 AFRAME.registerSystem('grid-mat', GridMatSysDef);
 AFRAME.registerSystem('command', CommandSystemDef);
 AFRAME.registerSystem('tick-order', TickOrderSysDef);
+AFRAME.registerSystem('ui', UISystemDef);
 
 AFRAME.registerPrimitive('a-shelf', ShelfPrimDef);
 AFRAME.registerComponent('shelf', ShelfCompDef);
@@ -52,6 +56,7 @@ AFRAME.registerComponent('constant-scale', ConstantScaleComp);
 AFRAME.registerComponent('velocity', VelocityCompDef);
 AFRAME.registerComponent('copy-rotation', CopyRotationComp);
 AFRAME.registerComponent('hdd', HDDComp);
+AFRAME.registerComponent('editor-controls', EditorControlsComp);
 
 AFRAME.registerComponent('grid-mat', GridMatCompDef);
 AFRAME.registerComponent('outline', OutlineMatCompDef);
