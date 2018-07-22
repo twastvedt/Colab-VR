@@ -3,6 +3,7 @@ AFRAME = require('aframe');
 require('aframe-extras/src/controls');
 
 require('aframe-sprite-component');
+require('aframe-template-component');
 
 require('networked-aframe');
 

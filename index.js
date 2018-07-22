@@ -1,9 +1,9 @@
-const http = require("http");
-const express = require("express");
-const socketIo = require("socket.io");
-const easyrtc = require("easyrtc");
-const livereload = require('livereload');
-
+const http = require("http"),
+	express = require("express"),
+	socketIo = require("socket.io"),
+	easyrtc = require("easyrtc"),
+	livereload = require('livereload'),
+	nunjucks = require('nunjucks');
 
 // Set process name
 process.title = "node-easyrtc";
@@ -16,9 +16,20 @@ const server = livereload.createServer({
 	delay: 200
 });
 server.watch(__dirname + "/dist");
+server.watch(__dirname + "/client/views");
 
 // Setup and configure Express http server.
 const app = express();
+
+nunjucks.configure('client/views', {
+    autoescape: true,
+	express: app,
+	watch: true
+});
+
+app.get('/', function(req, res) {
+    res.render('index.html');
+});
 
 app.use(express.static('dist'));
 app.use('/assets', express.static('client/assets'));
@@ -27,6 +38,7 @@ app.use('/assets', express.static('client/assets'));
 var webServer = http.createServer(app);
 
 // Start Socket.io so it attaches itself to Express server
+// @ts-ignore
 var socketServer = socketIo.listen(webServer, {"log level":1});
 
 var myIceServers = [

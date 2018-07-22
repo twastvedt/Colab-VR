@@ -1,0 +1,69 @@
+<html>
+	<head>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+
+			<script src="./libs.js"></script>
+
+			<script src="./app.js"></script>
+
+			<script src="/easyrtc/easyrtc.js"></script>
+
+			<script src="http://localhost:35729/livereload.js?snipver=1"></script>
+	</head>
+	<body>
+		<a-scene stats networked-scene="
+			app: colab-vr;
+			room: room1;
+			debug: true;
+			adapter: easyrtc;"
+		>
+			<a-assets>
+
+				{% include "avatar.assets.html" %}
+
+				{% include "tools.assets.html" %}
+
+				{% include "cursor.assets.html" %}
+
+				{% include "toolShelf.assets.html" %}
+
+			</a-assets>
+
+			{% include "world.html" %}
+
+			<a-entity id="player"
+				position="0 0 0"
+				movement-controls="controls: gamepad, trackpad, keyboard, touch; fly: true"
+				velocity
+			>
+				<a-entity id="player-frame" class="ui ui-hmd ui-fps"
+					hdd copy-rotation="parent: #camera; mask: 0 1 0;"
+					networked="template:#avatar-template;attachTemplateToLocal:false;"
+				>
+					<a-entity class="ui ui-hmd" template="src: #toolShelfTemplate" position="0 0.26 -0.1"></a-entity>
+
+				</a-entity>
+
+				<a-entity id="player-collision" class="collision" visible="false" position="0 0.9 0"
+						geometry="primitive: box; buffer: false; width: 0.75; depth: 0.75; height: 1.8"></a-entity>
+
+				<a-entity id="camera" position="0 1.6 0"
+					camera editor-controls
+				>
+					<a-entity id="hud" class="ui ui-orbit"
+						networked="template:#avatar-template;attachTemplateToLocal:false;"></a-entity>
+
+					<a-entity id="pointer" laser-controls cursor raycaster="objects: .hoverable; recursive: false">
+						<a-ring class="ui ui-fps" position="0 0 -0.1" radius-outer="0.001" radius-inner="0.0007" material="transparent: true; opacity: 0.5; color: #444444"></ring>
+					</a-entity>
+
+					<a-entity class="ui ui-orbit ui-fps" template="src: #toolShelfTemplate" position="0 -0.23 -0.3"></a-entity>
+
+				</a-entity>
+
+			</a-entity>
+
+			<a-entity template="src: #cursorTemplate"></a-entity>
+		</a-scene>
+	</body>
+</html>
