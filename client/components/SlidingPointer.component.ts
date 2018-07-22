@@ -26,7 +26,7 @@ export const SlidingPointerComp: AFrame.ComponentDefinition<SlidingPointer> = {
 	init: function() {
 		this.raycaster = this.data.pointerSelector.components['raycaster'] as any;
 
-		this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
+		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
 	},
 
 	play: function() {

@@ -29,7 +29,7 @@ export const CommandBaseCompDef: AFrame.ComponentDefinition<CommandBase> = {
 	init: function() {
 		this.currentStep = 0;
 
-		this.system = document.querySelector('a-scene').systems['command'] as CommandSystem;
+		this.system = this.el.sceneEl.systems['command'] as CommandSystem;
 		this.boundDoStep = this.doStep.bind(this);
 
 		this.system.pointer.addEventListener('click', this.boundDoStep);

@@ -56,7 +56,7 @@ export const ShelfCompDef: AFrame.ComponentDefinition<ShelfComp> = {
 	init: function() {
 		this.spacing = this.data.size * 0.25;
 
-		this.commandSystem = document.querySelector('a-scene').systems['command'] as CommandSystem;
+		this.commandSystem = this.el.sceneEl.systems['command'] as CommandSystem;
 
 		// Watch for changes to this element.
 		this.observer = new MutationObserver((mutations) => {

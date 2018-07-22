@@ -32,7 +32,7 @@ export interface CommandSystem extends AFrame.System {
 export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 	init: function() {
 		window.setTimeout(() => {
-			this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
+			this.tickSystem = this.el.systems['tick-order'] as TickOrderSys;
 		}, 0);
 
 		this.components = new Map([
@@ -53,7 +53,7 @@ export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 			this.pointer = this.el.querySelector('#pointer');
 		};
 
-		document.querySelector('a-scene').addEventListener('loaded', () => onLoaded.call(this));
+		this.el.addEventListener('loaded', () => onLoaded.call(this));
 	},
 
 	startCommand: function(comp) {

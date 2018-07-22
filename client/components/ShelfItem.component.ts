@@ -33,7 +33,7 @@ export const ShelfItemCompDef: AFrame.ComponentDefinition<ShelfItemComp> = {
 	},
 
 	init: function() {
-		this.commandSystem = document.querySelector('a-scene').systems['command'] as CommandSystem;
+		this.commandSystem = this.el.sceneEl.systems['command'] as CommandSystem;
 
 		// When scaling we adjust the position so that the icon scales from its base.
 		this.hoverOffset = (this.data.hoverScaleFactor - 1) / 2;

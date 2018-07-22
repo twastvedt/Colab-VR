@@ -10,8 +10,6 @@ const obstacleClass = 'collidable',
 	collisionFaces = new Set(),
 	quaternion = new AFRAME.THREE.Quaternion();
 
-let sceneEl: AFrame.Scene;
-
 interface VelocityComp extends AFrame.Component {
 	data: AFrame.Coordinate;
 
@@ -40,8 +38,6 @@ export const VelocityCompDef: AFrame.ComponentDefinition<VelocityComp> = {
 		// Ideally 'collide' and 'obstacleClass' would be part of the schema.
 		// Would need to fork aframe-extras to support a velocity component with a multi-property schema.
 		this.collide = true;
-
-		sceneEl = document.querySelector('a-scene');
 
 		// Watch for changes to the scene and add them to the list of collision objects if they have the right class.
 		this.observer = new MutationObserver((mutations) => {
@@ -130,6 +126,6 @@ export const VelocityCompDef: AFrame.ComponentDefinition<VelocityComp> = {
 			this.objects.push( el.object3D );
 		});
 
-		this.observer.observe(sceneEl, {childList: true, subtree: true});
+		this.observer.observe(this.el.sceneEl, {childList: true, subtree: true});
 	}
 };

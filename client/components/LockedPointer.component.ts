@@ -3,18 +3,16 @@ AFRAME = require('aframe');
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
-let pointerVec = new AFRAME.THREE.Vector3(),
-	pointerPos = new AFRAME.THREE.Vector3(),
-	tempPos = new AFRAME.THREE.Vector3();
+let tempPos = new AFRAME.THREE.Vector3();
 
 interface LockedPointer extends OrderedTickComponent {
 	data: {
-		pointerSelector: string,
+		pointerSelector: AFrame.Entity,
 		vector: AFrame.Coordinate,
 		position: AFrame.Coordinate,
 		isPlane: boolean
 	};
-	pointer: THREE.Object3D;
+	ray: THREE.Ray;
 }
 
 export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
@@ -23,7 +21,7 @@ export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
 	 * */
 
 	schema: {
-		pointerSelector: {default: '#camera'},
+		pointerSelector: {default: '#camera', type: 'selector'},
 		// Default to y=0 ground plane.
 		vector: {type: 'vec3', default: {x: 0, y: 1, z: 0}},
 		position: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
@@ -33,9 +31,9 @@ export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
 	tickOrder: 200,
 
 	init: function() {
-		this.pointer = document.querySelector(this.data.pointerSelector).object3D;
+		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
 
-		this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
+		this.ray = (this.data.pointerSelector.components['raycaster'] as any).raycaster.ray;
 	},
 
 	play: function() {
@@ -43,10 +41,9 @@ export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
 	},
 
 	tick: function() {
-		this.pointer.getWorldDirection(pointerVec);
-		this.pointer.getWorldPosition(pointerPos);
-
-		const targetVec = this.data.vector,
+		const pointerVec = this.ray.direction,
+			pointerPos = this.ray.origin,
+			targetVec = this.data.vector,
 			targetPos = this.data.position;
 
 		if (this.data.isPlane) {

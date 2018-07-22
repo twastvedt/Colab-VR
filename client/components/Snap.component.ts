@@ -20,7 +20,7 @@ export const SnapComp: AFrame.ComponentDefinition<Snap> = {
 	tickOrder: 400,
 
 	init: function() {
-		this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
+		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
 	},
 
 	play: function() {

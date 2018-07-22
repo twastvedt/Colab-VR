@@ -50,7 +50,7 @@ export const LockedTrackComp: AFrame.ComponentDefinition<LockedTrack> = {
 	init: function() {
 		this.target = this.data.targetSelector.object3D;
 
-		this.tickSystem = document.querySelector('a-scene').systems['tick-order'] as TickOrderSys;
+		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
 	},
 
 	tick: function() {
