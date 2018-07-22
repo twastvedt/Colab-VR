@@ -41,13 +41,13 @@
   "scripts": {
     "postinstall": "cp fixes/three-core.d.ts node_modules/@types/three/ && cp fixes/movement-controls.js node_modules/aframe-extras/src/controls/ && mkdir dist",
     "start": "node index.js",
-    "build:ts": "browserify client/app.ts -p [ tsify --global ] -t [ stringify --extensions [.glsl] ] -o dist/app.js",
+    "build:ts": "browserify client/app.ts --no-bundle-external -p [ tsify --global ] -t [ stringify --extensions [.glsl] ] -o dist/app.js",
     "build:ts-dev": "npm run build:ts -- --debug",
-    "build": "npm run clean && npm run copy && npm run build:ts",
+    "build:libs": "rm -f dist/libs.js && browserify -r aframe -r aframe-extras/src/controls -r aframe-template-component -r networked-aframe -r mousetrap --debug -o dist/libs.js",
+    "build": "npm run clean && npm run build:libs && npm run build:ts",
     "clean": "rimraf dist && mkdir dist",
-    "watch:ts": "rm -f dist/app.js && watchify client/app.ts -v -p [ tsify --global ] -t [ stringify --extensions [.glsl] ] -o dist/app.js --debug --ignore-watch=\"dist/**/**\"",
-    "watch:static": "onchange \"client/assets/**\" \"client/*.html\" -i -- npm run copy",
-    "dev": "npm run clean && parallelshell \"npm run watch:static\" \"npm run watch:ts\" \"npm run start-dev\"",
+    "watch:ts": "rm -f dist/app.js && watchify client/app.ts -v --no-bundle-external -p [ tsify --global ] -t [ stringify --extensions [.glsl] ] -o dist/app.js --debug --ignore-watch=\"dist/**/**\"",
+    "dev": "parallelshell \"npm run watch:ts\" \"npm run start-dev\"",
     "start-dev": "nodemon --ignore client/ --ignore dist/ index.js",
     "heroku-postbuild": "npm run build"
   },
