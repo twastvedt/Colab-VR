@@ -374,6 +374,27 @@ declare namespace AFrame {
 			parse(value: string): object;
 			stringify(data: object): string;
 		};
+		device: {
+			/**
+			 * Checks if a VR headset is connected by looking for orientation data.
+			 */
+			checkHeadsetConnected(): boolean;
+
+			/**
+			 * Checks if there is positional tracking available.
+			 */
+			checkHasPositionalTracking(): boolean;
+
+			/**
+			 * Checks if device is Gear VR.
+			 */
+			isGearVR(): boolean;
+
+			/**
+			 * Checks if device is a smartphone.
+			 */
+			isMobile(): boolean;
+		}
 		deepEqual(a: any, b: any): boolean;
 		diff(a: object, b: object): object;
 		extend(target: object, ... source: object[]): object;
