@@ -3,12 +3,13 @@ AFRAME = require('aframe');
 import { htmlToElement } from '../tools';
 import { DrawBoxComp } from '../commands/DrawBox.component';
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
-import { CommandCompDef } from '../commands/Command.component';
 import { CommandSystem } from '../systems/Command.system';
+import { UISystem, State } from '../systems/UI.system';
 
 
 let cursor: AFrame.Entity,
-	cursorLoc: THREE.Vector3;
+	cursorLoc: THREE.Vector3,
+	uiSystem: UISystem;
 
 const tempObjects: AFrame.Entity[] = [];
 
@@ -29,8 +30,13 @@ export const CommandBaseCompDef: AFrame.ComponentDefinition<CommandBase> = {
 	init: function() {
 		this.currentStep = 0;
 
+		uiSystem = this.el.sceneEl.systems['ui'] as UISystem;
 		this.system = this.el.sceneEl.systems['command'] as CommandSystem;
-		this.boundDoStep = this.doStep.bind(this);
+		this.boundDoStep = (() => {
+			if (uiSystem.state === State.None) {
+				this.doStep();
+			}
+		}).bind(this);
 
 		this.system.pointer.addEventListener('click', this.boundDoStep);
 

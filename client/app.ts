@@ -26,6 +26,7 @@ import { VelocityCompDef } from './components/Velocity.component';
 import { CopyRotationComp } from './components/CopyRotation.component';
 import { HDDComp } from './components/HDD.component';
 import { EditorControlsComp } from './components/EditorControls.component';
+import { CommandButtonCompDef } from './commands/CommandButton.component';
 
 import { GridMatCompDef } from './components/GridMaterial.component';
 import { OutlineMatCompDef } from './components/OutlineMaterial.component';
@@ -57,6 +58,7 @@ AFRAME.registerComponent('velocity', VelocityCompDef);
 AFRAME.registerComponent('copy-rotation', CopyRotationComp);
 AFRAME.registerComponent('hdd', HDDComp);
 AFRAME.registerComponent('editor-controls', EditorControlsComp);
+AFRAME.registerComponent('command-button', CommandButtonCompDef);
 
 AFRAME.registerComponent('grid-mat', GridMatCompDef);
 AFRAME.registerComponent('outline', OutlineMatCompDef);

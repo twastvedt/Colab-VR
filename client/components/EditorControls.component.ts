@@ -1,7 +1,10 @@
+import { UISystem, State } from '../systems/UI.system';
+
 AFRAME = require('aframe');
 
 
-let cursor: AFrame.Entity;
+let cursor: AFrame.Entity,
+	uiSystem: UISystem;
 
 interface EditorControls extends AFrame.Component {
 	data: {
@@ -24,6 +27,8 @@ export const EditorControlsComp: AFrame.ComponentDefinition<EditorControls> = {
 	},
 
 	init: function() {
+		uiSystem = this.el.sceneEl.systems['ui'] as UISystem;
+
 		this.controls = new EditorControls(this.el.object3D as any);
 
 		cursor = document.getElementById('cursor') as AFrame.Entity;
@@ -48,6 +53,8 @@ export const EditorControlsComp: AFrame.ComponentDefinition<EditorControls> = {
 };
 
 
+/* Modified from three/examples/js/controls/EditorControls.js */
+
 const THREE = AFRAME.THREE;
 
 declare class EditorControls2 extends THREE.EventDispatcher {
@@ -70,8 +77,6 @@ declare class EditorControls2 extends THREE.EventDispatcher {
 
 	dispose(): void;
 }
-
-/* Modified from three/examples/js/controls/EditorControls.js */
 
 
 /**
@@ -211,6 +216,10 @@ const EditorControls = function ( object: THREE.Object3D, domElement?: Node ) {
 		const movementX = pointer.x - pointerOld.x,
 			movementY = pointer.y - pointerOld.y;
 
+		if (Math.abs(movementX) + Math.abs(movementY) > 2 && uiSystem.state === State.None ) {
+			uiSystem.state = State.Navigating;
+		}
+
 		if ( state === STATE.ROTATE ) {
 
 			scope.rotate( new THREE.Vector3( - movementX * scope.rotationSpeed, - movementY * scope.rotationSpeed, 0 ) );
@@ -237,6 +246,8 @@ const EditorControls = function ( object: THREE.Object3D, domElement?: Node ) {
 		domElement.removeEventListener( 'dblclick', onMouseUp, false );
 
 		state = STATE.NONE;
+
+		window.setTimeout(() => uiSystem.state = State.None, 0);
 
 	}
 

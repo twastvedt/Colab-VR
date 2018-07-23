@@ -27,12 +27,18 @@ enum Input {
 	Positional = 'positional'
 }
 
-interface UISystem extends AFrame.System {
+export enum State {
+	None,
+	Navigating
+}
+
+export interface UISystem extends AFrame.System {
 	data: { };
 
 	input: Input;
 	device: Device;
 	ui: UI;
+	state: State;
 
 	updateUI(this: UISystem): void;
 	endMode(this: UISystem, mode: UI): void;
@@ -42,6 +48,8 @@ interface UISystem extends AFrame.System {
 
 export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 	init: function() {
+		this.state = State.None;
+
 		this.el.addEventListener('loaded', () => {
 			player = (this.el.querySelector('#player') as AFrame.Entity);
 			camera = (this.el.querySelector('#camera') as AFrame.Entity);

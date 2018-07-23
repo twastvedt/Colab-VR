@@ -3,11 +3,8 @@ AFRAME = require('aframe');
 import { htmlToElement } from '../tools';
 import { DrawBoxComp } from '../commands/DrawBox.component';
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
-import { CommandCompDef } from '../commands/Command.component';
 import { CommandBase } from '../commands/CommandBase.component';
 
-
-AFRAME.registerComponent('command', CommandCompDef);
 
 const tempObjects: AFrame.Entity[] = [];
 
