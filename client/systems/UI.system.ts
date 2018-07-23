@@ -79,7 +79,7 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 			this.device = Device.Screen;
 		}
 
-		if (navigator.getGamepads && navigator.getGamepads()[0] !== null) {
+		if (navigator.getGamepads && navigator.getGamepads()[0] != null) {
 			this.input = Input.Gamepad;
 		} else {
 			this.input = Input.Mouse;
@@ -102,6 +102,8 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 				el.object3D.visible = false;
 			}
 		}, this);
+
+		console.log(`Device: ${this.device}, Input: ${this.input}, UI: ${this.ui}`);
 
 		this.startMode(this.ui);
 	},
