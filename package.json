@@ -36,7 +36,7 @@
     "rimraf": "2.6.2",
     "stringify": "5.2.0",
     "tsify": "4.0.0",
-    "typescript": "2.8.4",
+    "typescript": "2.9.2",
     "watchify": "3.11.0"
   },
   "scripts": {
