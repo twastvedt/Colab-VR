@@ -1,12 +1,5 @@
 {
 	"eslint.enable": false,
-	"cSpell.words": [
-		"colab",
-		"componentchanged",
-		"easyrtc",
-		"easyrtcid",
-		"get"
-	],
 
 	"search.exclude": {
 		"**/node_modules": true,
