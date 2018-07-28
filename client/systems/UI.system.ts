@@ -1,12 +1,13 @@
 AFRAME = require('aframe');
 
 import { CommandSystem, CommandSystemDef, CommandNames } from './Command.system';
+import { LockedState } from '../components/DynamicCursor.component';
 
 
 let pointer: AFrame.Entity,
 	camera: AFrame.Entity,
 	player: AFrame.Entity,
-	hud: AFrame.Entity,
+	cursor: AFrame.Entity,
 	commandSystem: CommandSystem;
 
 enum UI {
@@ -54,7 +55,6 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 			player = (this.el.querySelector('#player') as AFrame.Entity);
 			camera = (this.el.querySelector('#camera') as AFrame.Entity);
 			pointer = (this.el.querySelector('#pointer') as AFrame.Entity);
-			hud = (this.el.querySelector('#hud') as AFrame.Entity);
 
 			commandSystem = this.el.systems['command'] as CommandSystem;
 
@@ -63,6 +63,8 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 			if (this.ui !== UI.HMD) {
 				this.setKeys();
 			}
+
+			cursor = this.el.querySelector('#cursor');
 		});
 	},
 
@@ -157,6 +159,22 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 	},
 
 	setKeys: function() {
-		Mousetrap.bind('b', () => commandSystem.startCommand( CommandSystemDef.components.get(CommandNames.draw_box) ));
+		Mousetrap.bind( 'b', () => commandSystem.startCommand( CommandNames.draw_box ) );
+
+		Mousetrap.bind( 'v', () => {
+			cursor.setAttribute(
+				'dynamic-cursor',
+				'locked',
+				cursor.getAttribute('dynamic-cursor').locked === LockedState.line ? LockedState.none : LockedState.line
+			);
+		});
+
+		Mousetrap.bind( 'p', () => {
+			cursor.setAttribute(
+				'dynamic-cursor',
+				'locked',
+				cursor.getAttribute('dynamic-cursor').locked === LockedState.plane ? LockedState.none : LockedState.plane
+			);
+		});
 	}
 };

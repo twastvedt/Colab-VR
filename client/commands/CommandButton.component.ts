@@ -26,9 +26,7 @@ export const CommandButtonCompDef: AFrame.ComponentDefinition<CommandButtonComp>
 	},
 
 	onClick: function(e) {
-		const command = this.system.components.get(this.data);
-
-		this.system.startCommand(command);
+		this.system.startCommand(this.data);
 
 		e.stopPropagation();
 	},

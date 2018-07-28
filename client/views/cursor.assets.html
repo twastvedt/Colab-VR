@@ -2,33 +2,33 @@
 
 <script id="cursorTemplate" type="text/html">
 	<a-entity id="cursor"
-		cursor-geo="state: inactive"
+		constant-scale="0.02 0.02 0.02"
+		dynamic-cursor
 		sliding-pointer="pointerSelector: #pointer; classFilter: env-world"
+		locked-pointer="pointerSelector: #pointer"
 		snap
 	>
-		<a-circle id="cursor-inactive"
-			position="0 0.01 0" rotation="-90 0 0"
-			radius="0.06"
-			material="shader: flat; color: white; transparent: true; opacity: 0.5"
-			visible=""
-		>
-			<a-ring radius-outer="0.07" radius-inner="0.06"
-				material="shader: flat; color: black; transparent: true; opacity: 0.5"></a-ring>
-		</a-circle>
-
-		<a-gltf-model id="cursor-drawing-line" src="#double-cone"
-			constant-scale="0.02 0.02 0.02"
-			material="shader: flat; color: white;" apply-material outline="width: 0.08"
-			visible=""></a-gltf-model>
-
-		<a-circle id="cursor-drawing-plane"
-			position="0 0.01 0" rotation="-90 0 0"
-			radius="0.06"
+		<a-sphere radius="0.2"
 			material="shader: flat; color: white"
-			visible=""
-		>
-			<a-ring radius-outer="0.07" radius-inner="0.06"
-				material="shader: flat; color: black"></a-ring>
-		</a-circle>
+		></a-sphere>
+
+		<a-ring id="cursor-active-ring" look-at="#camera"
+			radius-outer="0.3" radius-inner="0.2"
+			material="shader: flat; color: black"></a-ring>
+
+		<a-entity class="state state-line"
+			line__1="start: 0 -1 0; end: 0 -0.7 0; color: gray"
+			line__2="start: 0 0.7 0; end: 0 1 0; color: gray"></a-entity>
+
+		<a-entity class="state state-plane"
+			line__1="start: -1 0 -1; end: -0.7 0 -1; color: gray"
+			line__2="start: 0.7 0 -1; end: 1 0 -1; color: gray"
+			line__3="start: 1 0 -1; end: 1 0 -0.7; color: gray"
+			line__4="start: 1 0 0.7; end: 1 0 1; color: gray"
+			line__5="start: 1 0 1; end: 0.7 0 1; color: gray"
+			line__6="start: -0.7 0 1; end: -1 0 1; color: gray"
+			line__7="start: -1 0 1; end: -1 0 0.7; color: gray"
+			line__8="start: -1 0 -0.7; end: -1 0 -1; color: gray"></a-entity>
+
 	</a-entity>
 </script>

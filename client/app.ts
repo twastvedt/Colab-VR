@@ -1,8 +1,7 @@
 AFRAME = require('aframe');
 
 require('aframe-extras/src/controls');
-// require('aframe-orbit-controls-component-2');
-
+require('aframe-look-at-component');
 // require('aframe-sprite-component');
 require('aframe-template-component');
 
@@ -19,7 +18,7 @@ import { LockedPointerComp } from './components/LockedPointer.component';
 import { SlidingPointerComp } from './components/SlidingPointer.component';
 import { SnapComp } from './components/Snap.component';
 import { TestRotateComp } from './components/TestRotate.component';
-import { CursorGeoComp } from './components/CursorGeo.component';
+import { DynamicCursorComp } from './components/DynamicCursor.component';
 import { LockedTrackComp } from './components/LockedTrack.component';
 import { ConstantScaleComp } from './components/ConstantScale.component';
 import { VelocityCompDef } from './components/Velocity.component';
@@ -51,7 +50,7 @@ AFRAME.registerComponent('shelf-item', ShelfItemCompDef);
 AFRAME.registerComponent('locked-pointer', LockedPointerComp);
 AFRAME.registerComponent('sliding-pointer', SlidingPointerComp);
 AFRAME.registerComponent('snap', SnapComp);
-AFRAME.registerComponent('cursor-geo', CursorGeoComp);
+AFRAME.registerComponent('dynamic-cursor', DynamicCursorComp);
 AFRAME.registerComponent('locked-track', LockedTrackComp);
 AFRAME.registerComponent('constant-scale', ConstantScaleComp);
 AFRAME.registerComponent('velocity', VelocityCompDef);

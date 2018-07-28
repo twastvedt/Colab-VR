@@ -2,8 +2,9 @@ AFRAME = require('aframe');
 
 import { htmlToElement } from '../tools';
 import { DrawBoxComp } from '../commands/DrawBox.component';
-import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
+import { TickOrderSys } from '../systems/TickOrder.system';
 import { CommandBase } from '../commands/CommandBase.component';
+import { LockedState } from '../components/DynamicCursor.component';
 
 
 const tempObjects: AFrame.Entity[] = [];
@@ -15,7 +16,7 @@ export enum CommandNames {
 export interface CommandSystem extends AFrame.System {
 	data: { };
 	addAnchor: (this: CommandSystem, loc: THREE.Vector3) => void;
-	startCommand: (this: CommandSystem, comp: AFrame.ComponentDefinition<CommandBase>) => void;
+	startCommand: (this: CommandSystem, comp: CommandNames) => void;
 	endCommand: (this: CommandSystem, comp: AFrame.ComponentDefinition<CommandBase>) => void;
 	stopDrawing: (this: CommandSystem) => void;
 	activeObject: AFrame.Entity;
@@ -50,20 +51,21 @@ export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 			this.pointer = this.el.querySelector('#pointer');
 		};
 
-		this.el.addEventListener('loaded', () => onLoaded.call(this));
+		this.el.addEventListener('loaded', onLoaded.bind(this));
+
 	},
 
 	startCommand: function(comp) {
 		// Initialize current command on cursor.
-		console.log(`Start command '${comp.name}'.`);
+		console.log(`Start command '${comp}'.`);
 
-		this.cursor.setAttribute(comp.name, {});
+		this.cursor.setAttribute(comp, {});
+
+		this.cursor.setAttribute('dynamic-cursor', 'isActive', true);
 	},
 
 	endCommand: function(comp) {
 		this.cursor.removeAttribute(comp.name);
-
-		this.stopDrawing();
 	},
 
 	stopDrawing: function() {
@@ -73,10 +75,10 @@ export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 
 		tempObjects.length = 0;
 
-		this.cursor.setAttribute('cursor-geo', 'state', 'inactive');
-
-		this.cursor.components['locked-pointer'].pause();
-		this.cursor.components['sliding-pointer'].play();
+		this.cursor.setAttribute('dynamic-cursor', {
+			locked: LockedState.none,
+			isActive: false
+		});
 	},
 
 	addAnchor: function(loc) {

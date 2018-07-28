@@ -2,15 +2,14 @@ AFRAME = require('aframe');
 
 import { htmlToElement } from '../tools';
 import { CommandBaseCompDef, CommandBase } from './CommandBase.component';
-import { CommandSystem } from '../systems/Command.system';
+import { LockedState, UIState } from '../components/DynamicCursor.component';
 
 
 let cursorPos = new AFRAME.THREE.Vector3(),
 	tempVec = new AFRAME.THREE.Vector3(),
 	startPoint: THREE.Vector3,
 	newParent: AFrame.Entity,
-	newBox: AFrame.Entity,
-	worldQuaternion = new AFRAME.THREE.Quaternion();
+	newBox: AFrame.Entity;
 
 interface DrawBox extends CommandBase {
 
@@ -46,6 +45,8 @@ Object.assign(drawBoxExtension, {
 
 		cursorPos = this.el.object3D.position;
 		newParent = undefined;
+
+		this.el.setAttribute('dynamic-cursor', 'ui', UIState.plane);
 	},
 
 	doStep: function() {
@@ -53,18 +54,7 @@ Object.assign(drawBoxExtension, {
 			case 0:
 				this.system.addAnchor(cursorPos);
 
-				this.el.object3D.getWorldQuaternion( worldQuaternion );
-				tempVec.copy( this.el.object3D.up ).applyQuaternion( worldQuaternion );
-
-				this.el.components['sliding-pointer'].pause();
-
-				this.el.setAttribute('locked-pointer', {
-					vector: tempVec,
-					position: this.el.object3D.position,
-					isPlane: true,
-					pointerSelector: '#pointer'
-				});
-				this.el.components['locked-pointer'].play();
+				this.el.setAttribute('dynamic-cursor', 'locked', LockedState.plane);
 
 				newParent = htmlToElement<AFrame.Entity>(`
 					<a-entity
@@ -81,12 +71,7 @@ Object.assign(drawBoxExtension, {
 				break;
 
 			case 1:
-				this.el.setAttribute('locked-pointer', {
-					position: cursorPos,
-					isPlane: false
-				});
-
-				this.el.setAttribute('cursor-geo', 'state', 'drawing-line');
+				this.el.setAttribute('dynamic-cursor', 'locked', LockedState.line);
 
 				newBox = newParent.children[0] as AFrame.Entity;
 
