@@ -362,8 +362,8 @@ declare namespace AFrame {
 
 	interface Utils {
 		coordinates: {
-			isCoordinate(value: string): boolean;
-			parse(value: string): Coordinate;
+			isCoordinates(value: string): boolean;
+			parse(value: string | object): Coordinate;
 			stringify(c: Coordinate): string;
 		};
 		entity: {
