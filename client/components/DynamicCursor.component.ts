@@ -1,8 +1,12 @@
 AFRAME = require('aframe');
 
 
-let tempVec = new AFRAME.THREE.Vector3(),
+const tempVec = new AFRAME.THREE.Vector3(),
+	tempVec2 = new AFRAME.THREE.Vector3(),
+	tempCoord = {x: 0, y: 0, z: 0},
 	worldQuaternion = new AFRAME.THREE.Quaternion();
+
+let extension: AFrame.Entity;
 
 export enum LockedState {
 	none = 'none',
@@ -32,10 +36,14 @@ export const DynamicCursorComp: AFrame.ComponentDefinition<DynamicCursor> = {
 	schema: {
 		isActive: {default: false},
 		locked: {default: LockedState.none},
-		ui: {default: UIState.none}
+		ui: {default: UIState.plane}
 	},
 
 	dependencies: ['sliding-pointer', 'locked-pointer'],
+
+	init: function() {
+		extension = this.el.sceneEl.querySelector('#extension');
+	},
 
 	update: function(oldData) {
 		const data = this.data;
@@ -49,9 +57,9 @@ export const DynamicCursorComp: AFrame.ComponentDefinition<DynamicCursor> = {
 				this.el.components['locked-pointer'].pause();
 				this.el.components['sliding-pointer'].play();
 
-				this.el.querySelector('#extension').removeAttribute('anchor');
+				extension.object3D.visible = false;
 
-				this.el.setAttribute('dynamic-cursor', 'ui', UIState.none);
+				this.el.setAttribute('dynamic-cursor', 'ui', UIState.plane);
 
 			} else {
 				this.el.object3D.getWorldQuaternion( worldQuaternion );
@@ -67,7 +75,16 @@ export const DynamicCursorComp: AFrame.ComponentDefinition<DynamicCursor> = {
 				});
 				this.el.components['locked-pointer'].play();
 
-				this.el.querySelector('#extension').setAttribute('anchor', 'line.end');
+				this.el.object3D.getWorldPosition(tempVec2);
+				tempCoord.x = tempVec2.x;
+				tempCoord.y = tempVec2.y;
+				tempCoord.z = tempVec2.z;
+
+				extension.setAttribute('line-link', {
+					start: tempCoord,
+					end: '#cursor'
+				});
+				extension.object3D.visible = true;
 
 				this.el.setAttribute('dynamic-cursor', 'ui', data.ui = data.locked === LockedState.line ? UIState.line : UIState.plane);
 			}

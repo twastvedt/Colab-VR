@@ -39,8 +39,6 @@ export const CommandBaseCompDef: AFrame.ComponentDefinition<CommandBase> = {
 		}).bind(this);
 
 		this.system.pointer.addEventListener('click', this.boundDoStep);
-
-		this.el.setAttribute('cursor-geo', 'state', 'drawing-plane');
 	},
 
 	remove: function() {

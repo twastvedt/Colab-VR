@@ -255,7 +255,7 @@ const EditorControls = function ( object: THREE.Object3D, domElement?: Node ) {
 
 		event.preventDefault();
 
-		// if ( scope.enabled === false ) return;
+		if ( scope.enabled === false ) return;
 
 		scope.zoom( new THREE.Vector3( 0, 0, event.deltaY ) );
 

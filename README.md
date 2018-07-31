@@ -1,7 +1,7 @@
 ## What
 Collaborative 3D modeling in VR! This project builds on [Networked A-Frame](https://github.com/networked-aframe/networked-aframe) to create a 3D modeling environment.
 
-Right now, you can make boxes. Press 'b' and then click to start drawing. WASD to move around.
+Right now, you can make boxes. Press 'b' and then click to start drawing. 'v' and 'p' lock the cursor to a line perpendicular and a plane tangent to the surface under the cursor.
 
 ![Demo GIF](https://raw.githubusercontent.com/twastvedt/Colab-VR/master/docs/demo.gif)
 
@@ -15,7 +15,6 @@ Try it out here: https://colab-vr.herokuapp.com/ (Running on a free server, so t
 ## TODO
 
 1. More than one command!
-1. VR interface that doesn't require the keyboard.
 1. Saving, textures, object editing, audio...
 
 
@@ -23,4 +22,4 @@ Try it out here: https://colab-vr.herokuapp.com/ (Running on a free server, so t
 
 ### stringify
 
-Currently using stringify to import glsl files as strings for three.js. We can't use glslify, I think, because it uses acorn to transform javascript files. Acorn can't handle typescript, and I don't think there's a way to make the glslify transform run after the tsify plugin. All glslify was doing though was importing a glsl file as a string, so stringify should do the trick. This means we can't take advantage of any of the other glslify plugins, but haven't needed to do that yet. Alternatively, webpack might work, or Parcel once they get source-maps working with [pre-transformed code](https://github.com/parcel-bundler/parcel/issues/741#issuecomment-398961808).
+Currently using stringify to import glsl files as strings for three.js. We can't use glslify, I think, because it uses acorn to transform javascript files. Acorn can't handle typescript, and I don't think there's a way to make the glslify transform run after the tsify plugin. All glslify was doing though was importing a glsl file as a string, so stringify should do the trick. This means we can't take advantage of any of the other glslify plugins, but haven't needed to do that yet. Alternatively, webpack might work, or Parcel.
