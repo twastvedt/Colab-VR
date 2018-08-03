@@ -27,7 +27,7 @@ import { HDDComp } from './components/HDD.component';
 import { EditorControlsComp } from './components/EditorControls.component';
 import { CommandButtonCompDef } from './commands/CommandButton.component';
 // import { AnchorCompDef } from './components/Anchor.component';
-import { LineLinkCompDef } from './components/Link.component';
+import { LineLinkCompDef } from './components/LineLink.component';
 
 import { GridMatCompDef } from './components/GridMaterial.component';
 import { OutlineMatCompDef } from './components/OutlineMaterial.component';

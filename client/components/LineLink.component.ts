@@ -1,5 +1,6 @@
 AFRAME = require('aframe');
 
+import { htmlToElement } from '../tools';
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
@@ -34,13 +35,17 @@ interface LineLinkComp extends OrderedTickComponent {
 		end: THREE.Vector3 | string;
 		color: string;
 		opacity: number;
+		label: string;
 	};
 
-	points: THREE.Vector3[];
 	line: THREE.Line;
+	line3: THREE.Line3;
 
 	startOb: THREE.Object3D;
 	endOb: THREE.Object3D;
+	labelEl: AFrame.Entity;
+
+	labelFunctions: (() => string)[];
 }
 
 export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
@@ -49,7 +54,8 @@ export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 		start: linkProperty,
 		end: linkProperty,
 		color: { default: 'black' },
-		opacity: { default: 1 }
+		opacity: { default: 1 },
+		label: { default: '' }
 	},
 
 	tickOrder: 600,
@@ -59,7 +65,7 @@ export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 
 		camera = this.el.sceneEl.camera;
 
-		this.points = [new AFRAME.THREE.Vector3(), new AFRAME.THREE.Vector3()];
+		this.line3 = new AFRAME.THREE.Line3();
 
 		const material = new AFRAME.THREE.LineDashedMaterial( {
 			linewidth: 1,
@@ -69,8 +75,8 @@ export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 		} );
 
 		const geometry = new AFRAME.THREE.Geometry();
-		geometry.vertices.push(this.points[0]);
-		geometry.vertices.push(this.points[1]);
+		geometry.vertices.push(this.line3.start);
+		geometry.vertices.push(this.line3.end);
 
 		this.line = new AFRAME.THREE.Line( geometry, material );
 
@@ -84,7 +90,7 @@ export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 			switch (prop) {
 				case 'start':
 					if (typeof this.data.start === 'object') {
-						this.points[0].copy( this.data.start );
+						this.line3.start.copy( this.data.start );
 
 						delete this.startOb;
 
@@ -96,7 +102,7 @@ export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 
 				case 'end':
 					if (typeof this.data.end === 'object') {
-						this.points[1].copy( this.data.end );
+						this.line3.end.copy( this.data.end );
 
 						delete this.endOb;
 
@@ -116,10 +122,55 @@ export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 					this.line.material.opacity = this.data.opacity;
 
 					break;
+
+				case 'label':
+					if (this.data.label.length) {
+						const parts = this.data.label.split(/[\[\]]/);
+
+						this.labelFunctions = parts.map((part, i) => {
+							if (i % 2) {
+								// Odd index: inside square brackets.
+								switch (part) {
+									case 'length':
+										return () => this.line3.distance().toFixed(1);
+
+										break;
+
+									default:
+										return () => part;
+								}
+
+							} else {
+								return () => part;
+							}
+						});
+
+						if (!this.labelEl) {
+							this.labelEl = htmlToElement<AFrame.Entity>(`
+								<a-text
+									constant-scale="0.08 0.08 0.08"
+									look-at="#camera"
+									class="label" id="label-${this.attrName}"
+									position="0 0 0" rotation="0 0 0" scale="1 1 1"
+									align="center" color="black" font="roboto" value="" z-offset="0.3">
+								</a-text>
+							`);
+
+							this.el.appendChild(this.labelEl);
+						}
+
+					} else {
+						delete this.labelFunctions;
+
+						if (this.labelEl) {
+							this.labelEl.remove();
+							delete this.labelEl;
+						}
+					}
+
+					break;
 			}
 		}
-
-
 
 	},
 
@@ -129,15 +180,20 @@ export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 
 	remove: function() {
 		this.el.removeObject3D(this.attrName);
+
+		// Remove label element from document, if present.
+		if (this.labelEl) {
+			this.labelEl.remove();
+		}
 	},
 
 	tick: function() {
 		if (this.startOb) {
-			this.startOb.getWorldPosition(this.points[0]);
+			this.startOb.getWorldPosition(this.line3.start);
 		}
 
 		if (this.endOb) {
-			this.endOb.getWorldPosition(this.points[1]);
+			this.endOb.getWorldPosition(this.line3.end);
 		}
 
 		if (this.startOb || this.endOb) {
@@ -145,6 +201,13 @@ export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 			this.line.geometry.computeBoundingSphere();
 			this.line.computeLineDistances();
 			(this.line.geometry as THREE.Geometry).lineDistancesNeedUpdate = true;
+		}
+
+		if (this.labelEl) {
+			this.labelEl.setAttribute('text', 'value', this.labelFunctions.reduce<string>( (label, partFunc) => label + partFunc(), '' ));
+
+			this.line3.getCenter(tempVec);
+			this.labelEl.object3D.position.copy(tempVec);
 		}
 	}
 };

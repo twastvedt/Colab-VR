@@ -82,7 +82,8 @@ export const DynamicCursorComp: AFrame.ComponentDefinition<DynamicCursor> = {
 
 				extension.setAttribute('line-link', {
 					start: tempCoord,
-					end: '#cursor'
+					end: '#cursor',
+					label: '[length]'
 				});
 				extension.object3D.visible = true;
 
