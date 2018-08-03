@@ -1,18 +1,11 @@
 AFRAME = require('aframe');
 
-import { htmlToElement } from '../tools';
-import { DrawBoxComp } from '../commands/DrawBox.component';
-import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
+import { OrderedTickComponent } from '../systems/TickOrder.system';
 import { CommandSystem } from '../systems/Command.system';
 import { UISystem, State } from '../systems/UI.system';
 
 
-let cursor: AFrame.Entity,
-	cursorLoc: THREE.Vector3,
-	uiSystem: UISystem;
-
-const tempObjects: AFrame.Entity[] = [];
-
+let uiSystem: UISystem;
 
 export interface CommandBase extends OrderedTickComponent {
 	data: { };

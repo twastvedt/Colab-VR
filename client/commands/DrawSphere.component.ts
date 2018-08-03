@@ -9,30 +9,30 @@ let cursorPos = new AFRAME.THREE.Vector3(),
 	tempVec = new AFRAME.THREE.Vector3(),
 	startPoint: THREE.Vector3,
 	newParent: AFrame.Entity,
-	newBox: AFrame.Entity;
+	newSphere: AFrame.Entity;
 
-interface DrawBox extends CommandBase {
+interface DrawSphere extends CommandBase {
 
 }
 
-const drawBoxExtension = Object.create(CommandBaseCompDef);
+const drawSphereExtension = Object.create(CommandBaseCompDef);
 
-Object.assign(drawBoxExtension, {
+Object.assign(drawSphereExtension, {
 	schema: {
 	},
 
 	NAFSchema: {
-		template: '#box-template',
+		template: '#sphere-template',
 		components: [
 			'position',
 			'rotation',
 			'scale',
 			{
-				selector: '.box',
+				selector: '.sphere',
 				component: 'grid-mat'
 			},
 			{
-				selector: '.box',
+				selector: '.sphere',
 				component: 'shadow'
 			}
 		]
@@ -54,9 +54,9 @@ Object.assign(drawBoxExtension, {
 
 				newParent = htmlToElement<AFrame.Entity>(`
 					<a-entity
-						class="drawn static collidable"
-						position="0 0 0" rotation="0 0 0" scale="0 0 0"
-						networked="template:#box-template">
+						class="drawn static"
+						position="${cursorPos.x} ${cursorPos.y} ${cursorPos.z}" rotation="0 0 0" scale="0 0 0"
+						networked="template:#sphere-template">
 					</a-entity>
 				`);
 
@@ -67,16 +67,11 @@ Object.assign(drawBoxExtension, {
 				break;
 
 			case 1:
-				this.el.setAttribute('dynamic-cursor', 'locked', LockedState.line);
+				newSphere = newParent.children[0] as AFrame.Entity;
 
-				newBox = newParent.children[0] as AFrame.Entity;
-
-				break;
-
-			case 2:
-				newBox.setAttribute('grid-mat', 'opacity', 1);
-				newBox.setAttribute('shadow', {
-					cast: true,
+				newSphere.setAttribute('material', 'opacity', 0.4);
+				newSphere.setAttribute('shadow', {
+					cast: false,
 					receive: true
 				});
 
@@ -99,13 +94,10 @@ Object.assign(drawBoxExtension, {
 
 	tick: function() {
 		if (newParent && newParent.object3D) {
-			tempVec = cursorPos.clone().add(startPoint).divideScalar(2);
-			newParent.object3D.position.set(tempVec.x, tempVec.y, tempVec.z);
-
-			tempVec.sub(startPoint).multiplyScalar(2);
-			newParent.object3D.scale.set(Math.max(0.01, Math.abs(tempVec.x)), Math.max(0.01, Math.abs(tempVec.y)), Math.max(0.01, Math.abs(tempVec.z)));
+			const radius = cursorPos.clone().sub(startPoint).length();
+			newParent.object3D.scale.setScalar( radius );
 		}
 	}
-} as AFrame.ComponentDefinition<DrawBox>);
+} as AFrame.ComponentDefinition<DrawSphere>);
 
-export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = drawBoxExtension;
+export const DrawSphereComp: AFrame.ComponentDefinition<DrawSphere> = drawSphereExtension;

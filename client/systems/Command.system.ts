@@ -1,16 +1,20 @@
 AFRAME = require('aframe');
 
 import { htmlToElement } from '../tools';
-import { DrawBoxComp } from '../commands/DrawBox.component';
-import { TickOrderSys } from '../systems/TickOrder.system';
+import { TickOrderSys } from './TickOrder.system';
 import { CommandBase } from '../commands/CommandBase.component';
 import { LockedState } from '../components/DynamicCursor.component';
+
+import { DrawBoxComp } from '../commands/DrawBox.component';
+import { DrawSphereComp } from '../commands/DrawSphere.component';
 
 
 const tempObjects: AFrame.Entity[] = [];
 
+
 export enum CommandNames {
-	draw_box = 'draw_box'
+	draw_box = 'draw_box',
+	draw_sphere = 'draw_sphere'
 }
 
 export interface CommandSystem extends AFrame.System {
@@ -34,11 +38,12 @@ export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 		}, 0);
 
 		this.components = new Map([
-			[CommandNames.draw_box, DrawBoxComp]
+			[CommandNames.draw_box, DrawBoxComp],
+			[CommandNames.draw_sphere, DrawSphereComp]
 		]);
 
 		this.components.forEach((comp, name) => {
-			AFRAME.registerComponent(comp.name, comp);
+			AFRAME.registerComponent(name, comp);
 
 			if (comp.NAFSchema) {
 				NAF.schemas.add(comp.NAFSchema);
