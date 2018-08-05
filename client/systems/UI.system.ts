@@ -1,6 +1,6 @@
 AFRAME = require('aframe');
 
-import { CommandSystem, CommandSystemDef, CommandNames } from './Command.system';
+import { CommandSystem } from './Command.system';
 import { LockedState } from '../components/DynamicCursor.component';
 
 
@@ -159,8 +159,8 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 	},
 
 	setKeys: function() {
-		Mousetrap.bind( 'b', () => commandSystem.startCommand( CommandNames.draw_box ) );
-		Mousetrap.bind( 'o', () => commandSystem.startCommand( CommandNames.draw_sphere ) );
+		Mousetrap.bind( 'b', () => commandSystem.startCommand( commandSystem.commands.draw_box ) );
+		Mousetrap.bind( 'o', () => commandSystem.startCommand( commandSystem.commands.draw_sphere ) );
 
 		Mousetrap.bind( 'v', () => {
 			cursor.setAttribute(

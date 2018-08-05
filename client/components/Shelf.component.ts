@@ -1,8 +1,5 @@
 AFRAME = require('aframe');
 
-import {CommandSystem } from '../systems/Command.system';
-import { CommandBase } from '../commands/CommandBase.component';
-
 
 const boundingBox = new AFRAME.THREE.Box3(),
 	tempVec = new AFRAME.THREE.Vector3();
@@ -12,7 +9,6 @@ interface ShelfComp extends AFrame.Component {
 		size: number;
 	};
 
-	commandSystem: CommandSystem;
 	observer: MutationObserver;
 	spacing: number;
 	count: number;
@@ -55,8 +51,6 @@ export const ShelfCompDef: AFrame.ComponentDefinition<ShelfComp> = {
 
 	init: function() {
 		this.spacing = this.data.size * 0.25;
-
-		this.commandSystem = this.el.sceneEl.systems['command'] as CommandSystem;
 
 		// Watch for changes to this element.
 		this.observer = new MutationObserver((mutations) => {

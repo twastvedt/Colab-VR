@@ -1,8 +1,5 @@
 AFRAME = require('aframe');
 
-import { CommandSystem } from '../systems/Command.system';
-import { CommandBase } from '../commands/CommandBase.component';
-
 
 const boundingBox = new AFRAME.THREE.Box3(),
 	tempVec = new AFRAME.THREE.Vector3();
@@ -12,7 +9,6 @@ interface ShelfItemComp extends AFrame.Component {
 		hoverScaleFactor: number
 	};
 
-	commandSystem: CommandSystem;
 	iconObject: THREE.Object3D;
 	hoverOffset: number;
 
@@ -33,7 +29,6 @@ export const ShelfItemCompDef: AFrame.ComponentDefinition<ShelfItemComp> = {
 	},
 
 	init: function() {
-		this.commandSystem = this.el.sceneEl.systems['command'] as CommandSystem;
 
 		// When scaling we adjust the position so that the icon scales from its base.
 		this.hoverOffset = (this.data.hoverScaleFactor - 1) / 2;

@@ -1,7 +1,7 @@
 AFRAME = require('aframe');
 
 import { htmlToElement } from '../tools';
-import { CommandBaseCompDef, CommandBase } from './CommandBase.component';
+import { ClickSequenceComponent, MakeClickSequence } from './CommandDecorators';
 import { LockedState, UIState } from '../components/DynamicCursor.component';
 
 
@@ -11,15 +11,15 @@ let cursorPos = new AFRAME.THREE.Vector3(),
 	newParent: AFrame.Entity,
 	newSphere: AFrame.Entity;
 
-interface DrawSphere extends CommandBase {
+interface DrawSphereComponent extends ClickSequenceComponent {
 
 }
 
-const drawSphereExtension = Object.create(CommandBaseCompDef);
-
-Object.assign(drawSphereExtension, {
+export const DrawSphereCompDef: AFrame.ComponentDefinition<DrawSphereComponent> = {
 	schema: {
 	},
+
+	name: 'draw_sphere',
 
 	NAFSchema: {
 		template: '#sphere-template',
@@ -39,14 +39,12 @@ Object.assign(drawSphereExtension, {
 	},
 
 	init: function() {
-		CommandBaseCompDef.init.bind(this)();
-
 		cursorPos = this.el.object3D.position;
 		newParent = undefined;
 	},
 
-	doStep: function() {
-		switch (this.currentStep) {
+	doStep: function(step) {
+		switch (step) {
 			case 0:
 				this.system.addAnchor(cursorPos);
 
@@ -79,8 +77,6 @@ Object.assign(drawSphereExtension, {
 
 				this.system.endCommand(this);
 		}
-
-		this.currentStep++;
 	},
 
 	remove: function() {
@@ -88,8 +84,6 @@ Object.assign(drawSphereExtension, {
 		if (newParent) {
 			newParent.parentNode.removeChild(newParent);
 		}
-
-		CommandBaseCompDef.remove.bind(this)();
 	},
 
 	tick: function() {
@@ -98,6 +92,6 @@ Object.assign(drawSphereExtension, {
 			newParent.object3D.scale.setScalar( radius );
 		}
 	}
-} as AFrame.ComponentDefinition<DrawSphere>);
+};
 
-export const DrawSphereComp: AFrame.ComponentDefinition<DrawSphere> = drawSphereExtension;
+MakeClickSequence(DrawSphereCompDef);

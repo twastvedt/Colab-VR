@@ -31,3 +31,22 @@ export const TickOrderSysDef: AFrame.SystemDefinition<TickOrderSys> = {
 		}
 	}
 };
+
+export const TickComponent: COMAP.ComponentDecorator<OrderedTickComponent> = (component, tickOrder) => {
+	component.tickOrder = tickOrder;
+
+	const play = component.play;
+	const init = component.init;
+
+	component.init = function(this: OrderedTickComponent) {
+		init.call(this);
+
+		this.tickSystem = this.el.sceneEl.systems['tick'] as TickOrderSys;
+	};
+
+	component.play = function(this: OrderedTickComponent) {
+		play.call(this);
+
+		this.tickSystem.playComp(this);
+	};
+};

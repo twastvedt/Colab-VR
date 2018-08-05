@@ -7,3 +7,7 @@ interface NodeListOf<TNode extends Node> {
 interface NodeList {
 	forEach: (callback: (currentValue?: Node, currentIndex?: number, listObj?: NodeList) => any, thisArg?: any) => void;
 }
+
+declare namespace COMAP {
+	type ComponentDecorator<T extends AFrame.Component = AFrame.Component> = {(componentDef: AFrame.ComponentDefinition<T>, ...rest: any[]): void};
+}

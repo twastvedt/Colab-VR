@@ -1,11 +1,10 @@
 AFRAME = require('aframe');
 
-import { CommandSystem, CommandNames } from '../systems/Command.system';
-import { CommandBaseCompDef, CommandBase } from './CommandBase.component';
+import { CommandSystem } from '../systems/Command.system';
 
 
-interface CommandButtonComp extends CommandBase {
-	data: CommandNames;
+interface CommandButtonComp extends AFrame.Component {
+	data: keyof CommandSystem['commands'];
 
 	system: CommandSystem;
 
@@ -26,7 +25,7 @@ export const CommandButtonCompDef: AFrame.ComponentDefinition<CommandButtonComp>
 	},
 
 	onClick: function(e) {
-		this.system.startCommand(this.data);
+		this.system.startCommand(this.system.commands[this.data]);
 
 		e.stopPropagation();
 	},

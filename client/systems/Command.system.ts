@@ -2,29 +2,28 @@ AFRAME = require('aframe');
 
 import { htmlToElement } from '../tools';
 import { TickOrderSys } from './TickOrder.system';
-import { CommandBase } from '../commands/CommandBase.component';
+import { CommandComponent } from '../commands/CommandDecorators';
 import { LockedState } from '../components/DynamicCursor.component';
 
-import { DrawBoxComp } from '../commands/DrawBox.component';
-import { DrawSphereComp } from '../commands/DrawSphere.component';
+import { DrawBoxCompDef } from '../commands/DrawBox.component';
+import { DrawSphereCompDef } from '../commands/DrawSphere.component';
 
 
 const tempObjects: AFrame.Entity[] = [];
 
-
-export enum CommandNames {
-	draw_box = 'draw_box',
-	draw_sphere = 'draw_sphere'
-}
+const components = {
+	draw_box: DrawBoxCompDef,
+	draw_sphere: DrawSphereCompDef,
+};
 
 export interface CommandSystem extends AFrame.System {
 	data: { };
 	addAnchor: (this: CommandSystem, loc: THREE.Vector3) => void;
-	startCommand: (this: CommandSystem, comp: CommandNames) => void;
-	endCommand: (this: CommandSystem, comp: AFrame.ComponentDefinition<CommandBase>) => void;
+	startCommand: (this: CommandSystem, compDef: AFrame.ComponentDefinition<CommandComponent>) => void;
+	endCommand: (this: CommandSystem, comp: AFrame.ComponentDefinition<CommandComponent>) => void;
 	stopDrawing: (this: CommandSystem) => void;
 	activeObject: AFrame.Entity;
-	components: Map<CommandNames, AFrame.ComponentDefinition<CommandBase>>;
+	commands: typeof components;
 	cursor: AFrame.Entity;
 	cursorLoc: THREE.Vector3;
 	pointer: AFrame.Entity;
@@ -37,18 +36,17 @@ export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 			this.tickSystem = this.el.systems['tick-order'] as TickOrderSys;
 		}, 0);
 
-		this.components = new Map([
-			[CommandNames.draw_box, DrawBoxComp],
-			[CommandNames.draw_sphere, DrawSphereComp]
-		]);
+		this.commands = components;
 
-		this.components.forEach((comp, name) => {
-			AFRAME.registerComponent(name, comp);
+		for (let key in this.commands) {
+			const compDef: AFrame.ComponentDefinition<CommandComponent> = (this.commands as any)[key];
 
-			if (comp.NAFSchema) {
-				NAF.schemas.add(comp.NAFSchema);
+			AFRAME.registerComponent(compDef.name, compDef);
+
+			if (compDef.NAFSchema) {
+				NAF.schemas.add(compDef.NAFSchema);
 			}
-		});
+		}
 
 		const onLoaded = () => {
 			this.cursor = this.el.querySelector('#cursor');
@@ -60,17 +58,17 @@ export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 
 	},
 
-	startCommand: function(comp) {
+	startCommand: function(compDef) {
 		// Initialize current command on cursor.
-		console.log(`Start command '${comp}'.`);
+		console.log(`Start command '${compDef.name}'.`);
 
-		this.cursor.setAttribute(comp, {});
+		this.cursor.setAttribute(compDef.name, {});
 
 		this.cursor.setAttribute('dynamic-cursor', 'isActive', true);
 	},
 
-	endCommand: function(comp) {
-		this.cursor.removeAttribute(comp.name);
+	endCommand: function(compDef) {
+		this.cursor.removeAttribute(compDef.name);
 	},
 
 	stopDrawing: function() {

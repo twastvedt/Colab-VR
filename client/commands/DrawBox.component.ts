@@ -1,8 +1,8 @@
 AFRAME = require('aframe');
 
 import { htmlToElement } from '../tools';
-import { CommandBaseCompDef, CommandBase } from './CommandBase.component';
-import { LockedState, UIState } from '../components/DynamicCursor.component';
+import { ClickSequenceComponent, MakeClickSequence } from './CommandDecorators';
+import { LockedState } from '../components/DynamicCursor.component';
 
 
 let cursorPos = new AFRAME.THREE.Vector3(),
@@ -11,15 +11,15 @@ let cursorPos = new AFRAME.THREE.Vector3(),
 	newParent: AFrame.Entity,
 	newBox: AFrame.Entity;
 
-interface DrawBox extends CommandBase {
+interface DrawBoxComp extends ClickSequenceComponent {
 
 }
 
-const drawBoxExtension = Object.create(CommandBaseCompDef);
-
-Object.assign(drawBoxExtension, {
+export const DrawBoxCompDef: AFrame.ComponentDefinition<DrawBoxComp> = {
 	schema: {
 	},
+
+	name: 'draw_box',
 
 	NAFSchema: {
 		template: '#box-template',
@@ -39,14 +39,12 @@ Object.assign(drawBoxExtension, {
 	},
 
 	init: function() {
-		CommandBaseCompDef.init.bind(this)();
-
 		cursorPos = this.el.object3D.position;
 		newParent = undefined;
 	},
 
-	doStep: function() {
-		switch (this.currentStep) {
+	doStep: function(step) {
+		switch (step) {
 			case 0:
 				this.system.addAnchor(cursorPos);
 
@@ -84,8 +82,6 @@ Object.assign(drawBoxExtension, {
 
 				this.system.endCommand(this);
 		}
-
-		this.currentStep++;
 	},
 
 	remove: function() {
@@ -93,8 +89,6 @@ Object.assign(drawBoxExtension, {
 		if (newParent) {
 			newParent.parentNode.removeChild(newParent);
 		}
-
-		CommandBaseCompDef.remove.bind(this)();
 	},
 
 	tick: function() {
@@ -106,6 +100,6 @@ Object.assign(drawBoxExtension, {
 			newParent.object3D.scale.set(Math.max(0.01, Math.abs(tempVec.x)), Math.max(0.01, Math.abs(tempVec.y)), Math.max(0.01, Math.abs(tempVec.z)));
 		}
 	}
-} as AFrame.ComponentDefinition<DrawBox>);
+};
 
-export const DrawBoxComp: AFrame.ComponentDefinition<DrawBox> = drawBoxExtension;
+MakeClickSequence(DrawBoxCompDef);
