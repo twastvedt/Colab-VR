@@ -32,13 +32,14 @@
 			{% include "world.html" %}
 
 			<a-entity id="player"
-				position="0 0 0"
+				position="0 0 0" rotation="0 180 0"
 				movement-controls="controls: gamepad, trackpad, keyboard, touch; fly: true"
+				editor-controls
 				velocity
+				networked="template:#avatar-template-fps;attachTemplateToLocal:false;"
 			>
 				<a-entity id="player-frame" class="ui ui-hmd ui-fps"
 					hdd copy-rotation="parent: #camera; mask: 0 1 0;"
-					networked="template:#avatar-template;attachTemplateToLocal:false;"
 				>
 					<a-entity class="ui ui-hmd" template="src: #toolShelfTemplate" position="0 0.26 -0.1"></a-entity>
 
@@ -47,11 +48,7 @@
 				<a-entity id="player-collision" class="collision" visible="false" position="0 0.9 0"
 						geometry="primitive: box; buffer: false; width: 0.75; depth: 0.75; height: 1.8"></a-entity>
 
-				<a-entity id="camera" position="0 1.6 0"
-					camera editor-controls
-				>
-					<a-entity id="hud" class="ui ui-orbit"
-						networked="template:#avatar-template;attachTemplateToLocal:false;"></a-entity>
+				<a-entity id="camera" position="0 1.5 0" camera>
 
 					<a-entity id="pointer" laser-controls cursor raycaster="objects: .hoverable; recursive: false">
 						<a-ring class="ui ui-fps" position="0 0 -0.1" radius-outer="0.001" radius-inner="0.0007" material="transparent: true; opacity: 0.5; color: #444444"></ring>

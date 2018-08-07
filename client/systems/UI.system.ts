@@ -5,7 +5,6 @@ import { LockedState } from '../components/DynamicCursor.component';
 
 
 let pointer: AFrame.Entity,
-	camera: AFrame.Entity,
 	player: AFrame.Entity,
 	cursor: AFrame.Entity,
 	commandSystem: CommandSystem;
@@ -53,7 +52,6 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 
 		this.el.addEventListener('loaded', () => {
 			player = (this.el.querySelector('#player') as AFrame.Entity);
-			camera = (this.el.querySelector('#camera') as AFrame.Entity);
 			pointer = (this.el.querySelector('#pointer') as AFrame.Entity);
 
 			commandSystem = this.el.systems['command'] as CommandSystem;
@@ -113,11 +111,8 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 	endMode: function(mode: UI) {
 		switch (mode) {
 			case UI.Orbit:
-				camera.components['editor-controls'].pause();
+				player.components['editor-controls'].pause();
 				pointer.setAttribute('cursor', 'rayOrigin', 'entity');
-
-				// (camera.components['camera'] as any).camera.rotation.set(0, 0, 0);
-				// hud.object3D.rotation.set(0, 0, 0);
 
 				break;
 
@@ -131,6 +126,8 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 
 				break;
 		}
+
+		player.removeAttribute('networked');
 	},
 
 	startMode: function(mode: UI) {
@@ -138,20 +135,25 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 			case UI.Orbit:
 				pointer.setAttribute('cursor', 'rayOrigin', 'mouse');
 
-				player.object3D.position.set(0, 0, 0);
-				// (camera.components['camera'] as any).camera.rotation.set(0, Math.PI, 0);
-				// hud.object3D.rotation.set(0, Math.PI, 0);
+				player.setAttribute('networked', {
+					template: '#avatar-orbit-template',
+					attachTemplateToLocal: false
+				});
 
-				camera.components['editor-controls'].play();
+				player.object3D.position.set(0, 0, 0);
+
+				player.components['editor-controls'].play();
 
 				break;
 
 			case UI.FPS:
-				player.components['movement-controls'].play();
-
-				break;
-
 			case UI.HMD:
+
+				player.setAttribute('networked', {
+					template: '#avatar-fps-template',
+					attachTemplateToLocal: false
+				});
+
 				player.components['movement-controls'].play();
 
 				break;
