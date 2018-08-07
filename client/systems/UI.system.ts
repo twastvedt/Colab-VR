@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { CommandSystem } from './Command.system';
 import { LockedState } from '../components/DynamicCursor.component';
 
@@ -46,7 +44,7 @@ export interface UISystem extends AFrame.System {
 	setKeys(this: UISystem): void;
 }
 
-export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
+AFRAME.registerSystem<UISystem>('ui', {
 	init: function() {
 		this.state = State.None;
 
@@ -180,4 +178,4 @@ export const UISystemDef: AFrame.SystemDefinition<UISystem> = {
 			);
 		});
 	}
-};
+});

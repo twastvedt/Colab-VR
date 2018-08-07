@@ -1,6 +1,3 @@
-AFRAME = require('aframe');
-
-
 export interface OrderedTickComponent extends AFrame.Component {
 	tickOrder: number;
 	tickSystem: TickOrderSys;
@@ -10,7 +7,7 @@ export interface TickOrderSys extends AFrame.System {
 	playComp: (this: TickOrderSys, comp: OrderedTickComponent) => void;
 }
 
-export const TickOrderSysDef: AFrame.SystemDefinition<TickOrderSys> = {
+AFRAME.registerSystem<TickOrderSys>('tick-order', {
 	playComp: function(comp) {
 		// Add behavior before first tick in list with a larger tickOrder. If none found, add to end.
 		const index = this.el.behaviors.tick.indexOf(comp);
@@ -30,7 +27,7 @@ export const TickOrderSysDef: AFrame.SystemDefinition<TickOrderSys> = {
 
 		}
 	}
-};
+});
 
 export const TickComponent: COMAP.ComponentDecorator<OrderedTickComponent> = (component, tickOrder) => {
 	component.tickOrder = tickOrder;

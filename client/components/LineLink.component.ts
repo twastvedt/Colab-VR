@@ -1,13 +1,9 @@
-AFRAME = require('aframe');
-
 import { htmlToElement } from '../tools';
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
 const coordinates = AFRAME.utils.coordinates,
 	tempVec = new AFRAME.THREE.Vector3();
-
-let camera: THREE.Camera;
 
 const linkProperty = {
 	default: '',
@@ -48,7 +44,7 @@ interface LineLinkComp extends OrderedTickComponent {
 	labelFunctions: (() => string)[];
 }
 
-export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
+AFRAME.registerComponent<LineLinkComp>('line-link', {
 
 	schema: {
 		start: linkProperty,
@@ -62,8 +58,6 @@ export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 
 	init: function() {
 		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
-
-		camera = this.el.sceneEl.camera;
 
 		this.line3 = new AFRAME.THREE.Line3();
 
@@ -210,4 +204,4 @@ export const LineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 			this.labelEl.object3D.position.copy(tempVec);
 		}
 	}
-};
+});

@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
@@ -14,7 +12,7 @@ interface SlidingPointer extends OrderedTickComponent {
 	raycaster: AFrame.Component & {intersections: AFrame.RaycasterIntersectionDetail[]};
 }
 
-export const SlidingPointerComp: AFrame.ComponentDefinition<SlidingPointer> = {
+AFRAME.registerComponent<SlidingPointer>('sliding-pointer', {
 
 	schema: {
 		pointerSelector: {default: '#camera', type: 'selector'},
@@ -53,4 +51,4 @@ export const SlidingPointerComp: AFrame.ComponentDefinition<SlidingPointer> = {
 		const point = intersection.point;
 		this.el.object3D.position.set(point.x, point.y, point.z);
 	}
-};
+});

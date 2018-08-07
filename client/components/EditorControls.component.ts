@@ -1,10 +1,7 @@
 import { UISystem, State } from '../systems/UI.system';
 
-AFRAME = require('aframe');
 
-
-let cursor: AFrame.Entity,
-	uiSystem: UISystem;
+let uiSystem: UISystem;
 
 interface EditorControls extends AFrame.Component {
 	data: {
@@ -17,7 +14,7 @@ interface EditorControls extends AFrame.Component {
 	controls: EditorControls2;
 }
 
-export const EditorControlsComp: AFrame.ComponentDefinition<EditorControls> = {
+AFRAME.registerComponent<EditorControls>('editor-controls', {
 
 	schema: {
 		center: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
@@ -30,8 +27,6 @@ export const EditorControlsComp: AFrame.ComponentDefinition<EditorControls> = {
 		uiSystem = this.el.sceneEl.systems['ui'] as UISystem;
 
 		this.controls = new EditorControls(this.el.object3D as any);
-
-		cursor = document.getElementById('cursor') as AFrame.Entity;
 	},
 
 	play: function() {
@@ -50,7 +45,7 @@ export const EditorControlsComp: AFrame.ComponentDefinition<EditorControls> = {
 		this.controls.zoomSpeed = this.data.zoomSpeed;
 		this.controls.rotationSpeed = this.data.rotationSpeed;
 	}
-};
+});
 
 
 /* Modified from three/examples/js/controls/EditorControls.js */

@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { shaderParse } from '../tools';
 
 let gridVert = require('../shaders/grid.vert.glsl'),
@@ -21,7 +19,7 @@ export interface GridMatSys extends AFrame.System {
 	gridMap: THREE.Texture;
 }
 
-export const GridMatSysDef: AFrame.SystemDefinition<GridMatSys> = {
+AFRAME.registerSystem<GridMatSys>('grid-mat', {
 	schema: {
 		gridSize: { default: 1 },
 		gridStrength: { default: 0.25 },
@@ -73,4 +71,4 @@ export const GridMatSysDef: AFrame.SystemDefinition<GridMatSys> = {
 			fragmentShader: gridFrag
 		};
 	}
-};
+});

@@ -1,9 +1,5 @@
-AFRAME = require('aframe');
-
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
-
-const oldPos = new AFRAME.THREE.Vector3();
 
 interface Snap extends OrderedTickComponent {
 	data: {
@@ -12,7 +8,7 @@ interface Snap extends OrderedTickComponent {
 	snap: (this: Snap) => void;
 }
 
-export const SnapComp: AFrame.ComponentDefinition<Snap> = {
+AFRAME.registerComponent<Snap>('snap', {
 	schema: {
 		gridSize: {type: 'number', default: 1}
 	},
@@ -37,4 +33,4 @@ export const SnapComp: AFrame.ComponentDefinition<Snap> = {
 			Math.round(oldPos.z / gridSize) * gridSize
 		);
 	}
-};
+});

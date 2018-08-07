@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
@@ -20,7 +18,7 @@ interface LockedTrack extends OrderedTickComponent {
 	target: THREE.Object3D;
 }
 
-export const LockedTrackComp: AFrame.ComponentDefinition<LockedTrack> = {
+AFRAME.registerComponent<LockedTrack>('locked-track', {
 	/**
 	 * Note: Does not support outside rotation of element.
 	 */
@@ -67,4 +65,4 @@ export const LockedTrackComp: AFrame.ComponentDefinition<LockedTrack> = {
 
 		this.el.object3D.quaternion.setFromUnitVectors( toVec, tempVec.normalize() );
 	}
-};
+});

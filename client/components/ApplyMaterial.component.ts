@@ -1,12 +1,10 @@
-AFRAME = require('aframe');
-
-interface ApplyMatComp extends AFrame.Component {
+export interface ApplyMatComp extends AFrame.Component {
 	material: THREE.Material;
 
 	applyToMesh: () => void;
 }
 
-export const ApplyMatCompDef: AFrame.ComponentDefinition<ApplyMatComp> = {
+AFRAME.registerComponent<ApplyMatComp>('apply-material', {
 	dependencies: [ 'material' ],
 
 	init: function() {
@@ -29,4 +27,4 @@ export const ApplyMatCompDef: AFrame.ComponentDefinition<ApplyMatComp> = {
 			});
 		}
 	}
-};
+});

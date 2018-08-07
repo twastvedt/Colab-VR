@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { GridMatSys } from '../systems/GridMaterial.system';
 
 interface GridMatComp extends AFrame.Component {
@@ -21,7 +19,7 @@ interface GridMatComp extends AFrame.Component {
 	applyToMesh: () => void;
 }
 
-export const GridMatCompDef: AFrame.ComponentDefinition<GridMatComp> = {
+AFRAME.registerComponent<GridMatComp>('grid-mat', {
 	schema: {
 		map: { type: 'map' },
 		opacity: { default: 1 },
@@ -122,4 +120,4 @@ export const GridMatCompDef: AFrame.ComponentDefinition<GridMatComp> = {
 			});
 		}
 	}
-};
+});

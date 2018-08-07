@@ -1,6 +1,3 @@
-AFRAME = require('aframe');
-
-
 const tempVec = new AFRAME.THREE.Vector3(),
 	tempVec2 = new AFRAME.THREE.Vector3(),
 	tempCoord = {x: 0, y: 0, z: 0},
@@ -31,7 +28,7 @@ export interface DynamicCursor extends AFrame.Component {
 /**
  * Control appearance of dynamic cursor for colab-vr.
  * */
-export const DynamicCursorComp: AFrame.ComponentDefinition<DynamicCursor> = {
+AFRAME.registerComponent<DynamicCursor>('dynamic-cursor', {
 
 	schema: {
 		isActive: {default: false},
@@ -103,4 +100,4 @@ export const DynamicCursorComp: AFrame.ComponentDefinition<DynamicCursor> = {
 			}, this);
 		}
 	}
-};
+});

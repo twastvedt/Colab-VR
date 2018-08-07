@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
 
 
@@ -15,7 +13,7 @@ interface LockedPointer extends OrderedTickComponent {
 	ray: THREE.Ray;
 }
 
-export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
+AFRAME.registerComponent<LockedPointer>('locked-pointer', {
 	/**
 	 * Eventually maybe add rotation to align with locked axis/axes.
 	 * */
@@ -89,4 +87,4 @@ export const LockedPointerComp: AFrame.ComponentDefinition<LockedPointer> = {
 			}
 		}
 	}
-};
+});

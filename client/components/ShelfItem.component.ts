@@ -1,10 +1,7 @@
-AFRAME = require('aframe');
-
-
 const boundingBox = new AFRAME.THREE.Box3(),
 	tempVec = new AFRAME.THREE.Vector3();
 
-interface ShelfItemComp extends AFrame.Component {
+export interface ShelfItemComp extends AFrame.Component {
 	data: {
 		hoverScaleFactor: number
 	};
@@ -22,7 +19,7 @@ interface ShelfItemComp extends AFrame.Component {
 /**
  * Shelf Item: Scale icon to a 1x1x1 cube. Increase scale of icon when hovering.
  */
-export const ShelfItemCompDef: AFrame.ComponentDefinition<ShelfItemComp> = {
+AFRAME.registerComponent<ShelfItemComp>('shelf-item', {
 
 	schema: {
 		hoverScaleFactor: { default: 1.125 }
@@ -70,4 +67,4 @@ export const ShelfItemCompDef: AFrame.ComponentDefinition<ShelfItemComp> = {
 		this.el.removeEventListener('raycaster-intersected', this.boundOnHover);
 		this.el.removeEventListener('raycaster-intersected-cleared', this.boundOnLeave);
 	}
-};
+});

@@ -1,8 +1,6 @@
-AFRAME = require('aframe');
-
 const speed = 0.01;
 
-export const TestRotateComp: AFrame.ComponentDefinition = {
+AFRAME.registerComponent('test-rotate', {
 	schema: { },
 
 	tick: function() {
@@ -14,4 +12,4 @@ export const TestRotateComp: AFrame.ComponentDefinition = {
 			oldRot.z + speed
 		);
 	}
-};
+});

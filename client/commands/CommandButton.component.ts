@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { CommandSystem } from '../systems/Command.system';
 
 
@@ -15,7 +13,7 @@ interface CommandButtonComp extends AFrame.Component {
 /**
  * Make this entity into a button which runs the named command when clicked.
  */
-export const CommandButtonCompDef: AFrame.ComponentDefinition<CommandButtonComp> = {
+AFRAME.registerComponent<CommandButtonComp>('command-button', {
 	schema: { type: 'string' },
 
 	init: function() {
@@ -37,4 +35,4 @@ export const CommandButtonCompDef: AFrame.ComponentDefinition<CommandButtonComp>
 	pause: function() {
 		this.el.removeEventListener('click', this.boundOnClick);
 	}
-};
+});

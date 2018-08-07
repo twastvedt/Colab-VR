@@ -1,6 +1,3 @@
-AFRAME = require('aframe');
-
-
 const obstacleClass = 'collidable',
 	rayCaster = new AFRAME.THREE.Raycaster(),
 	tempVec2 = new AFRAME.THREE.Vector3(),
@@ -10,7 +7,7 @@ const obstacleClass = 'collidable',
 	collisionFaces = new Set(),
 	quaternion = new AFRAME.THREE.Quaternion();
 
-interface VelocityComp extends AFrame.Component {
+export interface VelocityComp extends AFrame.Component {
 	data: AFrame.Coordinate;
 
 	collide: boolean;
@@ -28,7 +25,7 @@ interface VelocityComp extends AFrame.Component {
  * sets its data rather than setting the entity's position. Normally 'velocity' is provided by aframe-physics, but here we co-opt that connection
  * to run simple collision detection. One fallout of this setup is that we have to hard code all settings since the schema needs to be a single vec3.
  */
-export const VelocityCompDef: AFrame.ComponentDefinition<VelocityComp> = {
+AFRAME.registerComponent<VelocityComp>('velocity', {
 	schema: { type: 'vec3' },
 
 	init: function() {
@@ -128,4 +125,4 @@ export const VelocityCompDef: AFrame.ComponentDefinition<VelocityComp> = {
 
 		this.observer.observe(this.el.sceneEl, {childList: true, subtree: true});
 	}
-};
+});

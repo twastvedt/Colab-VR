@@ -1,14 +1,12 @@
-AFRAME = require('aframe');
-
 const tempScale = {x: 1, y: 1, z: 1},
 	location = new AFRAME.THREE.Vector3();
 
-interface ConstantScale extends AFrame.Component {
+export interface ConstantScale extends AFrame.Component {
 	data: { x: number, y: number, z: number };
 	cameraLocation: THREE.Vector3;
 }
 
-export const ConstantScaleComp: AFrame.ComponentDefinition<ConstantScale> = {
+AFRAME.registerComponent<ConstantScale>('constant-scale', {
 	schema: { type: 'vec3' },
 
 	init: function(this: ConstantScale) {
@@ -25,4 +23,4 @@ export const ConstantScaleComp: AFrame.ComponentDefinition<ConstantScale> = {
 
 		this.el.setAttribute('scale', tempScale);
 	}
-};
+});

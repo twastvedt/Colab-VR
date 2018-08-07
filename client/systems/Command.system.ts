@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { htmlToElement } from '../tools';
 import { TickOrderSys } from './TickOrder.system';
 import { CommandComponent } from '../commands/CommandDecorators';
@@ -30,7 +28,7 @@ export interface CommandSystem extends AFrame.System {
 	tickSystem: TickOrderSys;
 }
 
-export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
+AFRAME.registerSystem<CommandSystem>('command', {
 	init: function() {
 		window.setTimeout(() => {
 			this.tickSystem = this.el.systems['tick-order'] as TickOrderSys;
@@ -91,4 +89,4 @@ export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 
 		tempObjects.push(this.el.appendChild(anchor));
 	}
-};
+});

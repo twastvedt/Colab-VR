@@ -1,10 +1,4 @@
-AFRAME = require('aframe');
-
-
-const boundingBox = new AFRAME.THREE.Box3(),
-	tempVec = new AFRAME.THREE.Vector3();
-
-interface ShelfComp extends AFrame.Component {
+export interface ShelfComp extends AFrame.Component {
 	data: {
 		size: number;
 	};
@@ -17,7 +11,7 @@ interface ShelfComp extends AFrame.Component {
 	placeItems: (this: ShelfComp) => void;
 }
 
-export const ShelfCompDef: AFrame.ComponentDefinition<ShelfComp> = {
+AFRAME.registerComponent<ShelfComp>('shelf', {
 
 	schema: {
 		size: { default: 1 }
@@ -73,4 +67,4 @@ export const ShelfCompDef: AFrame.ComponentDefinition<ShelfComp> = {
 
 		this.observer.observe(this.el, {childList: true, subtree: false});
 	}
-};
+});

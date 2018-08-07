@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { CopyRotation } from './CopyRotation.component';
 
 
@@ -10,7 +8,7 @@ interface HDD extends AFrame.Component {
 }
 
 
-export const HDDComp: AFrame.ComponentDefinition<HDD> = {
+AFRAME.registerComponent<HDD>('hdd', {
 	schema: { },
 
 	dependencies: ['copy-rotation'],
@@ -36,4 +34,4 @@ export const HDDComp: AFrame.ComponentDefinition<HDD> = {
 			this.copyRotationComp.play();
 		}
 	}
-};
+});

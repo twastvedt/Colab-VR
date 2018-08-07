@@ -1,7 +1,4 @@
-AFRAME = require('aframe');
-
-
-export const ShelfPrimDef: AFrame.PrimitiveDefinition = {
+AFRAME.registerPrimitive('a-shelf', {
 	defaultComponents: {
 		geometry: {
 			primitive: 'box',
@@ -19,4 +16,4 @@ export const ShelfPrimDef: AFrame.PrimitiveDefinition = {
 	mappings: {
 		size: 'shelf.size'
 	}
-};
+});

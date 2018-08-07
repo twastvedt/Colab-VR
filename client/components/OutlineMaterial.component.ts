@@ -16,7 +16,7 @@ interface OutlineMatComp extends AFrame.Component {
 	dilateGeo: (geometry: THREE.Geometry, width: number) => void;
 }
 
-export const OutlineMatCompDef: AFrame.ComponentDefinition<OutlineMatComp> = {
+AFRAME.registerComponent<OutlineMatComp>('outline-mat', {
 	schema: {
 		width: { default: 0.01 },
 		color: { type: 'color', default: '#000000' }
@@ -88,4 +88,4 @@ export const OutlineMatCompDef: AFrame.ComponentDefinition<OutlineMatComp> = {
 			vertex.z += vertexNormal.z * length;
 		});
 	}
-};
+});
