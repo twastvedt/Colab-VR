@@ -1,11 +1,12 @@
 AFRAME = require('aframe');
 
 import { CommandSystem } from '../systems/Command.system';
-import { UISystem, State } from '../systems/UI.system';
+import { UISystem } from '../systems/UI.system';
 
 
 export interface CommandComponent extends AFrame.Component {
 	data: { };
+	name: keyof CommandSystem['commands'];
 	system: CommandSystem;
 	NAFSchema: any;
 }

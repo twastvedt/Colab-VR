@@ -11,7 +11,7 @@ import { DrawSphereCompDef } from '../commands/DrawSphere.component';
 
 const tempObjects: AFrame.Entity[] = [];
 
-const components = {
+const commands = {
 	draw_box: DrawBoxCompDef,
 	draw_sphere: DrawSphereCompDef,
 };
@@ -19,11 +19,11 @@ const components = {
 export interface CommandSystem extends AFrame.System {
 	data: { };
 	addAnchor: (this: CommandSystem, loc: THREE.Vector3) => void;
-	startCommand: (this: CommandSystem, compDef: AFrame.ComponentDefinition<CommandComponent>) => void;
-	endCommand: (this: CommandSystem, comp: AFrame.ComponentDefinition<CommandComponent>) => void;
+	startCommand: (this: CommandSystem, compName: keyof this['commands']) => void;
+	endCommand: (this: CommandSystem, compName: keyof this['commands']) => void;
 	stopDrawing: (this: CommandSystem) => void;
 	activeObject: AFrame.Entity;
-	commands: typeof components;
+	commands: typeof commands;
 	cursor: AFrame.Entity;
 	cursorLoc: THREE.Vector3;
 	pointer: AFrame.Entity;
@@ -36,12 +36,14 @@ export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 			this.tickSystem = this.el.systems['tick-order'] as TickOrderSys;
 		}, 0);
 
-		this.commands = components;
+		this.commands = commands;
 
 		for (let key in this.commands) {
 			const compDef: AFrame.ComponentDefinition<CommandComponent> = (this.commands as any)[key];
 
-			AFRAME.registerComponent(compDef.name, compDef);
+			compDef.name = key as keyof typeof commands;
+
+			AFRAME.registerComponent(key, compDef);
 
 			if (compDef.NAFSchema) {
 				NAF.schemas.add(compDef.NAFSchema);
@@ -58,17 +60,17 @@ export const CommandSystemDef: AFrame.SystemDefinition<CommandSystem> = {
 
 	},
 
-	startCommand: function(compDef) {
+	startCommand: function(compName) {
 		// Initialize current command on cursor.
-		console.log(`Start command '${compDef.name}'.`);
+		console.log(`Start command '${compName}'.`);
 
-		this.cursor.setAttribute(compDef.name, {});
+		this.cursor.setAttribute(compName, {});
 
 		this.cursor.setAttribute('dynamic-cursor', 'isActive', true);
 	},
 
-	endCommand: function(compDef) {
-		this.cursor.removeAttribute(compDef.name);
+	endCommand: function(compName) {
+		this.cursor.removeAttribute(compName);
 	},
 
 	stopDrawing: function() {

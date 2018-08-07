@@ -2,11 +2,10 @@ AFRAME = require('aframe');
 
 import { htmlToElement } from '../tools';
 import { ClickSequenceComponent, MakeClickSequence } from './CommandDecorators';
-import { LockedState, UIState } from '../components/DynamicCursor.component';
+import { LockedState } from '../components/DynamicCursor.component';
 
 
 let cursorPos = new AFRAME.THREE.Vector3(),
-	tempVec = new AFRAME.THREE.Vector3(),
 	startPoint: THREE.Vector3,
 	newParent: AFrame.Entity,
 	newSphere: AFrame.Entity;
@@ -18,8 +17,6 @@ interface DrawSphereComponent extends ClickSequenceComponent {
 export const DrawSphereCompDef: AFrame.ComponentDefinition<DrawSphereComponent> = {
 	schema: {
 	},
-
-	name: 'draw_sphere',
 
 	NAFSchema: {
 		template: '#sphere-template',
@@ -75,7 +72,7 @@ export const DrawSphereCompDef: AFrame.ComponentDefinition<DrawSphereComponent> 
 
 				newParent = undefined;
 
-				this.system.endCommand(this);
+				this.system.endCommand( this.name );
 		}
 	},
 

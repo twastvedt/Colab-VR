@@ -19,8 +19,6 @@ export const DrawBoxCompDef: AFrame.ComponentDefinition<DrawBoxComp> = {
 	schema: {
 	},
 
-	name: 'draw_box',
-
 	NAFSchema: {
 		template: '#box-template',
 		components: [
@@ -80,7 +78,7 @@ export const DrawBoxCompDef: AFrame.ComponentDefinition<DrawBoxComp> = {
 
 				newParent = undefined;
 
-				this.system.endCommand(this);
+				this.system.endCommand( this.name );
 		}
 	},
 
