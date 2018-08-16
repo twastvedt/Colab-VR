@@ -16,7 +16,7 @@
     "@types/socket.io": "1.4.36",
     "@types/three": "0.92.8",
     "@types/tween.js": "^16.9.0",
-    "aframe": "^0.8.2",
+    "aframe": "git+https://github.com/aframevr/aframe.git",
     "aframe-extras": "4.1.2",
     "aframe-look-at-component": "0.7.0",
     "aframe-orbit-controls-component-2": "0.1.14",
