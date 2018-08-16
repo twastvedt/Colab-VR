@@ -13,6 +13,7 @@
 /// <reference types="three" />
 /// <reference types="tween.js" />
 
+
 // Globals
 declare var AFRAME: AFrame.AFrameGlobal;
 declare var hasNativeWebVRImplementation: boolean;
@@ -126,6 +127,7 @@ declare namespace AFrame {
 		name: string;
 		schema: Schema<this['data']>;
 		system: S | undefined;
+		isPlaying: boolean;
 
 		init(this: this, data?: this['data']): void;
 		pause(this: this): void;
