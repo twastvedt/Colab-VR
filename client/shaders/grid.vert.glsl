@@ -1,4 +1,6 @@
-#define STANDARD
+// Based on  three.js/src/renderers/shaders/ShaderLib/meshphysical_vert.glsl. When updating three, check for changes to this file.
+
+#define PHYSICAL
 
 varying vec3 vViewPosition;
 

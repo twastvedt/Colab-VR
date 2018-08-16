@@ -1,4 +1,6 @@
-#define STANDARD
+// Based on  three.js/src/renderers/shaders/ShaderLib/meshphysical_frag.glsl. When updating three, check for changes to this file.
+
+#define PHYSICAL
 
 uniform vec3 diffuse;
 uniform vec3 emissive;
@@ -41,11 +43,12 @@ varying vec3 vNormalA;
 // chunk(aomap_pars_fragment);
 // chunk(lightmap_pars_fragment);
 // chunk(emissivemap_pars_fragment);
-// chunk(envmap_pars_fragment);
-// chunk(fog_pars_fragment);
 // chunk(bsdfs);
 // chunk(cube_uv_reflection_fragment);
-// chunk(lights_pars);
+// chunk(envmap_pars_fragment);
+// chunk(envmap_physical_pars_fragment);
+// chunk(fog_pars_fragment);
+// chunk(lights_pars_begin);
 // chunk(lights_physical_pars_fragment);
 // chunk(shadowmap_pars_fragment);
 // chunk(bumpmap_pars_fragment);
@@ -77,12 +80,15 @@ void main() {
 	// chunk(alphatest_fragment);
 	// chunk(roughnessmap_fragment);
 	// chunk(metalnessmap_fragment);
-	// chunk(normal_fragment);
+	// chunk(normal_fragment_begin);
+	// chunk(normal_fragment_maps);
 	// chunk(emissivemap_fragment);
 
 	// accumulation
 	// chunk(lights_physical_fragment);
-	// chunk(lights_template);
+	// chunk(lights_fragment_begin);
+	// chunk(lights_fragment_maps);
+	// chunk(lights_fragment_end);
 
 	// modulation
 	// chunk(aomap_fragment);
