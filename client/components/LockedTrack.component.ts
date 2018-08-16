@@ -1,4 +1,4 @@
-import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
+import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
 
 
 const selfPos = new AFRAME.THREE.Vector3(),
@@ -8,7 +8,7 @@ const selfPos = new AFRAME.THREE.Vector3(),
 	tempVec2 = new AFRAME.THREE.Vector3(),
 	toVec = new AFRAME.THREE.Vector3();
 
-interface LockedTrack extends OrderedTickComponent {
+interface LockedTrackComp extends OrderedTickComponent {
 	data: {
 		targetSelector: AFrame.Entity,
 		to: number,
@@ -18,7 +18,7 @@ interface LockedTrack extends OrderedTickComponent {
 	target: THREE.Object3D;
 }
 
-AFRAME.registerComponent<LockedTrack>('locked-track', {
+const lockedTrackCompDef: AFrame.ComponentDefinition<LockedTrackComp> = {
 	/**
 	 * Note: Does not support outside rotation of element.
 	 */
@@ -31,8 +31,6 @@ AFRAME.registerComponent<LockedTrack>('locked-track', {
 		lock: {default: 1}
 	},
 
-	tickOrder: 200,
-
 	play: function() {
 		planeNormal.set(0, 0, 0);
 		planeNormal.setComponent( this.data.lock, 1 );
@@ -41,14 +39,10 @@ AFRAME.registerComponent<LockedTrack>('locked-track', {
 		toVec.set(0, 0, 0);
 		toVec.setComponent( this.data.to, this.data.reverse ? -1 : 1 );
 		toVec.transformDirection( this.el.object3D.matrixWorld );
-
-		this.tickSystem.playComp(this);
 	},
 
 	init: function() {
 		this.target = this.data.targetSelector.object3D;
-
-		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
 	},
 
 	tick: function() {
@@ -65,4 +59,8 @@ AFRAME.registerComponent<LockedTrack>('locked-track', {
 
 		this.el.object3D.quaternion.setFromUnitVectors( toVec, tempVec.normalize() );
 	}
-});
+};
+
+MakeTickComponent(lockedTrackCompDef, 200);
+
+AFRAME.registerComponent('locked-track', lockedTrackCompDef);

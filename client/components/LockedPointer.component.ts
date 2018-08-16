@@ -1,9 +1,9 @@
-import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
+import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
 
 
 let tempPos = new AFRAME.THREE.Vector3();
 
-interface LockedPointer extends OrderedTickComponent {
+export interface LockedPointerComp extends OrderedTickComponent {
 	data: {
 		pointerSelector: AFrame.Entity,
 		vector: AFrame.Coordinate,
@@ -13,7 +13,7 @@ interface LockedPointer extends OrderedTickComponent {
 	ray: THREE.Ray;
 }
 
-AFRAME.registerComponent<LockedPointer>('locked-pointer', {
+const lockedPointerCompDef: AFrame.ComponentDefinition<LockedPointerComp> = {
 	/**
 	 * Eventually maybe add rotation to align with locked axis/axes.
 	 * */
@@ -26,16 +26,8 @@ AFRAME.registerComponent<LockedPointer>('locked-pointer', {
 		isPlane: {default: true}
 	},
 
-	tickOrder: 200,
-
 	init: function() {
-		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
-
 		this.ray = (this.data.pointerSelector.components['raycaster'] as any).raycaster.ray;
-	},
-
-	play: function() {
-		this.tickSystem.playComp(this);
 	},
 
 	tick: function() {
@@ -87,4 +79,8 @@ AFRAME.registerComponent<LockedPointer>('locked-pointer', {
 			}
 		}
 	}
-});
+};
+
+MakeTickComponent(lockedPointerCompDef, 200);
+
+AFRAME.registerComponent('locked-pointer', lockedPointerCompDef);

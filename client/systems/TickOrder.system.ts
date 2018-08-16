@@ -29,20 +29,26 @@ AFRAME.registerSystem<TickOrderSys>('tick-order', {
 	}
 });
 
-export const TickComponent: COMAP.ComponentDecorator<OrderedTickComponent> = (component, tickOrder) => {
+export const MakeTickComponent = <T extends AFrame.ComponentDefinition<OrderedTickComponent>>(component: T, tickOrder: number) => {
 	component.tickOrder = tickOrder;
 
 	const play = component.play;
 	const init = component.init;
 
 	component.init = function(this: OrderedTickComponent) {
-		init.call(this);
+		if (init !== undefined) {
+			// Wrap definition's tick function.
+			init.call(this);
+		}
 
-		this.tickSystem = this.el.sceneEl.systems['tick'] as TickOrderSys;
+		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
 	};
 
 	component.play = function(this: OrderedTickComponent) {
-		play.call(this);
+		if (play !== undefined) {
+			// Wrap definition's play function.
+			play.call(this);
+		}
 
 		this.tickSystem.playComp(this);
 	};

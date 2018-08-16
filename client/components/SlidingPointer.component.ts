@@ -1,10 +1,10 @@
-import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
+import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
 
 
 const quaternion = new AFRAME.THREE.Quaternion(),
 	globalNormal = new AFRAME.THREE.Vector3();
 
-interface SlidingPointer extends OrderedTickComponent {
+export interface SlidingPointerComp extends OrderedTickComponent {
 	data: {
 		pointerSelector: AFrame.Entity,
 		classFilter: string
@@ -12,32 +12,25 @@ interface SlidingPointer extends OrderedTickComponent {
 	raycaster: AFrame.Component & {intersections: AFrame.RaycasterIntersectionDetail[]};
 }
 
-AFRAME.registerComponent<SlidingPointer>('sliding-pointer', {
+const slidingPointerCompDef: AFrame.ComponentDefinition<SlidingPointerComp> = {
 
 	schema: {
 		pointerSelector: {default: '#camera', type: 'selector'},
 		classFilter: {default: ''}
 	},
 
-	tickOrder: 200,
-
 	init: function() {
 		this.raycaster = this.data.pointerSelector.components['raycaster'] as any;
-
-		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
-	},
-
-	play: function() {
-		this.tickSystem.playComp(this);
 	},
 
 	tick: function() {
+		const intersections = this.raycaster.intersections;
 
-		if ( !this.raycaster.intersections.length
-				|| this.data.classFilter.length && !this.raycaster.intersections[0].object.el.classList.contains(this.data.classFilter) ) {
+		if ( !intersections.length
+				|| (this.data.classFilter.length && !intersections[0].object.el.classList.contains(this.data.classFilter)) ) {
 			return;
 		}
-		const intersection = this.raycaster.intersections[0];
+		const intersection = intersections[0];
 
 		intersection.object.getWorldQuaternion(quaternion);
 
@@ -51,4 +44,8 @@ AFRAME.registerComponent<SlidingPointer>('sliding-pointer', {
 		const point = intersection.point;
 		this.el.object3D.position.set(point.x, point.y, point.z);
 	}
-});
+};
+
+MakeTickComponent(slidingPointerCompDef, 200);
+
+AFRAME.registerComponent('sliding-pointer', slidingPointerCompDef);

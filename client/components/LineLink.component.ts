@@ -1,5 +1,5 @@
 import { htmlToElement } from '../tools';
-import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
+import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
 
 
 const coordinates = AFRAME.utils.coordinates,
@@ -44,7 +44,7 @@ interface LineLinkComp extends OrderedTickComponent {
 	labelFunctions: (() => string)[];
 }
 
-AFRAME.registerComponent<LineLinkComp>('line-link', {
+const lineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 
 	schema: {
 		start: linkProperty,
@@ -54,11 +54,7 @@ AFRAME.registerComponent<LineLinkComp>('line-link', {
 		label: { default: '' }
 	},
 
-	tickOrder: 600,
-
 	init: function() {
-		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
-
 		this.line3 = new AFRAME.THREE.Line3();
 
 		const material = new AFRAME.THREE.LineDashedMaterial( {
@@ -165,11 +161,6 @@ AFRAME.registerComponent<LineLinkComp>('line-link', {
 					break;
 			}
 		}
-
-	},
-
-	play: function() {
-		this.tickSystem.playComp(this);
 	},
 
 	remove: function() {
@@ -204,4 +195,8 @@ AFRAME.registerComponent<LineLinkComp>('line-link', {
 			this.labelEl.object3D.position.copy(tempVec);
 		}
 	}
-});
+};
+
+MakeTickComponent(lineLinkCompDef, 600);
+
+AFRAME.registerComponent<LineLinkComp>('line-link', lineLinkCompDef);

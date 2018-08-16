@@ -1,26 +1,16 @@
-import { OrderedTickComponent, TickOrderSys } from '../systems/TickOrder.system';
+import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
 
 
-interface Snap extends OrderedTickComponent {
+interface SnapComp extends OrderedTickComponent {
 	data: {
 		gridSize: number
 	};
-	snap: (this: Snap) => void;
+	snap: (this: SnapComp) => void;
 }
 
-AFRAME.registerComponent<Snap>('snap', {
+const snapCompDef: AFrame.ComponentDefinition<SnapComp> = {
 	schema: {
 		gridSize: {type: 'number', default: 1}
-	},
-
-	tickOrder: 400,
-
-	init: function() {
-		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
-	},
-
-	play: function() {
-		this.tickSystem.playComp(this);
 	},
 
 	tick: function() {
@@ -33,4 +23,8 @@ AFRAME.registerComponent<Snap>('snap', {
 			Math.round(oldPos.z / gridSize) * gridSize
 		);
 	}
-});
+};
+
+MakeTickComponent(snapCompDef, 400);
+
+AFRAME.registerComponent('snap', snapCompDef);
