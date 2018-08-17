@@ -44,7 +44,7 @@ export interface UISystem extends AFrame.System {
 	ui: UI;
 	state: State;
 
-	updateUI(this: UISystem): void;
+	updateMode(this: UISystem): void;
 	endMode(this: UISystem, mode: UI): void;
 	startMode(this: UISystem, mode: UI): void;
 	setKeys(this: UISystem): void;
@@ -60,7 +60,7 @@ AFRAME.registerSystem<UISystem>('ui', {
 
 			commandSystem = this.el.systems['command'] as CommandSystem;
 
-			this.updateUI.call(this);
+			this.updateMode.call(this);
 
 			if (this.ui !== UI.HMD) {
 				this.setKeys();
@@ -70,7 +70,7 @@ AFRAME.registerSystem<UISystem>('ui', {
 		});
 	},
 
-	updateUI: function() {
+	updateMode: function() {
 		if (this.ui) {
 			this.endMode(this.ui);
 		}
@@ -146,7 +146,12 @@ AFRAME.registerSystem<UISystem>('ui', {
 
 				player.object3D.position.set(0, 0, 0);
 
-				player.components['editor-controls'].play();
+				if (player.hasAttribute('editor-controls')) {
+					player.components['editor-controls'].play();
+
+				} else {
+					player.setAttribute('editor-controls', '');
+				}
 
 				break;
 
@@ -158,7 +163,15 @@ AFRAME.registerSystem<UISystem>('ui', {
 					attachTemplateToLocal: false
 				});
 
-				player.components['movement-controls'].play();
+				if (player.hasAttribute('movement-controls')) {
+					player.components['movement-controls'].play();
+
+				} else {
+					player.setAttribute('movement-controls', {
+						controls: 'gamepad, trackpad, keyboard, touch',
+						'fly': true
+					});
+				}
 
 				break;
 		}
