@@ -17,7 +17,7 @@ export interface ClickSequenceComponent extends CommandComponent {
 	currentStep: number;
 }
 
-export const MakeCommand: COMAP.ComponentDecorator<CommandComponent> = (component) => {
+export const MakeCommand: HAROLD.ComponentDecorator<CommandComponent> = (component) => {
 	const init = component.init;
 
 	component.init = function(this: CommandComponent) {
@@ -27,7 +27,7 @@ export const MakeCommand: COMAP.ComponentDecorator<CommandComponent> = (componen
 	};
 };
 
-export const MakeClickSequence: COMAP.ComponentDecorator<ClickSequenceComponent> = (component) => {
+export const MakeClickSequence: HAROLD.ComponentDecorator<ClickSequenceComponent> = (component) => {
 
 	const init = component.init;
 	const remove = component.remove;

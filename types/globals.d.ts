@@ -8,6 +8,6 @@ interface NodeList {
 	forEach: (callback: (currentValue?: Node, currentIndex?: number, listObj?: NodeList) => any, thisArg?: any) => void;
 }
 
-declare namespace COMAP {
+declare namespace HAROLD {
 	type ComponentDecorator<T extends AFrame.Component = AFrame.Component> = {(componentDef: AFrame.ComponentDefinition<T>, ...rest: any[]): void};
 }
