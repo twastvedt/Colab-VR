@@ -28,6 +28,7 @@ import './components/EditorControls.component';
 import './commands/CommandButton.component';
 // import { AnchorCompDef } from './components/Anchor.component';
 import './components/LineLink.component';
+import './components/Subdivision.component';
 
 import './components/GridMaterial.component';
 // import './components/OutlineMaterial.component';

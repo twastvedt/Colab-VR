@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { htmlToElement } from '../tools';
 import { ClickSequenceComponent, MakeClickSequence } from './CommandDecorators';
 import { LockedState } from '../components/DynamicCursor.component';
@@ -11,11 +9,7 @@ let cursorPos = new AFRAME.THREE.Vector3(),
 	newParent: AFrame.Entity,
 	newBox: AFrame.Entity;
 
-interface DrawBoxComp extends ClickSequenceComponent {
-
-}
-
-export const DrawBoxCompDef: AFrame.ComponentDefinition<DrawBoxComp> = {
+export const DrawBoxCompDef: AFrame.ComponentDefinition<ClickSequenceComponent> = {
 	schema: {
 	},
 
@@ -50,7 +44,6 @@ export const DrawBoxCompDef: AFrame.ComponentDefinition<DrawBoxComp> = {
 
 				newParent = htmlToElement<AFrame.Entity>(`
 					<a-entity
-						class="drawn static collidable"
 						position="0 0 0" rotation="0 0 0" scale="0 0 0"
 						networked="template:#box-template">
 					</a-entity>

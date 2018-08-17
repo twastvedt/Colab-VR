@@ -23,6 +23,7 @@ export interface DynamicCursor extends AFrame.Component {
 		locked: LockedState,
 		ui: UIState
 	};
+	pointerEl: AFrame.Entity;
 }
 
 /**
@@ -40,6 +41,7 @@ AFRAME.registerComponent<DynamicCursor>('dynamic-cursor', {
 
 	init: function() {
 		extension = this.el.sceneEl.querySelector('#extension');
+		this.pointerEl = this.el.sceneEl.querySelector('#pointer') as AFrame.Entity;
 	},
 
 	update: function(oldData) {
@@ -98,6 +100,10 @@ AFRAME.registerComponent<DynamicCursor>('dynamic-cursor', {
 					child.pause();
 				}
 			}, this);
+		}
+
+		if (oldData.target !== data.target) {
+			this.pointerEl.setAttribute('raycaster', 'objects', '.hoverable.' + data.target);
 		}
 	}
 });

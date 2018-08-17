@@ -2,14 +2,13 @@ import { CommandSystem } from './Command.system';
 
 
 export interface CommandComponent extends AFrame.Component {
-	data: { };
 	name: keyof CommandSystem['commands'];
 	system: CommandSystem;
 	NAFSchema: any;
 }
 
 export interface ClickSequenceComponent extends CommandComponent {
-	doStep: (this: ClickSequenceComponent, step: number) => void;
+	doStep: (this: ClickSequenceComponent, step: number, event: AFrame.EntityEventMap['click']) => void;
 	boundDoStep: (this: ClickSequenceComponent) => void;
 	currentStep: number;
 }
@@ -29,15 +28,11 @@ export const MakeClickSequence: HAROLD.ComponentDecorator<ClickSequenceComponent
 	const init = component.init;
 	const remove = component.remove;
 
-	let uiSystem: UISystem;
-
 	component.init = function(this: ClickSequenceComponent) {
-		uiSystem = this.el.sceneEl.systems['ui'] as UISystem;
-
 		this.currentStep = 0;
 
-		this.boundDoStep = (() => {
-			this.doStep(this.currentStep);
+		this.boundDoStep = ((e: AFrame.EntityEventMap['click']) => {
+			this.doStep(this.currentStep, e);
 
 			this.currentStep++;
 		}).bind(this);

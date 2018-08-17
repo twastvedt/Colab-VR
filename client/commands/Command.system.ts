@@ -13,6 +13,7 @@ const tempObjects: AFrame.Entity[] = [];
 const commands = {
 	draw_box: DrawBoxCompDef,
 	draw_sphere: DrawSphereCompDef,
+	edit_deform: DeformCompDef
 };
 
 export interface CommandSystem extends AFrame.System {

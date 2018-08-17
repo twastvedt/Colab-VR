@@ -1,5 +1,3 @@
-AFRAME = require('aframe');
-
 import { htmlToElement } from '../tools';
 import { ClickSequenceComponent, MakeClickSequence } from './CommandDecorators';
 import { LockedState } from '../components/DynamicCursor.component';
@@ -10,11 +8,7 @@ let cursorPos = new AFRAME.THREE.Vector3(),
 	newParent: AFrame.Entity,
 	newSphere: AFrame.Entity;
 
-interface DrawSphereComponent extends ClickSequenceComponent {
-
-}
-
-export const DrawSphereCompDef: AFrame.ComponentDefinition<DrawSphereComponent> = {
+export const DrawSphereCompDef: AFrame.ComponentDefinition<ClickSequenceComponent> = {
 	schema: {
 	},
 
@@ -49,7 +43,6 @@ export const DrawSphereCompDef: AFrame.ComponentDefinition<DrawSphereComponent> 
 
 				newParent = htmlToElement<AFrame.Entity>(`
 					<a-entity
-						class="drawn static"
 						position="${cursorPos.x} ${cursorPos.y} ${cursorPos.z}" rotation="0 0 0" scale="0 0 0"
 						networked="template:#sphere-template">
 					</a-entity>
