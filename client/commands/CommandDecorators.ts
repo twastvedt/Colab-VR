@@ -1,7 +1,4 @@
-AFRAME = require('aframe');
-
-import { CommandSystem } from '../systems/Command.system';
-import { UISystem } from '../systems/UI.system';
+import { CommandSystem } from './Command.system';
 
 
 export interface CommandComponent extends AFrame.Component {

@@ -1,4 +1,4 @@
-import { CommandSystem } from './Command.system';
+import { CommandSystem } from '../commands/Command.system';
 import { LockedState } from '../components/DynamicCursor.component';
 
 

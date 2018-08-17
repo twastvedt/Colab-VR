@@ -34,7 +34,7 @@ import './components/GridMaterial.component';
 import './components/ApplyMaterial.component';
 
 import './systems/GridMaterial.system';
-import './systems/Command.system';
+import './commands/Command.system';
 import './systems/TickOrder.system';
 import './systems/UI.system';
 

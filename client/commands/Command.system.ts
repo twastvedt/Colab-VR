@@ -1,10 +1,11 @@
 import { htmlToElement } from '../tools';
-import { TickOrderSys } from './TickOrder.system';
-import { CommandComponent } from '../commands/CommandDecorators';
+import { TickOrderSys } from '../systems/TickOrder.system';
+import { CommandComponent } from './CommandDecorators';
 import { LockedState } from '../components/DynamicCursor.component';
 
-import { DrawBoxCompDef } from '../commands/DrawBox.component';
-import { DrawSphereCompDef } from '../commands/DrawSphere.component';
+import { DrawBoxCompDef } from './DrawBox.component';
+import { DrawSphereCompDef } from './DrawSphere.component';
+import { DeformCompDef } from './Deform.component';
 
 
 const tempObjects: AFrame.Entity[] = [];

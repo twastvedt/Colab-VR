@@ -1,4 +1,4 @@
-import { CommandSystem } from '../systems/Command.system';
+import { CommandSystem } from './Command.system';
 
 
 interface CommandButtonComp extends AFrame.Component {
