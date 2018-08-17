@@ -1,14 +1,14 @@
-import { CopyRotation } from './CopyRotation.component';
+import { CopyRotationComp } from './CopyRotation.component';
 
 
 let cameraRotation: THREE.Euler;
 
-interface HDD extends AFrame.Component {
-	copyRotationComp: AFrame.Component<CopyRotation>;
+interface HDDComp extends HAROLD.Component {
+	copyRotationComp: CopyRotationComp;
 }
 
 
-AFRAME.registerComponent<HDD>('hdd', {
+export const hddCompDef: AFrame.ComponentDefinition<HDDComp> = {
 	schema: { },
 
 	dependencies: ['copy-rotation'],
@@ -34,4 +34,4 @@ AFRAME.registerComponent<HDD>('hdd', {
 			this.copyRotationComp.play();
 		}
 	}
-});
+};

@@ -1,4 +1,4 @@
-AFRAME.registerPrimitive('a-shelf-item', {
+export const shelfItemPrimDef: AFrame.PrimitiveDefinition = {
 	defaultComponents: {
 		geometry: {
 			primitive: 'plane',
@@ -10,4 +10,4 @@ AFRAME.registerPrimitive('a-shelf-item', {
 		},
 		'shelf-item': { }
 	}
-});
+};

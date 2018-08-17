@@ -18,7 +18,7 @@ interface LockedTrackComp extends OrderedTickComponent {
 	target: THREE.Object3D;
 }
 
-const lockedTrackCompDef: AFrame.ComponentDefinition<LockedTrackComp> = {
+export const lockedTrackCompDef: AFrame.ComponentDefinition<LockedTrackComp> = {
 	/**
 	 * Note: Does not support outside rotation of element.
 	 */
@@ -62,5 +62,3 @@ const lockedTrackCompDef: AFrame.ComponentDefinition<LockedTrackComp> = {
 };
 
 MakeTickComponent(lockedTrackCompDef, 200);
-
-AFRAME.registerComponent('locked-track', lockedTrackCompDef);

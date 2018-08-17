@@ -1,4 +1,4 @@
-export interface OrderedTickComponent extends AFrame.Component {
+export interface OrderedTickComponent extends HAROLD.Component {
 	tickOrder: number;
 	tickSystem: TickOrderSys;
 }
@@ -7,7 +7,7 @@ export interface TickOrderSys extends AFrame.System {
 	playComp: (this: TickOrderSys, comp: OrderedTickComponent) => void;
 }
 
-AFRAME.registerSystem<TickOrderSys>('tick-order', {
+export const tickOrderSysDef: AFrame.SystemDefinition<TickOrderSys> = {
 	playComp: function(comp) {
 		// Add behavior before first tick in list with a larger tickOrder. If none found, add to end.
 		const index = this.el.behaviors.tick.indexOf(comp);
@@ -27,7 +27,7 @@ AFRAME.registerSystem<TickOrderSys>('tick-order', {
 
 		}
 	}
-});
+};
 
 export const MakeTickComponent = <T extends AFrame.ComponentDefinition<OrderedTickComponent>>(component: T, tickOrder: number) => {
 	component.tickOrder = tickOrder;

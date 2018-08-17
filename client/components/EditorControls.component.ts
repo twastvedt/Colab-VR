@@ -3,7 +3,7 @@ import { UISystem, State } from '../systems/UI.system';
 
 let uiSystem: UISystem;
 
-interface EditorControls extends AFrame.Component {
+interface EditorControlsComp extends HAROLD.Component {
 	data: {
 		center: AFrame.Coordinate;
 		panSpeed: number;
@@ -14,7 +14,7 @@ interface EditorControls extends AFrame.Component {
 	controls: EditorControls2;
 }
 
-AFRAME.registerComponent<EditorControls>('editor-controls', {
+export const editorControlsCompDef: AFrame.ComponentDefinition<EditorControlsComp> = {
 
 	schema: {
 		center: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
@@ -45,7 +45,7 @@ AFRAME.registerComponent<EditorControls>('editor-controls', {
 		this.controls.zoomSpeed = this.data.zoomSpeed;
 		this.controls.rotationSpeed = this.data.rotationSpeed;
 	}
-});
+};
 
 
 /* Modified from three/examples/js/controls/EditorControls.js */

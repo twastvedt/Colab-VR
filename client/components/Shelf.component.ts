@@ -1,4 +1,4 @@
-export interface ShelfComp extends AFrame.Component {
+export interface ShelfComp extends HAROLD.Component {
 	data: {
 		size: number;
 	};
@@ -11,7 +11,7 @@ export interface ShelfComp extends AFrame.Component {
 	placeItems: (this: ShelfComp) => void;
 }
 
-AFRAME.registerComponent<ShelfComp>('shelf', {
+export const shelfCompDef: AFrame.ComponentDefinition<ShelfComp> = {
 
 	schema: {
 		size: { default: 1 }
@@ -67,4 +67,4 @@ AFRAME.registerComponent<ShelfComp>('shelf', {
 
 		this.observer.observe(this.el, {childList: true, subtree: false});
 	}
-});
+};

@@ -17,7 +17,7 @@ export enum UIState {
 	line = 'line'
 }
 
-export interface DynamicCursor extends AFrame.Component {
+export interface DynamicCursorComp extends HAROLD.Component {
 	data: {
 		isActive: boolean,
 		locked: LockedState,
@@ -29,7 +29,7 @@ export interface DynamicCursor extends AFrame.Component {
 /**
  * Control appearance of dynamic cursor for colab-vr.
  * */
-AFRAME.registerComponent<DynamicCursor>('dynamic-cursor', {
+export const dynamicCursorCompDef: AFrame.ComponentDefinition<DynamicCursorComp> = {
 
 	schema: {
 		isActive: {default: false},
@@ -106,4 +106,4 @@ AFRAME.registerComponent<DynamicCursor>('dynamic-cursor', {
 			this.pointerEl.setAttribute('raycaster', 'objects', '.hoverable.' + data.target);
 		}
 	}
-});
+};

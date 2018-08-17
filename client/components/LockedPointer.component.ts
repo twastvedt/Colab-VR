@@ -13,7 +13,7 @@ export interface LockedPointerComp extends OrderedTickComponent {
 	ray: THREE.Ray;
 }
 
-const lockedPointerCompDef: AFrame.ComponentDefinition<LockedPointerComp> = {
+export const lockedPointerCompDef: AFrame.ComponentDefinition<LockedPointerComp> = {
 	/**
 	 * Eventually maybe add rotation to align with locked axis/axes.
 	 * */
@@ -82,5 +82,3 @@ const lockedPointerCompDef: AFrame.ComponentDefinition<LockedPointerComp> = {
 };
 
 MakeTickComponent(lockedPointerCompDef, 200);
-
-AFRAME.registerComponent('locked-pointer', lockedPointerCompDef);

@@ -1,9 +1,7 @@
-AFRAME = require('aframe');
-
 import { htmlToElement } from '../tools';
 
 
-interface OutlineMatComp extends AFrame.Component {
+interface OutlineMatComp extends HAROLD.Component {
 	data: {
 		color: string;
 		width: number;
@@ -16,7 +14,7 @@ interface OutlineMatComp extends AFrame.Component {
 	dilateGeo: (geometry: THREE.Geometry, width: number) => void;
 }
 
-AFRAME.registerComponent<OutlineMatComp>('outline-mat', {
+export const OutlineMatCompDef: AFrame.ComponentDefinition<OutlineMatComp> = {
 	schema: {
 		width: { default: 0.01 },
 		color: { type: 'color', default: '#000000' }
@@ -88,4 +86,4 @@ AFRAME.registerComponent<OutlineMatComp>('outline-mat', {
 			vertex.z += vertexNormal.z * length;
 		});
 	}
-});
+};

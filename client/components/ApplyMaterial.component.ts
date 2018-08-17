@@ -1,10 +1,10 @@
-export interface ApplyMatComp extends AFrame.Component {
+export interface ApplyMatComp extends HAROLD.Component {
 	material: THREE.Material;
 
 	applyToMesh: () => void;
 }
 
-AFRAME.registerComponent<ApplyMatComp>('apply-material', {
+export const applyMatCompDef: AFrame.ComponentDefinition<ApplyMatComp> = {
 	dependencies: [ 'material' ],
 
 	init: function() {
@@ -27,4 +27,4 @@ AFRAME.registerComponent<ApplyMatComp>('apply-material', {
 			});
 		}
 	}
-});
+};

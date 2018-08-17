@@ -1,6 +1,7 @@
 import { GridMatSys } from '../systems/GridMaterial.system';
 
-interface GridMatComp extends AFrame.Component {
+
+interface GridMatComp extends HAROLD.Component {
 	data: {
 		map: string;
 		opacity: number;
@@ -19,7 +20,7 @@ interface GridMatComp extends AFrame.Component {
 	applyToMesh: () => void;
 }
 
-AFRAME.registerComponent<GridMatComp>('grid-mat', {
+export const gridMatCompDef: AFrame.ComponentDefinition<GridMatComp> = {
 	schema: {
 		map: { type: 'map' },
 		opacity: { default: 1 },
@@ -120,4 +121,4 @@ AFRAME.registerComponent<GridMatComp>('grid-mat', {
 			});
 		}
 	}
-});
+};

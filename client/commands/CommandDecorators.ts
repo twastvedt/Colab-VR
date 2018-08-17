@@ -1,7 +1,7 @@
 import { CommandSystem } from './Command.system';
 
 
-export interface CommandComponent extends AFrame.Component {
+export interface CommandComponent extends HAROLD.Component {
 	name: keyof CommandSystem['commands'];
 	system: CommandSystem;
 	NAFSchema: any;

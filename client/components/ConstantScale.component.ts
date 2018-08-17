@@ -1,19 +1,19 @@
 const tempScale = {x: 1, y: 1, z: 1},
 	location = new AFRAME.THREE.Vector3();
 
-export interface ConstantScale extends AFrame.Component {
+export interface ConstantScaleComp extends HAROLD.Component {
 	data: { x: number, y: number, z: number };
 	cameraLocation: THREE.Vector3;
 }
 
-AFRAME.registerComponent<ConstantScale>('constant-scale', {
+export const constantScaleCompDef: AFrame.ComponentDefinition<ConstantScaleComp> = {
 	schema: { type: 'vec3' },
 
-	init: function(this: ConstantScale) {
+	init: function(this: ConstantScaleComp) {
 		this.cameraLocation = this.el.sceneEl.querySelector<AFrame.Entity>('#camera').object3D.position;
 	},
 
-	tick: function(this: ConstantScale) {
+	tick: function(this: ConstantScaleComp) {
 		this.el.object3D.getWorldPosition(location);
 		const distance = location.distanceTo(this.cameraLocation);
 
@@ -23,4 +23,4 @@ AFRAME.registerComponent<ConstantScale>('constant-scale', {
 
 		this.el.setAttribute('scale', tempScale);
 	}
-});
+};

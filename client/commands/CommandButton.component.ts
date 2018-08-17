@@ -1,7 +1,7 @@
 import { CommandSystem } from './Command.system';
 
 
-interface CommandButtonComp extends AFrame.Component {
+interface CommandButtonComp extends HAROLD.Component {
 	data: keyof CommandSystem['commands'];
 
 	system: CommandSystem;
@@ -13,7 +13,7 @@ interface CommandButtonComp extends AFrame.Component {
 /**
  * Make this entity into a button which runs the named command when clicked.
  */
-AFRAME.registerComponent<CommandButtonComp>('command-button', {
+export const commandButtonCompDef: AFrame.ComponentDefinition<CommandButtonComp> = {
 	schema: { type: 'string' },
 
 	init: function() {
@@ -35,4 +35,4 @@ AFRAME.registerComponent<CommandButtonComp>('command-button', {
 	pause: function() {
 		this.el.removeEventListener('click', this.boundOnClick);
 	}
-});
+};

@@ -50,7 +50,7 @@ export interface UISystem extends AFrame.System {
 	setKeys(this: UISystem): void;
 }
 
-AFRAME.registerSystem<UISystem>('ui', {
+export const uiSysDef: AFrame.SystemDefinition<UISystem> = {
 	init: function() {
 		this.state = State.None;
 
@@ -216,4 +216,4 @@ AFRAME.registerSystem<UISystem>('ui', {
 			}
 		});
 	}
-});
+};

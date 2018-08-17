@@ -1,4 +1,4 @@
-export interface CopyRotation extends AFrame.Component {
+export interface CopyRotationComp extends HAROLD.Component {
 	data: {
 		parent: AFrame.Entity;
 
@@ -14,7 +14,7 @@ export interface CopyRotation extends AFrame.Component {
 	};
 }
 
-AFRAME.registerComponent<CopyRotation>('copy-rotation', {
+export const copyRotationCompDef: AFrame.ComponentDefinition<CopyRotationComp> = {
 	schema: {
 		parent: { type: 'selector' },
 		offset: { type: 'vec3' },
@@ -39,4 +39,4 @@ AFRAME.registerComponent<CopyRotation>('copy-rotation', {
 			tempRot.z = parentRot.z + this.data.offset.z;
 		}
 	}
-});
+};

@@ -1,14 +1,14 @@
 import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
 
 
-interface SnapComp extends OrderedTickComponent {
+export interface SnapComp extends OrderedTickComponent {
 	data: {
 		gridSize: number
 	};
 	snap: (this: SnapComp) => void;
 }
 
-const snapCompDef: AFrame.ComponentDefinition<SnapComp> = {
+export const snapCompDef: AFrame.ComponentDefinition<SnapComp> = {
 	schema: {
 		gridSize: {type: 'number', default: 1}
 	},
@@ -26,5 +26,3 @@ const snapCompDef: AFrame.ComponentDefinition<SnapComp> = {
 };
 
 MakeTickComponent(snapCompDef, 400);
-
-AFRAME.registerComponent('snap', snapCompDef);

@@ -9,37 +9,85 @@ require('networked-aframe');
 
 require('mousetrap');
 
-import './primitives/Shelf.primitive';
-import './components/Shelf.component';
-import './primitives/ShelfItem.primitive';
-import './components/ShelfItem.component';
 
-import './components/LockedPointer.component';
-import './components/SlidingPointer.component';
-import './components/Snap.component';
-import './components/TestRotate.component';
-import './components/DynamicCursor.component';
-import './components/LockedTrack.component';
-import './components/ConstantScale.component';
-import './components/Velocity.component';
-import './components/CopyRotation.component';
-import './components/HDD.component';
-import './components/EditorControls.component';
-import './commands/CommandButton.component';
-// import { AnchorCompDef } from './components/Anchor.component';
-import './components/LineLink.component';
-import './components/Subdivision.component';
+import { shelfPrimDef } from './primitives/Shelf.primitive';
+import { shelfItemPrimDef } from './primitives/ShelfItem.primitive';
 
-import './components/GridMaterial.component';
-// import './components/OutlineMaterial.component';
-import './components/ApplyMaterial.component';
+import { shelfCompDef } from './components/Shelf.component';
+import { shelfItemCompDef } from './components/ShelfItem.component';
+import { lockedPointerCompDef } from './components/LockedPointer.component';
+import { slidingPointerCompDef } from './components/SlidingPointer.component';
+import { snapCompDef } from './components/Snap.component';
+import { dynamicCursorCompDef } from './components/DynamicCursor.component';
+import { lockedTrackCompDef } from './components/LockedTrack.component';
+import { constantScaleCompDef } from './components/ConstantScale.component';
+import { velocityCompDef } from './components/Velocity.component';
+import { copyRotationCompDef } from './components/CopyRotation.component';
+import { hddCompDef } from './components/HDD.component';
+import { editorControlsCompDef } from './components/EditorControls.component';
+import { commandButtonCompDef } from './commands/CommandButton.component';
+import { lineLinkCompDef } from './components/LineLink.component';
+import { subdivisionCompDef } from './components/Subdivision.component';
+import { gridMatCompDef } from './components/GridMaterial.component';
+import { applyMatCompDef } from './components/ApplyMaterial.component';
 
-import './systems/GridMaterial.system';
-import './commands/Command.system';
-import './systems/TickOrder.system';
-import './systems/UI.system';
+import { gridMatSysDef } from './systems/GridMaterial.system';
+import { commandSysDef } from './commands/Command.system';
+import { tickOrderSysDef } from './systems/TickOrder.system';
+import { uiSysDef } from './systems/UI.system';
 
 
-document.addEventListener('load', () => {
-	const scene = document.querySelector('a-scene');
+const componentDefs = {
+	'dynamic-cursor': dynamicCursorCompDef,
+	'sliding-pointer': slidingPointerCompDef,
+	'shelf': shelfCompDef,
+	'shelf-item': shelfItemCompDef,
+	'locked-pointer': lockedPointerCompDef,
+	'snap': snapCompDef,
+	'locked-track': lockedTrackCompDef,
+	'constant-scale': constantScaleCompDef,
+	'velocity': velocityCompDef,
+	'copy-rotation': copyRotationCompDef,
+	'hdd': hddCompDef,
+	'editor-controls': editorControlsCompDef,
+	'command-button': commandButtonCompDef,
+	'line-link': lineLinkCompDef,
+	'subdivision': subdivisionCompDef,
+	'grid-mat': gridMatCompDef,
+	'apply-mat': applyMatCompDef
+};
 
+for (let name in componentDefs) {
+	AFRAME.registerComponent(name, (componentDefs as {[name: string]: AFrame.ComponentDefinition})[name]);
+}
+
+
+const systemDefs: {[name: string]: AFrame.SystemDefinition} = {
+	'grid-mat': gridMatSysDef,
+	'command': commandSysDef,
+	'tick-order': tickOrderSysDef,
+	'ui': uiSysDef
+};
+
+for (let name in systemDefs) {
+	AFRAME.registerSystem(name, systemDefs[name]);
+}
+
+
+const primitiveDefs: {[name: string]: AFrame.PrimitiveDefinition} = {
+	'a-shelf': shelfPrimDef,
+	'a-shelf-item': shelfItemPrimDef
+};
+
+for (let name in primitiveDefs) {
+	AFRAME.registerPrimitive(name, primitiveDefs[name]);
+}
+
+type components = { [K in keyof typeof componentDefs]: typeof componentDefs[K]['_compType'] };
+
+declare global {
+	namespace HAROLD {
+		export type Entity = AFrame.Entity<components>;
+		export type Component = AFrame.Component & {el: Entity};
+	}
+}

@@ -10,7 +10,7 @@ interface SubdivisionModifier {
 	subdivisions: number;
 }
 
-export interface SubdivisionComp extends AFrame.Component {
+export interface SubdivisionComp extends HAROLD.Component {
 	data: {
 		levels: number;
 		showWire: boolean;
@@ -24,7 +24,7 @@ export interface SubdivisionComp extends AFrame.Component {
 	updateSubdivision: (this: SubdivisionComp) => void;
 }
 
-AFRAME.registerComponent<SubdivisionComp>('subdivision', {
+export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 	schema: {
 		levels: { default: 2 },
 		showWire: { default: false }
@@ -100,4 +100,4 @@ AFRAME.registerComponent<SubdivisionComp>('subdivision', {
 	updateSubdivision: function() {
 		this.subdivMesh.geometry = this.modifier.modify( this.baseMesh.geometry );
 	}
-});
+};

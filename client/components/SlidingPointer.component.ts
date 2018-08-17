@@ -12,7 +12,7 @@ export interface SlidingPointerComp extends OrderedTickComponent {
 	raycaster: AFrame.Component & {intersections: AFrame.RaycasterIntersectionDetail[]};
 }
 
-const slidingPointerCompDef: AFrame.ComponentDefinition<SlidingPointerComp> = {
+export const slidingPointerCompDef: AFrame.ComponentDefinition<SlidingPointerComp> = {
 
 	schema: {
 		pointerSelector: {default: '#camera', type: 'selector'},
@@ -47,5 +47,3 @@ const slidingPointerCompDef: AFrame.ComponentDefinition<SlidingPointerComp> = {
 };
 
 MakeTickComponent(slidingPointerCompDef, 200);
-
-AFRAME.registerComponent('sliding-pointer', slidingPointerCompDef);

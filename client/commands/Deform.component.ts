@@ -1,5 +1,5 @@
 import { ClickSequenceComponent, MakeClickSequence } from './CommandDecorators';
-import { LockedState, UIState, DynamicCursor } from '../components/DynamicCursor.component';
+import { LockedState, UIState, dynamicCursorCompDef } from '../components/DynamicCursor.component';
 import { SubdivisionComp } from '../components/Subdivision.component';
 import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
 

@@ -44,7 +44,7 @@ interface LineLinkComp extends OrderedTickComponent {
 	labelFunctions: (() => string)[];
 }
 
-const lineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
+export const lineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 
 	schema: {
 		start: linkProperty,
@@ -198,5 +198,3 @@ const lineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 };
 
 MakeTickComponent(lineLinkCompDef, 600);
-
-AFRAME.registerComponent<LineLinkComp>('line-link', lineLinkCompDef);

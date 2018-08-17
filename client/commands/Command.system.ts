@@ -30,7 +30,7 @@ export interface CommandSystem extends AFrame.System {
 	tickSystem: TickOrderSys;
 }
 
-AFRAME.registerSystem<CommandSystem>('command', {
+export const commandSysDef: AFrame.SystemDefinition<CommandSystem> = {
 	init: function() {
 		window.setTimeout(() => {
 			this.tickSystem = this.el.systems['tick-order'] as TickOrderSys;
@@ -91,4 +91,4 @@ AFRAME.registerSystem<CommandSystem>('command', {
 
 		tempObjects.push(this.el.appendChild(anchor));
 	}
-});
+};
