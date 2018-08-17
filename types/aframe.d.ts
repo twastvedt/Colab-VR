@@ -67,7 +67,7 @@ declare namespace AFrame {
 		to: number;
 	}
 
-	interface ANode<C = ObjectMap<Component>> extends HTMLElement {
+	interface ANode<C extends ObjectMap<Component> = ObjectMap<Component>> extends HTMLElement {
 		components: C & DefaultComponents;
 		isPlaying: boolean;
 		object3D: THREE.Object3D;
@@ -145,7 +145,7 @@ declare namespace AFrame {
 		new (el: Entity, attrValue: string, id: string): T;
 	}
 
-	type ComponentDefinition<T extends Component = Component> = Partial<T>;
+	type ComponentDefinition<T extends Component = Component> = Partial<T> & { _compType?: T };
 
 	interface ComponentDescriptor<T extends Component = Component> {
 		Component: ComponentConstructor<T>;
@@ -172,7 +172,7 @@ declare namespace AFrame {
 		scale: Component<Coordinate>;
 	}
 
-	interface Entity<C = ObjectMap<Component>> extends ANode<C> {
+	interface Entity<C extends ObjectMap<Component> = ObjectMap<Component>> extends ANode<C> {
 		object3D: Object
 	}
 
