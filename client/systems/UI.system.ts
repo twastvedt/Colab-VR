@@ -25,6 +25,12 @@ enum Input {
 	Positional = 'positional'
 }
 
+const keys = new Map<string, keyof CommandSystem['commands']>([
+	['b', 'draw_box'],
+	['o', 'draw_sphere'],
+	['g', 'edit_deform']
+]);
+
 export enum State {
 	None,
 	Navigating
@@ -159,8 +165,9 @@ AFRAME.registerSystem<UISystem>('ui', {
 	},
 
 	setKeys: function() {
-		Mousetrap.bind( 'b', () => commandSystem.startCommand( 'draw_box' ) );
-		Mousetrap.bind( 'o', () => commandSystem.startCommand( 'draw_sphere' ) );
+		for (let [key, command] of keys) {
+			Mousetrap.bind( key, () => commandSystem.startCommand( command ) );
+		}
 
 		Mousetrap.bind( 'v', () => {
 			cursor.setAttribute(
@@ -170,12 +177,30 @@ AFRAME.registerSystem<UISystem>('ui', {
 			);
 		});
 
+		Mousetrap.bind( 's', () => {
+			if (cursor.hasAttribute('snap')) {
+				cursor.removeAttribute('snap');
+
+			} else {
+				cursor.setAttribute('snap', '');
+			}
+		});
+
 		Mousetrap.bind( 'p', () => {
 			cursor.setAttribute(
 				'dynamic-cursor',
 				'locked',
 				cursor.getAttribute('dynamic-cursor').locked === LockedState.plane ? LockedState.none : LockedState.plane
 			);
+		});
+
+		Mousetrap.bind('space', () => {
+			if (this.el.isPlaying) {
+				this.el.pause();
+			}
+			else {
+				this.el.play();
+			}
 		});
 	}
 });

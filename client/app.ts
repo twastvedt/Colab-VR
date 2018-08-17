@@ -42,12 +42,3 @@ import './systems/UI.system';
 document.addEventListener('load', () => {
 	const scene = document.querySelector('a-scene');
 
-	Mousetrap.bind('space', () => {
-		if (scene.isPlaying) {
-			scene.pause();
-		}
-		else {
-			scene.play();
-		}
-	});
-});
