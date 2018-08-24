@@ -10,7 +10,7 @@ interface SubdivisionModifier {
 	subdivisions: number;
 }
 
-export interface SubdivisionComp extends HAROLD.Component {
+export interface SubdivisionComp extends AFrame.Component {
 	data: {
 		levels: number;
 		showWire: boolean;

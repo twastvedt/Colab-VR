@@ -1,4 +1,4 @@
-export interface ShelfComp extends HAROLD.Component {
+export interface ShelfComp extends AFrame.Component {
 	data: {
 		size: number;
 	};

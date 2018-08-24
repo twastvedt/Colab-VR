@@ -1,4 +1,4 @@
-export interface ApplyMatComp extends HAROLD.Component {
+export interface ApplyMatComp extends AFrame.Component {
 	material: THREE.Material;
 
 	applyToMesh: () => void;

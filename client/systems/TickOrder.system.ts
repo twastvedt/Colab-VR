@@ -41,7 +41,7 @@ export const MakeTickComponent = <T extends AFrame.ComponentDefinition<OrderedTi
 			init.call(this);
 		}
 
-		this.tickSystem = this.el.sceneEl.systems['tick-order'] as TickOrderSys;
+		this.tickSystem = this.el.sceneEl.systems['tick-order'];
 	};
 
 	component.play = function(this: OrderedTickComponent) {

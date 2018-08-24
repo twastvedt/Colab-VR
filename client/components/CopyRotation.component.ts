@@ -1,4 +1,4 @@
-export interface CopyRotationComp extends HAROLD.Component {
+export interface CopyRotationComp extends AFrame.Component {
 	data: {
 		parent: AFrame.Entity;
 

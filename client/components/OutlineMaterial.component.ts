@@ -1,7 +1,7 @@
 import { htmlToElement } from '../tools';
 
 
-interface OutlineMatComp extends HAROLD.Component {
+interface OutlineMatComp extends AFrame.Component {
 	data: {
 		color: string;
 		width: number;

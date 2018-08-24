@@ -1,7 +1,7 @@
 const boundingBox = new AFRAME.THREE.Box3(),
 	tempVec = new AFRAME.THREE.Vector3();
 
-export interface ShelfItemComp extends HAROLD.Component {
+export interface ShelfItemComp extends AFrame.Component {
 	data: {
 		hoverScaleFactor: number
 	};

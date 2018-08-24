@@ -7,7 +7,7 @@ const obstacleClass = 'collidable',
 	collisionFaces = new Set(),
 	quaternion = new AFRAME.THREE.Quaternion();
 
-export interface VelocityComp extends HAROLD.Component {
+export interface VelocityComp extends AFrame.Component {
 	data: AFrame.Coordinate;
 
 	collide: boolean;

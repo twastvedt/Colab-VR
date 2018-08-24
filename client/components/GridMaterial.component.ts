@@ -1,7 +1,7 @@
 import { GridMatSys } from '../systems/GridMaterial.system';
 
 
-interface GridMatComp extends HAROLD.Component {
+interface GridMatComp extends AFrame.Component {
 	data: {
 		map: string;
 		opacity: number;

@@ -19,7 +19,7 @@ export const commandButtonCompDef: AFrame.ComponentDefinition<CommandButtonComp>
 	init: function() {
 		this.boundOnClick = this.onClick.bind(this);
 
-		this.system = this.el.sceneEl.systems['command'] as CommandSystem;
+		this.system = this.el.sceneEl.systems['command'];
 	},
 
 	onClick: function(e) {

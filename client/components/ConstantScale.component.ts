@@ -1,7 +1,7 @@
 const tempScale = {x: 1, y: 1, z: 1},
 	location = new AFRAME.THREE.Vector3();
 
-export interface ConstantScaleComp extends HAROLD.Component {
+export interface ConstantScaleComp extends AFrame.Component {
 	data: { x: number, y: number, z: number };
 	cameraLocation: THREE.Vector3;
 }
