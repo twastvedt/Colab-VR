@@ -67,6 +67,14 @@ declare namespace AFrame {
 		to: number;
 	}
 
+	type MultiPropertyComponents<T extends ObjectMap<Component> = ObjectMap<Component>> = {
+		[key in keyof T]: T[key] extends { data: MultiPropertySchema<any> } ? T[key] : never
+	};
+
+	type SinglePropertyComponents<T extends ObjectMap<Component> = ObjectMap<Component>> = {
+		[key in keyof T]: T[key] extends { data: SinglePropertySchema<any> } ? T[key] : never
+	};
+
 	interface ANode<C extends ObjectMap<Component> = ObjectMap<Component>> extends HTMLElement {
 		components: C & DefaultComponents;
 		isPlaying: boolean;
@@ -97,9 +105,21 @@ declare namespace AFrame {
 		getAttribute(type: 'position' | 'rotation' | 'scale'): Coordinate;
 
 		// setAttribute specific usages
-		setAttribute(attr: string, value: any): void;
-		setAttribute(attr: string, property: string, componentAttrValue?: any): void;
-		setAttribute(type: 'position' | 'rotation' | 'scale', value: Coordinate): void;
+		// setAttribute(attr: string, value: any): void;
+		// setAttribute(attr: string, property: string, componentAttrValue?: any): void;
+		setAttribute<K extends keyof T, T extends SinglePropertyComponents = SinglePropertyComponents<DefaultComponents>>(
+			component: K,
+			value: T[K]['data']
+		): void;
+		setAttribute<K extends keyof T, P extends keyof T[K]['data'], T extends MultiPropertyComponents = MultiPropertyComponents<DefaultComponents>>(
+			component: K,
+			property: P,
+			value: T[K]['data'][P]
+		): void;
+		setAttribute<K extends keyof T, T extends MultiPropertyComponents = MultiPropertyComponents<DefaultComponents>>(
+			component: K,
+			values: Partial<T[K]['data']>
+		): void;
 
 		// addEventListener specific usages
 		addEventListener<K extends keyof EntityEventMap>(type: K, listener: (event: Event & EntityEventMap[K]) => void, useCapture?: boolean): void;
@@ -109,7 +129,6 @@ declare namespace AFrame {
 		closest(selector: string): ANode;
 		load(cb?: () => void, childFilter?: (el: Element) => boolean): void;
 		registerMixin(id: string): void;
-		setAttribute(type: string, newValue: any): void;
 		unregisterMixin(id: string): void;
 		removeMixinListener(id: string): void;
 		attachMixinListener(mixin: HTMLElement): void;
