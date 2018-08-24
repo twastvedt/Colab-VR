@@ -216,8 +216,8 @@ declare namespace AFrame {
 		'loaded': EventListener;
 		'pause': EventListener;
 		'play': EventListener;
-		'stateadded': DetailEvent<{ state: string }>;
-		'stateremoved': DetailEvent<{ state: string }>;
+		'stateadded': DetailEvent<string>;
+		'stateremoved': DetailEvent<string>;
 		'schemachanged': DetailEvent<{ componentName: string }>;
 		'raycaster-intersection': DetailEvent<{
 			els: Entity[],
