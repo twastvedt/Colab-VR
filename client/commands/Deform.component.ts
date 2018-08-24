@@ -1,7 +1,8 @@
 import { ClickSequenceComponent, MakeClickSequence } from './CommandDecorators';
-import { LockedState, UIState, dynamicCursorCompDef } from '../components/DynamicCursor.component';
+import { LockedState, UIState } from '../components/DynamicCursor.component';
 import { SubdivisionComp } from '../components/Subdivision.component';
 import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
+import { UISystem } from '../systems/UI.system';
 
 
 const matrix = new AFRAME.THREE.Matrix4();
@@ -11,7 +12,8 @@ let target: THREE.Mesh & AFrame.Entity['object3D'],
 	newVert: THREE.Vector3,
 	subdivision: SubdivisionComp,
 	originalGeo: THREE.Geometry,
-	geometry: THREE.Geometry;
+	geometry: THREE.Geometry,
+	uiSystem: UISystem;
 
 type base = ClickSequenceComponent & OrderedTickComponent;
 
@@ -26,11 +28,13 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 
 	init: function() {
 		cursorPos = this.el.object3D.position;
+		uiSystem = this.el.sceneEl.systems['ui'];
 
 		this.el.setAttribute('dynamic-cursor', {
-			'target': 'base',
 			'ui': UIState.line
 		});
+
+		uiSystem.d.target = 'base';
 	},
 
 	doStep: function(step, e) {
@@ -41,6 +45,7 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 				this.el.setAttribute('dynamic-cursor', 'locked', LockedState.line);
 
 				target = e.detail.intersection.object as any;
+				target.el.addState(HAROLD.States.baseEditing);
 
 				// Switch to geometry to facilitate vertex manipulation. SubdivisionModifier would do this anyway to the deformed mesh.
 				if ( (target.geometry as any).isBufferGeometry ) {
@@ -124,7 +129,9 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 			target.geometry = originalGeo;
 		}
 
-		this.el.setAttribute('dynamic-cursor', 'target', 'main');
+		target.el.removeState(HAROLD.States.baseEditing);
+
+		uiSystem.d.target = 'main';
 	},
 
 	tick: function() {

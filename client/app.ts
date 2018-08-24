@@ -99,4 +99,24 @@ declare global {
 
 		export type States = ObjectStates;
 	}
+
+	interface Window {
+		HAROLD: HAROLD;
+	}
+
+	var HAROLD: HAROLD;
+
+	interface HAROLD {
+		States: typeof ObjectStates
+	}
 }
+
+enum ObjectStates {
+	hovered = 'hovered',
+	baseEditing = 'baseEditing',
+	modified = 'modified'
+}
+
+HAROLD = window.HAROLD = {
+	States: ObjectStates
+};

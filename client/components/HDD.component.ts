@@ -21,15 +21,15 @@ export const hddCompDef: AFrame.ComponentDefinition<HDDComp> = {
 
 	tick: function() {
 		if ( cameraRotation.x < -0.6 ) {
-			if ( !this.el.is('focus') ) {
+			if ( !this.el.is(HAROLD.States.hovered) ) {
 
-				this.el.addState('focus');
+				this.el.addState(HAROLD.States.hovered);
 
 				this.copyRotationComp.pause();
 			}
 
-		} else if (this.el.is('focus')) {
-			this.el.removeState('focus');
+		} else if (this.el.is(HAROLD.States.hovered)) {
+			this.el.removeState(HAROLD.States.hovered);
 
 			this.copyRotationComp.play();
 		}

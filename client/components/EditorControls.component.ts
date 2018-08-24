@@ -211,8 +211,8 @@ const EditorControls = function ( object: THREE.Object3D, domElement?: Node ) {
 		const movementX = pointer.x - pointerOld.x,
 			movementY = pointer.y - pointerOld.y;
 
-		if (Math.abs(movementX) + Math.abs(movementY) > 2 && uiSystem.state === State.None ) {
-			uiSystem.state = State.Navigating;
+		if (Math.abs(movementX) + Math.abs(movementY) > 2 && !uiSystem.d.isNavigating ) {
+			uiSystem.d.isNavigating = true;
 		}
 
 		if ( state === STATE.ROTATE ) {
@@ -242,7 +242,7 @@ const EditorControls = function ( object: THREE.Object3D, domElement?: Node ) {
 
 		state = STATE.NONE;
 
-		window.setTimeout(() => uiSystem.state = State.None, 0);
+		window.setTimeout(() => uiSystem.d.isNavigating = false, 0);
 
 	}
 
