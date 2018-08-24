@@ -1,4 +1,4 @@
-import { UISystem, State } from '../systems/UI.system';
+import { UISystem } from '../systems/UI.system';
 
 
 let uiSystem: UISystem;
@@ -24,7 +24,7 @@ export const editorControlsCompDef: AFrame.ComponentDefinition<EditorControlsCom
 	},
 
 	init: function() {
-		uiSystem = this.el.sceneEl.systems['ui'] as UISystem;
+		uiSystem = this.el.sceneEl.systems['ui'];
 
 		this.controls = new EditorControls(this.el.object3D as any);
 	},

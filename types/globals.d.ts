@@ -11,3 +11,7 @@ interface NodeList {
 declare namespace HAROLD {
 	type ComponentDecorator<T extends AFrame.Component = AFrame.Component> = {(componentDef: AFrame.ComponentDefinition<T>, ...rest: any[]): void};
 }
+
+declare namespace AFrame {
+	interface DefaultComponents extends HAROLD.components, ObjectMap<Component> {}
+}

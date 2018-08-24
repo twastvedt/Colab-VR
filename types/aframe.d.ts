@@ -117,7 +117,7 @@ declare namespace AFrame {
 		emitter(name: string, detail?: any, bubbles?: boolean): () => void;
 	}
 
-	interface Component<T extends { [key: string]: any } = any, S extends System = System> {
+	interface Component<T extends any = any, S extends System = System> {
 		attrName?: string;
 		data: T;
 		dependencies?: string[];
@@ -166,7 +166,7 @@ declare namespace AFrame {
 		z: number;
 	}
 
-	interface DefaultComponents {
+	interface DefaultComponents extends ObjectMap<Component> {
 		position: Component<Coordinate>;
 		rotation: Component<Coordinate>;
 		scale: Component<Coordinate>;
@@ -269,7 +269,7 @@ declare namespace AFrame {
 		schema: Schema;
 	}
 
-	type MultiPropertySchema<T extends { [key: string ]: any }> = {
+	type MultiPropertySchema<T extends ObjectMap<any> = ObjectMap<any>> = {
 		[P in keyof T]: SinglePropertySchema<T[P]> | T[P];
 	};
 
@@ -346,8 +346,8 @@ declare namespace AFrame {
 		stringify?(value: T): string;
 	}
 
-	interface System {
-		data: { [key: string]: any };
+	interface System<T extends any = any> {
+		data: T;
 		el: Scene;
 		schema: Schema<this['data']>;
 		init(this: this): void;
@@ -360,7 +360,7 @@ declare namespace AFrame {
 		new (scene: Scene): T;
 	}
 
-	type SystemDefinition<T extends System = System> = Partial<T>;
+	type SystemDefinition<T extends System = System> = Partial<T> & { _systemType?: T };
 
 	interface Utils {
 		coordinates: {

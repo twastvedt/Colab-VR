@@ -9,11 +9,11 @@ export interface ConstantScaleComp extends HAROLD.Component {
 export const constantScaleCompDef: AFrame.ComponentDefinition<ConstantScaleComp> = {
 	schema: { type: 'vec3' },
 
-	init: function(this: ConstantScaleComp) {
+	init: function() {
 		this.cameraLocation = this.el.sceneEl.querySelector<AFrame.Entity>('#camera').object3D.position;
 	},
 
-	tick: function(this: ConstantScaleComp) {
+	tick: function() {
 		this.el.object3D.getWorldPosition(location);
 		const distance = location.distanceTo(this.cameraLocation);
 

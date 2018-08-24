@@ -62,7 +62,7 @@ for (let name in componentDefs) {
 }
 
 
-const systemDefs: {[name: string]: AFrame.SystemDefinition} = {
+const systemDefs = {
 	'grid-mat': gridMatSysDef,
 	'command': commandSysDef,
 	'tick-order': tickOrderSysDef,
@@ -70,7 +70,7 @@ const systemDefs: {[name: string]: AFrame.SystemDefinition} = {
 };
 
 for (let name in systemDefs) {
-	AFRAME.registerSystem(name, systemDefs[name]);
+	AFRAME.registerSystem(name, (systemDefs as {[name: string]: AFrame.SystemDefinition})[name]);
 }
 
 
@@ -83,11 +83,18 @@ for (let name in primitiveDefs) {
 	AFRAME.registerPrimitive(name, primitiveDefs[name]);
 }
 
-type components = { [K in keyof typeof componentDefs]: typeof componentDefs[K]['_compType'] };
+type systems = { [K in keyof typeof systemDefs]: typeof systemDefs[K]['_systemType'] };
 
 declare global {
 	namespace HAROLD {
-		export type Entity = AFrame.Entity<components>;
-		export type Component = AFrame.Component & {el: Entity};
+		export type Entity = AFrame.Entity & { sceneEl: Scene };
+		export type Component = AFrame.Component & { el: Entity };
+		export interface Scene extends AFrame.Scene {
+			systems: systems;
+		}
+
+		type components = { [K in keyof typeof componentDefs]: typeof componentDefs[K]['_componentType'] };
+
+		export type States = ObjectStates;
 	}
 }
