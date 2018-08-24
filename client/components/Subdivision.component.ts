@@ -40,7 +40,13 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 		}
 
 		if (data.showWire !== oldData.showWire) {
-			this.edges.visible = data.showWire;
+			if (data.showWire) {
+				this.edges.visible = true;
+				(this.subdivMesh.material as THREE.Material).opacity = 0.5;
+			} else {
+				this.edges.visible = false;
+				(this.subdivMesh.material as THREE.Material).opacity = 1;
+			}
 		}
 	},
 
@@ -53,10 +59,11 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 
 			// Copy mesh to a child entity which will hold the subdivided object.
 			this.subdivMesh = this.baseMesh.clone();
+			(this.subdivMesh.material as THREE.Material).transparent = true;
 
 			const subdivEl = htmlToElement<AFrame.Entity>(`
 				<a-entity
-					class="main modified subdivision hoverable collidable env-world"
+					class="hoverable-main modified subdivision collidable env-world"
 					position="0 0 0" rotation="0 0 0" scale="1 1 1"
 				</a-entity>
 			`);
@@ -82,12 +89,13 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 
 			wireEl.setObject3D('edges', this.edges);
 
-			this.baseMesh.material = new AFRAME.THREE.MeshBasicMaterial({
-				transparent: true,
-				opacity: 0
-			});
+			this.baseMesh.material = new AFRAME.THREE.MeshBasicMaterial();
+			this.baseMesh.material.visible = false;
 
-			this.el.classList.add('base');
+			this.el.classList.remove('hoverable');
+			this.el.classList.add('hoverable-base');
+
+			this.el.addState(HAROLD.States.modified);
 		}
 	},
 
