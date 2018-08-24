@@ -30,6 +30,7 @@ import { lineLinkCompDef } from './components/LineLink.component';
 import { subdivisionCompDef } from './components/Subdivision.component';
 import { gridMatCompDef } from './components/GridMaterial.component';
 import { applyMatCompDef } from './components/ApplyMaterial.component';
+import { haroldObjectCompDef } from './components/HaroldObject.component';
 
 import { gridMatSysDef } from './systems/GridMaterial.system';
 import { commandSysDef } from './commands/Command.system';
@@ -54,7 +55,8 @@ const componentDefs = {
 	'line-link': lineLinkCompDef,
 	'subdivision': subdivisionCompDef,
 	'grid-mat': gridMatCompDef,
-	'apply-mat': applyMatCompDef
+	'apply-mat': applyMatCompDef,
+	'harold-object': haroldObjectCompDef
 };
 
 for (let name in componentDefs) {
