@@ -1,3 +1,7 @@
+import { SlidingPointerComp } from './SlidingPointer.component';
+import { LockedPointerComp } from './LockedPointer.component';
+
+
 const tempVec = new AFRAME.THREE.Vector3(),
 	tempVec2 = new AFRAME.THREE.Vector3(),
 	tempCoord = {x: 0, y: 0, z: 0},
@@ -23,6 +27,9 @@ export interface DynamicCursorComp extends HAROLD.Component {
 		locked: LockedState,
 		ui: UIState
 	};
+
+	slidingPointer: SlidingPointerComp;
+	lockedPointer: LockedPointerComp;
 	pointerEl: AFrame.Entity;
 }
 
@@ -32,16 +39,24 @@ export interface DynamicCursorComp extends HAROLD.Component {
 export const dynamicCursorCompDef: AFrame.ComponentDefinition<DynamicCursorComp> = {
 
 	schema: {
-		isActive: {default: false},
-		locked: {default: LockedState.none},
-		ui: {default: UIState.plane}
+		isActive: { default: false },
+		locked: { default: LockedState.none },
+		ui: { default: UIState.plane }
 	},
 
 	dependencies: ['sliding-pointer', 'locked-pointer'],
 
 	init: function() {
 		extension = this.el.sceneEl.querySelector('#extension');
+
+		this.slidingPointer = this.el.components['sliding-pointer'];
+		this.lockedPointer = this.el.components['locked-pointer'];
 		this.pointerEl = this.el.sceneEl.querySelector('#pointer') as AFrame.Entity;
+
+		// Initial state.
+		window.setTimeout((() => {
+			this.lockedPointer.pause();
+		}).bind(this), 0);
 	},
 
 	update: function(oldData) {
@@ -53,8 +68,8 @@ export const dynamicCursorCompDef: AFrame.ComponentDefinition<DynamicCursorComp>
 
 		if (oldData.locked !== data.locked) {
 			if (data.locked === LockedState.none) {
-				this.el.components['locked-pointer'].pause();
-				this.el.components['sliding-pointer'].play();
+				this.lockedPointer.pause();
+				this.slidingPointer.play();
 
 				extension.object3D.visible = false;
 
@@ -64,7 +79,7 @@ export const dynamicCursorCompDef: AFrame.ComponentDefinition<DynamicCursorComp>
 				this.el.object3D.getWorldQuaternion( worldQuaternion );
 				tempVec.copy( this.el.object3D.up ).applyQuaternion( worldQuaternion );
 
-				this.el.components['sliding-pointer'].pause();
+				this.slidingPointer.pause();
 
 				this.el.setAttribute('locked-pointer', {
 					vector: tempVec,
@@ -72,7 +87,7 @@ export const dynamicCursorCompDef: AFrame.ComponentDefinition<DynamicCursorComp>
 					isPlane: data.locked === LockedState.plane,
 					pointerSelector: '#pointer'
 				});
-				this.el.components['locked-pointer'].play();
+				this.lockedPointer.play();
 
 				this.el.object3D.getWorldPosition(tempVec2);
 				tempCoord.x = tempVec2.x;
@@ -100,10 +115,6 @@ export const dynamicCursorCompDef: AFrame.ComponentDefinition<DynamicCursorComp>
 					child.pause();
 				}
 			}, this);
-		}
-
-		if (oldData.target !== data.target) {
-			this.pointerEl.setAttribute('raycaster', 'objects', '.hoverable.' + data.target);
 		}
 	}
 };
