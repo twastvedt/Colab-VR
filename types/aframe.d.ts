@@ -164,7 +164,7 @@ declare namespace AFrame {
 		new (el: Entity, attrValue: string, id: string): T;
 	}
 
-	type ComponentDefinition<T extends Component = Component> = Partial<T> & { _compType?: T };
+	type ComponentDefinition<T extends Component = Component> = Partial<T> & { _componentType?: T };
 
 	interface ComponentDescriptor<T extends Component = Component> {
 		Component: ComponentConstructor<T>;
