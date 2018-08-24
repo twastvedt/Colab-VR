@@ -32,9 +32,11 @@ export const MakeClickSequence: HAROLD.ComponentDecorator<ClickSequenceComponent
 		this.currentStep = 0;
 
 		this.boundDoStep = ((e: AFrame.EntityEventMap['click']) => {
-			this.doStep(this.currentStep, e);
+			if (!this.el.sceneEl.systems.ui.d.isNavigating) {
+				this.doStep(this.currentStep, e);
 
-			this.currentStep++;
+				this.currentStep++;
+			}
 		}).bind(this);
 
 		this.system.pointer.addEventListener('click', this.boundDoStep);
