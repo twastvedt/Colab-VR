@@ -417,7 +417,9 @@ declare namespace AFrame {
 			isMobile(): boolean;
 		}
 		deepEqual(a: any, b: any): boolean;
-		diff(a: object, b: object): object;
+		diff<A extends object, B extends object>(a: A, b: B): {[K in keyof (A & B)]:
+			K extends keyof B ? B[K] : (K extends keyof A ? undefined : never)
+		};
 		extend(target: object, ... source: object[]): object;
 		extendDeep(target: object, ... source: object[]): object;
 
