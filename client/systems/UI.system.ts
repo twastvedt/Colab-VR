@@ -53,7 +53,7 @@ export interface UISystem extends AFrame.System {
 }
 
 export const uiSysDef: AFrame.SystemDefinition<UISystem> = (() => {
-	let _target: 'base' | 'main' = 'main';
+	let _target: 'base' | 'main' = undefined;
 
 	return {
 		d: {
@@ -77,14 +77,17 @@ export const uiSysDef: AFrame.SystemDefinition<UISystem> = (() => {
 				player = (this.el.querySelector('#player') as AFrame.Entity);
 				pointer = (this.el.querySelector('#pointer') as AFrame.Entity);
 				hoveredEls = (pointer.components['raycaster'] as any).intersectedEls;
-
 				commandSystem = this.el.systems['command'] as CommandSystem;
+				this.cursor = this.el.querySelector('#cursor');
+
 
 				this.updateMode.call(this);
 
 				if (this.ui !== UI.HMD) {
 					this.setKeys();
 				}
+
+				this.d.target = 'main';
 
 				const that = this;
 
@@ -110,8 +113,6 @@ export const uiSysDef: AFrame.SystemDefinition<UISystem> = (() => {
 						that.d.hoverOb.addState(HAROLD.States.hovered);
 					}
 				});
-
-				this.cursor = this.el.querySelector('#cursor');
 			});
 		},
 
