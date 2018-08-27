@@ -1,7 +1,6 @@
 import { ClickSequenceComponent, MakeClickSequence } from './CommandDecorators';
 import { LockedState, UIState } from '../components/DynamicCursor.component';
 import { SubdivisionComp } from '../components/Subdivision.component';
-import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
 import { UISystem } from '../systems/UI.system';
 
 
@@ -15,9 +14,7 @@ let target: THREE.Mesh & AFrame.Entity['object3D'],
 	geometry: THREE.Geometry,
 	uiSystem: UISystem;
 
-type base = ClickSequenceComponent & OrderedTickComponent;
-
-interface DeformComp extends base {
+interface DeformComp extends ClickSequenceComponent {
 
 	doStep: (this: DeformComp, step: number, e: AFrame.EntityEventMap['click']) => void;
 }
@@ -143,4 +140,3 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 };
 
 MakeClickSequence(DeformCompDef);
-MakeTickComponent(DeformCompDef, 800);

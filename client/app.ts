@@ -34,7 +34,7 @@ import { haroldObjectCompDef } from './components/HaroldObject.component';
 
 import { gridMatSysDef } from './systems/GridMaterial.system';
 import { commandSysDef } from './commands/Command.system';
-import { tickOrderSysDef } from './systems/TickOrder.system';
+import { tickOrderSysDef, MakeTickComponent } from './systems/TickOrder.system';
 import { uiSysDef } from './systems/UI.system';
 
 
@@ -58,6 +58,16 @@ const componentDefs = {
 	'apply-mat': applyMatCompDef,
 	'harold-object': haroldObjectCompDef
 };
+
+MakeTickComponent(lockedPointerCompDef, 200);
+MakeTickComponent(lockedTrackCompDef, 200);
+MakeTickComponent(slidingPointerCompDef, 200);
+
+MakeTickComponent(snapCompDef, 400);
+
+MakeTickComponent(lineLinkCompDef, 600);
+
+MakeTickComponent(constantScaleCompDef, 800);
 
 for (let name in componentDefs) {
 	AFRAME.registerComponent(name, (componentDefs as {[name: string]: AFrame.ComponentDefinition})[name]);

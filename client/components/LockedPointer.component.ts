@@ -1,9 +1,6 @@
-import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
-
-
 let tempPos = new AFRAME.THREE.Vector3();
 
-export interface LockedPointerComp extends OrderedTickComponent {
+export interface LockedPointerComp extends AFrame.Component {
 	data: {
 		pointerSelector: AFrame.Entity,
 		vector: AFrame.Coordinate,
@@ -80,5 +77,3 @@ export const lockedPointerCompDef: AFrame.ComponentDefinition<LockedPointerComp>
 		}
 	}
 };
-
-MakeTickComponent(lockedPointerCompDef, 200);

@@ -1,6 +1,3 @@
-import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
-
-
 const selfPos = new AFRAME.THREE.Vector3(),
 	targetPos = new AFRAME.THREE.Vector3(),
 	planeNormal = new AFRAME.THREE.Vector3(),
@@ -8,7 +5,7 @@ const selfPos = new AFRAME.THREE.Vector3(),
 	tempVec2 = new AFRAME.THREE.Vector3(),
 	toVec = new AFRAME.THREE.Vector3();
 
-interface LockedTrackComp extends OrderedTickComponent {
+interface LockedTrackComp extends AFrame.Component {
 	data: {
 		targetSelector: AFrame.Entity,
 		to: number,
@@ -60,5 +57,3 @@ export const lockedTrackCompDef: AFrame.ComponentDefinition<LockedTrackComp> = {
 		this.el.object3D.quaternion.setFromUnitVectors( toVec, tempVec.normalize() );
 	}
 };
-
-MakeTickComponent(lockedTrackCompDef, 200);

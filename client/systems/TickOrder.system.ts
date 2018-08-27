@@ -29,8 +29,8 @@ export const tickOrderSysDef: AFrame.SystemDefinition<TickOrderSys> = {
 	}
 };
 
-export const MakeTickComponent = <T extends AFrame.ComponentDefinition<OrderedTickComponent>>(component: T, tickOrder: number) => {
-	component.tickOrder = tickOrder;
+export const MakeTickComponent = <T extends AFrame.ComponentDefinition<AFrame.Component>>(component: T, tickOrder: number) => {
+	(component as any as OrderedTickComponent).tickOrder = tickOrder;
 
 	const play = component.play;
 	const init = component.init;

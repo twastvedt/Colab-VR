@@ -1,5 +1,5 @@
 import { htmlToElement } from '../tools';
-import { TickOrderSys } from '../systems/TickOrder.system';
+import { TickOrderSys, MakeTickComponent } from '../systems/TickOrder.system';
 import { CommandComponent } from './CommandDecorators';
 import { LockedState } from '../components/DynamicCursor.component';
 
@@ -7,6 +7,8 @@ import { DrawBoxCompDef } from './DrawBox.component';
 import { DrawSphereCompDef } from './DrawSphere.component';
 import { DeformCompDef } from './Deform.component';
 
+
+MakeTickComponent(DeformCompDef, 800);
 
 const tempObjects: AFrame.Entity[] = [];
 

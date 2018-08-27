@@ -1,7 +1,4 @@
-import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
-
-
-export interface SnapComp extends OrderedTickComponent {
+export interface SnapComp extends AFrame.Component {
 	data: {
 		gridSize: number
 	};
@@ -24,5 +21,3 @@ export const snapCompDef: AFrame.ComponentDefinition<SnapComp> = {
 		);
 	}
 };
-
-MakeTickComponent(snapCompDef, 400);

@@ -1,5 +1,4 @@
 import { htmlToElement } from '../tools';
-import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
 
 
 const coordinates = AFRAME.utils.coordinates,
@@ -25,7 +24,7 @@ const linkProperty = {
 	}
 };
 
-interface LineLinkComp extends OrderedTickComponent {
+interface LineLinkComp extends AFrame.Component {
 	data: {
 		start: THREE.Vector3 | string;
 		end: THREE.Vector3 | string;
@@ -196,5 +195,3 @@ export const lineLinkCompDef: AFrame.ComponentDefinition<LineLinkComp> = {
 		}
 	}
 };
-
-MakeTickComponent(lineLinkCompDef, 600);

@@ -1,10 +1,7 @@
-import { OrderedTickComponent, MakeTickComponent } from '../systems/TickOrder.system';
-
-
 const quaternion = new AFRAME.THREE.Quaternion(),
 	globalNormal = new AFRAME.THREE.Vector3();
 
-export interface SlidingPointerComp extends OrderedTickComponent {
+export interface SlidingPointerComp extends AFrame.Component {
 	data: {
 		pointerSelector: AFrame.Entity,
 		classFilter: string
@@ -45,5 +42,3 @@ export const slidingPointerCompDef: AFrame.ComponentDefinition<SlidingPointerCom
 		this.el.object3D.position.set(point.x, point.y, point.z);
 	}
 };
-
-MakeTickComponent(slidingPointerCompDef, 200);
