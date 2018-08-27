@@ -46,6 +46,7 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 
 				target = e.detail.intersection.object as any;
 				target.el.addState(HAROLD.States.baseEditing);
+				uiSystem.d.target = 'main';
 
 				// Switch to geometry to facilitate vertex manipulation. SubdivisionModifier would do this anyway to the deformed mesh.
 				if ( (target.geometry as any).isBufferGeometry ) {
@@ -104,7 +105,6 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 					}).bind(this), 0);
 				}
 
-
 				break;
 
 			case 1:
@@ -130,8 +130,6 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 		}
 
 		target.el.removeState(HAROLD.States.baseEditing);
-
-		uiSystem.d.target = 'main';
 	},
 
 	tick: function() {

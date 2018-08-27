@@ -4,7 +4,8 @@ import { LockedState } from '../components/DynamicCursor.component';
 
 let pointer: AFrame.Entity,
 	player: AFrame.Entity,
-	commandSystem: CommandSystem;
+	commandSystem: CommandSystem,
+	hoveredEls: AFrame.Entity[];
 
 enum UI {
 	HMD = 'hmd',
@@ -40,6 +41,7 @@ export interface UISystem extends AFrame.System {
 	d: {
 		target: 'base' | 'main';
 		isNavigating: boolean;
+		hoverOb: AFrame.Entity;
 	};
 
 	cursor: AFrame.Entity;
@@ -56,6 +58,7 @@ export const uiSysDef: AFrame.SystemDefinition<UISystem> = (() => {
 	return {
 		d: {
 			isNavigating: false,
+			hoverOb: undefined as AFrame.Entity,
 
 			set target(this: UISystem['d'], v: 'base' | 'main') {
 				if (v !== _target) {
@@ -73,6 +76,7 @@ export const uiSysDef: AFrame.SystemDefinition<UISystem> = (() => {
 			this.el.addEventListener('loaded', () => {
 				player = (this.el.querySelector('#player') as AFrame.Entity);
 				pointer = (this.el.querySelector('#pointer') as AFrame.Entity);
+				hoveredEls = (pointer.components['raycaster'] as any).intersectedEls;
 
 				commandSystem = this.el.systems['command'] as CommandSystem;
 
@@ -82,13 +86,28 @@ export const uiSysDef: AFrame.SystemDefinition<UISystem> = (() => {
 					this.setKeys();
 				}
 
+				const that = this;
+
 				pointer.addEventListener('raycaster-intersection', (e) => {
-					e.detail.els[0].addState(HAROLD.States.hovered);
+					const hovered = hoveredEls[0],
+						hoverOb = that.d.hoverOb;
+
+					if (hoverOb !== hovered) {
+						if (hoverOb) {
+							hoverOb.removeState(HAROLD.States.hovered);
+						}
+						that.d.hoverOb = hovered;
+						hovered.addState(HAROLD.States.hovered);
+					}
 				});
 
 				pointer.addEventListener('raycaster-intersection-cleared', (e) => {
-					for (let el of e.detail.clearedEls) {
-						el.removeState(HAROLD.States.hovered);
+					const hoverOb = that.d.hoverOb;
+
+					if (e.detail.clearedEls.indexOf(hoverOb) !== -1) {
+						hoverOb.removeState(HAROLD.States.hovered);
+						that.d.hoverOb = hoveredEls[0];
+						that.d.hoverOb.addState(HAROLD.States.hovered);
 					}
 				});
 
@@ -242,5 +261,5 @@ export const uiSysDef: AFrame.SystemDefinition<UISystem> = (() => {
 				}
 			});
 		}
-	};
+	} as AFrame.SystemDefinition<UISystem>;
 })();
