@@ -54,7 +54,7 @@
 
 				<a-entity id="camera" position="0 1.5 0" camera>
 
-					<a-entity id="pointer" laser-controls cursor raycaster="recursive: false; far: 10000">
+					<a-entity id="pointer" laser-controls cursor raycaster="far: 10000">
 						<a-ring class="ui ui-fps" position="0 0 -0.1" radius-outer="0.001" radius-inner="0.0007" material="transparent: true; opacity: 0.5; color: #444444"></ring>
 					</a-entity>
 
@@ -66,10 +66,6 @@
 
 			<a-entity template="src: #cursorTemplate"></a-entity>
 
-			<a-box class="box hoverable env-world collidable" harold-object position="0 2 4"
-				depth="3" height="3" width="3"
-				segments-depth="2" segments-height="2" segments-width="2"
-				subdivision="levels: 2"></a-box>
 		</a-scene>
 	</body>
 </html>

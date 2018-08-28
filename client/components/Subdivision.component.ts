@@ -51,15 +51,30 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 	},
 
 	init: function() {
-		if (this.el.object3D.children[0] instanceof AFRAME.THREE.Mesh) {
-			this.baseMesh = this.el.object3D.children[0] as THREE.Mesh;
+		// Look for a mesh to use as the base.
+		this.el.object3D.traverse((object) => {
+			if (!this.baseMesh && object instanceof AFRAME.THREE.Mesh) {
+				this.baseMesh = object;
+			}
+		});
 
+		if (this.baseMesh) {
 			// Initialize subdivision modifier.
 			this.modifier = (new SubdivisionModifier( this.data )) as any;
 
 			// Copy mesh to a child entity which will hold the subdivided object.
 			this.subdivMesh = this.baseMesh.clone();
 			(this.subdivMesh.material as THREE.Material).transparent = true;
+
+			// Get transformation of mesh relative to the root element
+			// (Usually no translation. Sometimes a gltf export creates one though.)
+			const matrix = this.baseMesh.matrixWorld;
+			const inverseThisMatrix = new AFRAME.THREE.Matrix4();
+			inverseThisMatrix.getInverse(this.el.object3D.matrixWorld);
+			matrix.premultiply(inverseThisMatrix);
+
+			// Set transform members using calculated matrix. (If we switch to disabling autoUpdate, we can assign the matrix directly.)
+			matrix.decompose(this.subdivMesh.position, this.subdivMesh.quaternion, this.subdivMesh.scale);
 
 			const subdivEl = htmlToElement<AFrame.Entity>(`
 				<a-entity
@@ -77,6 +92,7 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 			const geo = new AFRAME.THREE.EdgesGeometry( this.baseMesh.geometry, 1 ); // or WireframeGeometry( geometry ) for all triangles.
 			const mat = new AFRAME.THREE.LineBasicMaterial( { color: 0xdddddd, linewidth: 1 } );
 			this.edges = new AFRAME.THREE.LineSegments( geo, mat );
+			matrix.decompose(this.edges.position, this.edges.quaternion, this.edges.scale);
 
 			const wireEl = htmlToElement<AFrame.Entity>(`
 				<a-entity
