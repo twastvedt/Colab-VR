@@ -3,11 +3,15 @@ import { htmlToElement } from '../tools';
 
 
 interface SubdivisionModifier {
-	new(subdivisions: number): SubdivisionModifier;
+	new (geometry: THREE.Geometry, subdivisions?: number): SubdivisionModifier;
 
-	modify(geometry: THREE.Geometry | THREE.BufferGeometry): THREE.Geometry;
+	modify(): void;
+	update(vertexIds?: number[]): void;
+	smooth(): void;
 
 	subdivisions: number;
+	geometry: THREE.Geometry;
+	baseGeometry: THREE.Geometry;
 }
 
 export interface SubdivisionComp extends AFrame.Component {
@@ -20,8 +24,9 @@ export interface SubdivisionComp extends AFrame.Component {
 	edges: THREE.LineSegments;
 	modifier: SubdivisionModifier;
 
-	updateWireframe: (this: SubdivisionComp) => void;
-	updateSubdivision: (this: SubdivisionComp) => void;
+	updateWireframe: (this: SubdivisionComp, vertexIds?: number[]) => void;
+	updateSubdivision: (this: SubdivisionComp, vertexIds?: number[]) => void;
+	create: (this: SubdivisionComp) => void;
 }
 
 export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
@@ -34,20 +39,36 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 		const data = this.data;
 
 		if (data.levels !== oldData.levels) {
-			this.modifier.subdivisions = data.levels;
+			if (data.levels > oldData.levels) {
 
-			this.subdivMesh.geometry = this.modifier.modify( this.baseMesh.geometry );
+				while (this.modifier.subdivisions < data.levels) {
+					this.modifier.smooth();
+					this.modifier.subdivisions++;
+				}
+
+			} else {
+				this.modifier.subdivisions = data.levels;
+
+				this.create();
+			}
 		}
 
 		if (data.showWire !== oldData.showWire) {
 			if (data.showWire) {
 				this.edges.visible = true;
 				(this.subdivMesh.material as THREE.Material).opacity = 0.5;
+
 			} else {
 				this.edges.visible = false;
 				(this.subdivMesh.material as THREE.Material).opacity = 1;
 			}
 		}
+	},
+
+	create: function() {
+		this.modifier.modify();
+
+		this.subdivMesh.geometry = this.modifier.geometry;
 	},
 
 	init: function() {
@@ -60,10 +81,13 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 
 		if (this.baseMesh) {
 			// Initialize subdivision modifier.
-			this.modifier = (new SubdivisionModifier( this.data )) as any;
+			this.modifier = new SubdivisionModifier( this.baseMesh.geometry, this.data.levels ) as any;
 
 			// Copy mesh to a child entity which will hold the subdivided object.
-			this.subdivMesh = this.baseMesh.clone();
+			this.subdivMesh = new AFRAME.THREE.Mesh( this.baseMesh.geometry, (this.baseMesh.material as THREE.Material).clone() );
+
+			// this.subdivMesh.material = (this.baseMesh.material as THREE.Material).clone();
+
 			(this.subdivMesh.material as THREE.Material).transparent = true;
 
 			// Get transformation of mesh relative to the root element
@@ -115,13 +139,15 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 		}
 	},
 
-	updateWireframe: function() {
-		const geo = new AFRAME.THREE.EdgesGeometry( this.baseMesh.geometry, 1 ); // or WireframeGeometry( geometry ) for all triangles.
+	updateWireframe: function(vertexIds) {
+		const geo = new AFRAME.THREE.EdgesGeometry( this.baseMesh.geometry, 1 );
 
 		this.edges.geometry = geo;
+
+		this.updateSubdivision(vertexIds);
 	},
 
-	updateSubdivision: function() {
-		this.subdivMesh.geometry = this.modifier.modify( this.baseMesh.geometry );
+	updateSubdivision: function(vertexIds) {
+		this.modifier.update(vertexIds);
 	}
 };

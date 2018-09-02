@@ -16,6 +16,8 @@ let target: THREE.Mesh & AFrame.Entity['object3D'],
 
 interface DeformComp extends ClickSequenceComponent {
 
+	activeVertexId: number;
+
 	doStep: (this: DeformComp, step: number, e: AFrame.EntityEventMap['click']) => void;
 }
 
@@ -48,6 +50,8 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 				// Switch to geometry to facilitate vertex manipulation. SubdivisionModifier would do this anyway to the deformed mesh.
 				if ( (target.geometry as any).isBufferGeometry ) {
 					target.geometry = new AFRAME.THREE.Geometry().fromBufferGeometry( target.geometry as THREE.BufferGeometry );
+
+					target.geometry.mergeVertices();
 				}
 
 				geometry = target.geometry as any;
@@ -85,10 +89,10 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 
 				// Create a new edges geometry to include the new vertex.
 				if (target.el.hasAttribute('subdivision')) {
-					subdivision = target.el.components['subdivision'] as SubdivisionComp;
+					subdivision = target.el.components['subdivision'];
 
 					target.el.setAttribute('subdivision', 'showWire', true);
-					subdivision.updateWireframe();
+					subdivision.create();
 
 				} else {
 					target.el.setAttribute('subdivision', {
@@ -97,10 +101,12 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 					});
 
 					window.setTimeout((() => {
-						subdivision = target.el.components['subdivision'] as SubdivisionComp;
-						subdivision.updateWireframe();
+						subdivision = target.el.components['subdivision'];
+						subdivision.create();
 					}).bind(this), 0);
 				}
+
+				this.activeVertexId = newIndex;
 
 				break;
 
@@ -134,7 +140,7 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 			newVert.copy(cursorPos);
 			newVert.applyMatrix4( matrix.getInverse( target.matrixWorld ) );
 
-			subdivision.updateWireframe();
+			subdivision.updateWireframe( [this.activeVertexId] );
 		}
 	}
 };
