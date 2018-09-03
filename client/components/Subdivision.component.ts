@@ -1,19 +1,6 @@
 import { SubdivisionModifier } from '../lib/SubdivisionModifier';
 import { htmlToElement } from '../tools';
 
-
-interface SubdivisionModifier {
-	new (geometry: THREE.Geometry, subdivisions?: number): SubdivisionModifier;
-
-	modify(): void;
-	update(vertexIds?: number[]): void;
-	smooth(): void;
-
-	subdivisions: number;
-	geometry: THREE.Geometry;
-	baseGeometry: THREE.Geometry;
-}
-
 export interface SubdivisionComp extends AFrame.Component {
 	data: {
 		levels: number;
@@ -81,7 +68,7 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 
 		if (this.baseMesh) {
 			// Initialize subdivision modifier.
-			this.modifier = new SubdivisionModifier( this.baseMesh.geometry, this.data.levels ) as any;
+			this.modifier = new SubdivisionModifier( this.baseMesh.geometry as THREE.Geometry, this.data.levels ) as any;
 
 			// Copy mesh to a child entity which will hold the subdivided object.
 			this.subdivMesh = new AFRAME.THREE.Mesh( this.baseMesh.geometry, (this.baseMesh.material as THREE.Material).clone() );
