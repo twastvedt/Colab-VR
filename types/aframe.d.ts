@@ -19,8 +19,8 @@ declare var AFRAME: AFrame.AFrameGlobal;
 declare var hasNativeWebVRImplementation: boolean;
 
 interface Document {
-    createElement(tagName: string): AFrame.Entity;
-    querySelector(selectors: 'a-scene'): AFrame.Scene;
+	createElement(tagName: string): AFrame.Entity;
+	querySelector(selectors: 'a-scene'): AFrame.Scene;
 	querySelector(selectors: string): AFrame.Entity<any>;
 	querySelectorAll(selectors: string): NodeListOf<AFrame.Entity<any> | Element>;
 }
@@ -192,7 +192,7 @@ declare namespace AFrame {
 	}
 
 	interface Entity<C extends ObjectMap<Component> = ObjectMap<Component>> extends ANode<C> {
-		object3D: Object
+		object3D: Object;
 	}
 
 	type DetailEvent<D> = Event & {
@@ -255,13 +255,13 @@ declare namespace AFrame {
 	}
 
 	interface RaycasterIntersectionDetail {
-		distance: number,
-		face: THREE.Face3,
-		faceIndex: number,
-		index: number,
-		object: Object,
-		point: THREE.Vector3,
-		uv: THREE.Vector2
+		distance: number;
+		face: THREE.Face3;
+		faceIndex: number;
+		index: number;
+		object: Object;
+		point: THREE.Vector3;
+		uv: THREE.Vector2;
 	}
 
 	type Object = THREE.Object3D & {el: Entity};
@@ -415,7 +415,7 @@ declare namespace AFrame {
 			 * Checks if device is a smartphone.
 			 */
 			isMobile(): boolean;
-		}
+		};
 		deepEqual(a: any, b: any): boolean;
 		diff<A extends object, B extends object>(a: A, b: B): {[K in keyof (A & B)]:
 			K extends keyof B ? B[K] : (K extends keyof A ? undefined : never)
