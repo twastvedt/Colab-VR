@@ -13,7 +13,7 @@ export interface SubdivisionComp extends AFrame.Component {
 
 	updateWireframe: (this: SubdivisionComp, vertexIds?: number[]) => void;
 	updateSubdivision: (this: SubdivisionComp, vertexIds?: number[]) => void;
-	create: (this: SubdivisionComp) => void;
+	reset: (this: SubdivisionComp) => void;
 }
 
 export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
@@ -36,7 +36,10 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 			} else {
 				this.modifier.subdivisions = data.levels;
 
-				this.create();
+				// Fist time through this is redundant as subdivision is created in init.
+				if (oldData.levels) {
+					this.reset();
+				}
 			}
 		}
 
@@ -52,8 +55,8 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 		}
 	},
 
-	create: function() {
-		this.modifier.modify();
+	reset: function() {
+		this.modifier.reset();
 
 		this.subdivMesh.geometry = this.modifier.geometry;
 	},
@@ -68,12 +71,10 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 
 		if (this.baseMesh) {
 			// Initialize subdivision modifier.
-			this.modifier = new SubdivisionModifier( this.baseMesh.geometry as THREE.Geometry, this.data.levels ) as any;
+			this.modifier = new SubdivisionModifier( this.baseMesh.geometry as THREE.Geometry, this.data.levels );
 
 			// Copy mesh to a child entity which will hold the subdivided object.
-			this.subdivMesh = new AFRAME.THREE.Mesh( this.baseMesh.geometry, (this.baseMesh.material as THREE.Material).clone() );
-
-			// this.subdivMesh.material = (this.baseMesh.material as THREE.Material).clone();
+			this.subdivMesh = new AFRAME.THREE.Mesh( this.modifier.geometry, (this.baseMesh.material as THREE.Material).clone() );
 
 			(this.subdivMesh.material as THREE.Material).transparent = true;
 

@@ -92,7 +92,7 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 					subdivision = target.el.components['subdivision'];
 
 					target.el.setAttribute('subdivision', 'showWire', true);
-					subdivision.create();
+					subdivision.reset();
 
 				} else {
 					target.el.setAttribute('subdivision', {
@@ -102,7 +102,7 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 
 					window.setTimeout((() => {
 						subdivision = target.el.components['subdivision'];
-						subdivision.create();
+						subdivision.reset();
 					}).bind(this), 0);
 				}
 
