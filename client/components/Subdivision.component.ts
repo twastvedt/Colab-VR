@@ -5,6 +5,7 @@ export interface SubdivisionComp extends AFrame.Component {
 	data: {
 		levels: number;
 		showWire: boolean;
+		edgeSharpness: number;
 	};
 	baseMesh: THREE.Mesh;
 	subdivMesh: THREE.Mesh;
@@ -13,12 +14,24 @@ export interface SubdivisionComp extends AFrame.Component {
 
 	updateWireframe: (this: SubdivisionComp, vertexIds?: number[]) => void;
 	updateSubdivision: (this: SubdivisionComp, vertexIds?: number[]) => void;
-	reset: (this: SubdivisionComp) => void;
+	reset: (this: SubdivisionComp, keepEdgeSharpness: boolean) => void;
+	sharpenEdges: (this: SubdivisionComp, sharpness: number) => void;
+}
+
+interface StructureEdge {
+	a: THREE.Vector3;
+	b: THREE.Vector3;
+	newEdgeVertexId?: number;
+	aIndex: number;
+	bIndex: number;
+	faces: THREE.Face3[];
+	sharpness: number;
 }
 
 export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 	schema: {
-		levels: { default: 2 },
+		levels: { default: 3 },
+		edgeSharpness: { default: 3 },
 		showWire: { default: false }
 	},
 
@@ -38,7 +51,7 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 
 				// Fist time through this is redundant as subdivision is created in init.
 				if (oldData.levels) {
-					this.reset();
+					this.reset(true);
 				}
 			}
 		}
@@ -46,17 +59,21 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 		if (data.showWire !== oldData.showWire) {
 			if (data.showWire) {
 				this.edges.visible = true;
+				(this.subdivMesh.material as THREE.Material).transparent = true;
 				(this.subdivMesh.material as THREE.Material).opacity = 0.5;
 
 			} else {
 				this.edges.visible = false;
 				(this.subdivMesh.material as THREE.Material).opacity = 1;
+				(this.subdivMesh.material as THREE.Material).transparent = false;
 			}
 		}
 	},
 
-	reset: function() {
-		this.modifier.reset();
+	reset: function(keepEdgeSharpness) {
+		this.modifier.init(keepEdgeSharpness);
+
+		this.modifier.modify();
 
 		this.subdivMesh.geometry = this.modifier.geometry;
 	},
@@ -73,10 +90,13 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 			// Initialize subdivision modifier.
 			this.modifier = new SubdivisionModifier( this.baseMesh.geometry as THREE.Geometry, this.data.levels );
 
-			// Copy mesh to a child entity which will hold the subdivided object.
-			this.subdivMesh = new AFRAME.THREE.Mesh( this.modifier.geometry, (this.baseMesh.material as THREE.Material).clone() );
+			this.sharpenEdges( this.data.edgeSharpness );
 
-			(this.subdivMesh.material as THREE.Material).transparent = true;
+			// Calculate subdivision.
+			this.modifier.modify();
+
+			// Copy mesh to a child entity which will hold the subdivided object.
+			this.subdivMesh = new AFRAME.THREE.Mesh( this.modifier.geometry );
 
 			// Get transformation of mesh relative to the root element
 			// (Usually no translation. Sometimes a gltf export creates one though.)
@@ -92,12 +112,13 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 				<a-entity
 					class="hoverable-main modified subdivision collidable env-world"
 					position="0 0 0" rotation="0 0 0" scale="1 1 1"
+					grid-mat="opacity: 0.5"
 				</a-entity>
 			`);
 
 			this.el.appendChild(subdivEl);
 
-			subdivEl.setObject3D('subdivision', this.subdivMesh);
+			subdivEl.setObject3D('mesh', this.subdivMesh);
 
 			// Base mesh is now the frame. Display as wireframe, and make mesh transparent so raycasting still works.
 
@@ -137,5 +158,23 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 
 	updateSubdivision: function(vertexIds) {
 		this.modifier.update(vertexIds);
+	},
+
+	sharpenEdges: function(sharpness: number) {
+		for ( const key in this.modifier._baseStructure.edges ) {
+			const edge: StructureEdge = this.modifier._baseStructure.edges[key];
+
+			if (edge.faces.length === 1 ) {
+				edge.sharpness = sharpness;
+
+			} else if (edge.faces.length === 2) {
+				const dihedral = edge.faces[0].normal.angleTo(edge.faces[1].normal);
+
+				// Angle of more than 5 degrees.
+				if (dihedral > 0.087 ) {
+					edge.sharpness = sharpness;
+				}
+			}
+		}
 	}
 };

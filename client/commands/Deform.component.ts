@@ -85,6 +85,7 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 					geometry.uvsNeedUpdate = true;
 				}
 
+				geometry.computeFaceNormals();
 				geometry.elementsNeedUpdate = true;
 
 				// Create a new edges geometry to include the new vertex.
@@ -92,17 +93,17 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 					subdivision = target.el.components['subdivision'];
 
 					target.el.setAttribute('subdivision', 'showWire', true);
-					subdivision.reset();
+
+					subdivision.reset(true);
 
 				} else {
 					target.el.setAttribute('subdivision', {
-						levels: 3,
+						levels: 4,
 						showWire: true
 					});
 
 					window.setTimeout((() => {
 						subdivision = target.el.components['subdivision'];
-						subdivision.reset();
 					}).bind(this), 0);
 				}
 
@@ -114,9 +115,6 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 				// Apply base mesh changes to the subdivided mesh.
 				subdivision.updateSubdivision();
 				target.el.setAttribute('subdivision', 'showWire', false);
-
-				geometry.computeFaceNormals();
-				// geometry.normalsNeedUpdate = true;
 
 				originalGeo = undefined;
 
