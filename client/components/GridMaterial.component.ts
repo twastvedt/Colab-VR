@@ -17,7 +17,7 @@ interface GridMatComp extends AFrame.Component {
 
 	material: THREE.ShaderMaterial;
 
-	applyToMesh: () => void;
+	applyToMesh: (this: GridMatComp) => void;
 }
 
 export const gridMatCompDef: AFrame.ComponentDefinition<GridMatComp> = {
