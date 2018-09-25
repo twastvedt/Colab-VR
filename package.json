@@ -50,7 +50,8 @@
     "watch:ts": "rm -f dist/app.js && watchify client/app.ts -v --no-bundle-external -p [ tsify --global ] -t [ stringify --extensions [.glsl] ] -o dist/app.js --debug --ignore-watch=\"dist/**/**\"",
     "dev": "parallelshell \"npm run watch:ts\" \"npm run start-dev\"",
     "start-dev": "nodemon --ignore client/ --ignore dist/ index.js",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "lint": "tslint --config tslint.json --force --project tsconfig.json"
   },
   "devDependencies": {
     "parallelshell": "3.0.2",

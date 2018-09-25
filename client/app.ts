@@ -117,7 +117,7 @@ declare global {
 	var HAROLD: HAROLD;
 
 	interface HAROLD {
-		States: typeof ObjectStates
+		States: typeof ObjectStates;
 	}
 }
 
