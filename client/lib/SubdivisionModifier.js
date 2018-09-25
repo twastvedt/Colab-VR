@@ -66,6 +66,7 @@ class MeshStructure {
 				this.setSharpness( edge.aIndex, edge.bIndex, edge.sharpness );
 
 			}
+
 		}
 
 	}
@@ -191,10 +192,6 @@ class MeshStructure {
  */
 export class SubdivisionModifier {
 
-	// Some constants
-	WARNINGS = true; // Set to true for development
-	ABC = [ 'a', 'b', 'c' ];
-
 	get baseGeometry() {
 
 		return this._baseGeometry;
@@ -219,16 +216,23 @@ export class SubdivisionModifier {
 
 		this._baseGeometry.mergeVertices();
 
-		this.init();
+		this.calculateStructure( false );
+
+		this.reset();
 
 	}
 
-	constructor ( geometry, subdivisions = 1 ) {
+	constructor( geometry, subdivisions = 1 ) {
 
-		this.subdivisions = subdivisions;
+		// Some constants
+		this.WARNINGS = false; // Set to true for development
+		this.ABC = [ 'a', 'b', 'c' ];
 
 		// Store the base geometry and initialize.
 		this.baseGeometry = geometry;
+
+		this.subdivisions = subdivisions;
+		this.activeSubdivisions = 0;
 
 	}
 
@@ -303,10 +307,13 @@ export class SubdivisionModifier {
 	}
 
 	/**
-	 * Recalculate mesh structure.
+	 * Create model of base mesh structure.
 	 * @param {boolean} keepEdgeSharpness Retain edge sharpeness from current edge structure? Otherwise set all edges to smooth.
 	 */
-	init(keepEdgeSharpness) {
+	calculateStructure( keepEdgeSharpness ) {
+
+		if ( this.WARNINGS ) console.info( 'init: create base geometry structure.' );
+
 
 		if ( keepEdgeSharpness ) {
 
@@ -318,18 +325,22 @@ export class SubdivisionModifier {
 
 		}
 
-		this._subdivStructure = this._baseStructure;
+		this.geometry = this.geometry || new THREE.Geometry();
 
 	}
 
 	/**
-	 * Subdivide base surface.
+	 * [Re]initialize subdivision. Keep base geometry and structure.
 	 */
-	modify() {
+	reset() {
 
-		var repeats = this.subdivisions;
+		if ( this.WARNINGS ) console.info( 'Reset: initialize subdivision.' );
 
-		this.geometry = this._baseGeometry.clone();
+		this.activeSubdivisions = 0;
+
+		this._subdivStructure = this._baseStructure;
+
+		this.geometry.copy( this._baseGeometry );
 
 		// Initialize vertex weights, for quick updating. Initially, each vertex is solely dependent on itself.
 		this.vertexWeights = [];
@@ -338,7 +349,7 @@ export class SubdivisionModifier {
 		this.vertexInfluences = [];
 
 		// Initialize weight and influence arrays to un-subdivided status.
-		for ( var i = 0, il = this.geometry.vertices.length; i < il; i ++ ) {
+		for ( var i = 0, il = this._baseGeometry.vertices.length; i < il; i ++ ) {
 
 			this.vertexWeights[ i ] = [];
 			this.vertexWeights[ i ][ i ] = 1;
@@ -347,14 +358,37 @@ export class SubdivisionModifier {
 
 		}
 
-		while ( repeats -- > 0 ) {
+	}
 
-			this.smooth();
+	modify() {
+
+		if ( this.WARNINGS ) console.info( 'Apply modifier: ', this.subdivisions, ' subdivisions.' );
+
+		if ( this.activeSubdivisions > this.subdivisions ) {
+
+			this.reset();
 
 		}
 
-		this.geometry.computeFaceNormals();
+		if ( this.subdivisions > 0 ) {
+
+			while ( this.activeSubdivisions < this.subdivisions ) {
+
+				this.smooth();
+
+			}
+
+		}
+
+		this.geometry.elementsNeedUpdate = true;
+		this.geometry.verticesNeedUpdate = true;
 		this.geometry.computeVertexNormals();
+
+		if ( this.geometry.faceVertexUvs[ 0 ] !== undefined ) {
+
+			this.geometry.uvsNeedUpdate = true;
+
+		}
 
 	}
 
@@ -409,12 +443,6 @@ export class SubdivisionModifier {
 		this.geometry.verticesNeedUpdate = true;
 		this.geometry.computeVertexNormals();
 
-		if ( this.geometry.faceVertexUvs[ 0 ] !== undefined ) {
-
-			this.geometry.uvsNeedUpdate = true;
-
-		}
-
 	}
 
 	/**
@@ -458,34 +486,39 @@ export class SubdivisionModifier {
 
 			connectedFaces = currentEdge.faces.length;
 
-			// Sharp edge - no influence from adjacent face vertices.
 			if ( currentEdge.sharpness >= 1 ) {
+
+				// Sharp edge - no influence from adjacent face vertices.
 
 				edgeVertexWeight = 0.5;
 				adjacentVertexWeight = 0;
 
-			// Semi-sharp edge - linearly interpolate between smooth and sharp.
 			} else if ( currentEdge.sharpness > 0 ) {
+
+				// Semi-sharp edge - linearly interpolate between smooth and sharp.
 
 				edgeVertexWeight = 0.5 * currentEdge.sharpness + 0.375 * ( 1 - currentEdge.sharpness );
 				adjacentVertexWeight = 0.125 * ( 1 - currentEdge.sharpness );
 
-			// Smooth interior edge.
 			} else if ( connectedFaces === 2 ) {
+
+				// Smooth interior edge.
 
 				edgeVertexWeight = 3 / 8;
 				adjacentVertexWeight = 1 / 8;
 
-			// Exterior edge (or non-manifold).
 			} else {
+
+				// Exterior edge (or non-manifold).
 
 				edgeVertexWeight = 0.5;
 				adjacentVertexWeight = 0;
 
 			}
 
-			// Non-manifold edge.
 			if ( connectedFaces !== 1 && connectedFaces !== 2 ) {
+
+				// Non-manifold edge.
 
 				if ( this.WARNINGS ) console.warn( 'Subdivision Modifier: Number of connected faces != 2, is: ', connectedFaces, currentEdge );
 
@@ -511,7 +544,7 @@ export class SubdivisionModifier {
 
 			}, this );
 
-			if (adjacentVertexWeight !== 0) {
+			if ( adjacentVertexWeight !== 0 ) {
 
 				// Find vertices (2, usually) not on edge but on adjacent faces.
 
@@ -567,7 +600,7 @@ export class SubdivisionModifier {
 			n = oldStructure.connectingEdges[ i ].length;
 
 			// Connecting edges which are sharp.
-			connectingSharpEdges = oldStructure.connectingEdges[ i ].filter( (edge) => edge.sharpness > 0 );
+			connectingSharpEdges = oldStructure.connectingEdges[ i ].filter( ( edge ) => edge.sharpness > 0 );
 			numSharpEdges = connectingSharpEdges.length;
 
 			// Treat as corner - don't move.
@@ -576,16 +609,18 @@ export class SubdivisionModifier {
 				sourceVertexWeight = 1;
 				connectingVertexWeight = 0;
 
-			// Crease vertex - ignore smooth connecting edges.
 			} else if ( numSharpEdges === 2 ) {
+
+				// Crease vertex - ignore smooth connecting edges.
 
 				influencingEdges = connectingSharpEdges;
 
 				sourceVertexWeight = 6 / 8;
 				connectingVertexWeight = 1 / 8;
 
-			// Complex case for smooth vertex.
 			} else if ( n > 2 ) {
+
+				// Complex case for smooth vertex.
 
 				if ( n === 3 ) {
 
@@ -605,8 +640,9 @@ export class SubdivisionModifier {
 				sourceVertexWeight = 1 - n * beta;
 				connectingVertexWeight = beta;
 
-			// Boundary and corner.
 			} else if ( n === 2 ) {
+
+				// Boundary and corner.
 
 				if ( this.WARNINGS ) console.warn( '2 connecting edges', oldStructure.connectingEdges[ i ] );
 
@@ -779,6 +815,10 @@ export class SubdivisionModifier {
 		if ( hasUvs ) this.geometry.faceVertexUvs[ 0 ] = newUVs;
 
 		this.vertexWeights = this.vertexWeights.concat( newVertexWeights );
+
+		this.activeSubdivisions ++;
+
+		if ( this.WARNINGS ) console.info( 'Smoothed to ', this.activeSubdivisions, ' subdivisions.' );
 
 	}
 

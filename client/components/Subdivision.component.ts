@@ -9,6 +9,7 @@ export interface SubdivisionComp extends AFrame.Component {
 	};
 	baseMesh: THREE.Mesh;
 	subdivMesh: THREE.Mesh;
+	subdivEl: AFrame.Entity;
 	edges: THREE.LineSegments;
 	modifier: SubdivisionModifier;
 
@@ -59,20 +60,22 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 		if (data.showWire !== oldData.showWire) {
 			if (data.showWire) {
 				this.edges.visible = true;
-				(this.subdivMesh.material as THREE.Material).transparent = true;
-				(this.subdivMesh.material as THREE.Material).opacity = 0.5;
+				if (this.subdivEl) {
+					this.subdivEl.setAttribute('grid-mat', 'opacity', 0.5);
+				}
 
 			} else {
 				this.edges.visible = false;
-				(this.subdivMesh.material as THREE.Material).opacity = 1;
-				(this.subdivMesh.material as THREE.Material).transparent = false;
+				if (this.subdivEl) {
+					this.subdivEl.setAttribute('grid-mat', 'opacity', 1);
+				}
 			}
 		}
 	},
 
 	reset: function(keepEdgeSharpness) {
-		this.modifier.init(keepEdgeSharpness);
-
+		this.modifier.calculateStructure(keepEdgeSharpness);
+		this.modifier.reset();
 		this.modifier.modify();
 
 		this.subdivMesh.geometry = this.modifier.geometry;
@@ -108,7 +111,7 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 			// Set transform members using calculated matrix. (If we switch to disabling autoUpdate, we can assign the matrix directly.)
 			matrix.decompose(this.subdivMesh.position, this.subdivMesh.quaternion, this.subdivMesh.scale);
 
-			const subdivEl = htmlToElement<AFrame.Entity>(`
+			this.subdivEl = htmlToElement<AFrame.Entity>(`
 				<a-entity
 					class="hoverable-main modified subdivision collidable env-world"
 					position="0 0 0" rotation="0 0 0" scale="1 1 1"
@@ -116,9 +119,9 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 				</a-entity>
 			`);
 
-			this.el.appendChild(subdivEl);
+			this.el.appendChild(this.subdivEl);
 
-			subdivEl.setObject3D('mesh', this.subdivMesh);
+			this.subdivEl.setObject3D('mesh', this.subdivMesh);
 
 			// Base mesh is now the frame. Display as wireframe, and make mesh transparent so raycasting still works.
 
