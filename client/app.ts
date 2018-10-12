@@ -70,7 +70,14 @@ MakeTickComponent(lineLinkCompDef, 600);
 MakeTickComponent(constantScaleCompDef, 800);
 
 for (let name in componentDefs) {
-	AFRAME.registerComponent(name, (componentDefs as {[name: string]: AFrame.ComponentDefinition})[name]);
+	const def = (componentDefs as {[name: string]: AFrame.ComponentDefinition})[name];
+	AFRAME.registerComponent(name, def);
+
+	if (def.hasOwnProperty('NAFSchema')) {
+		document.addEventListener('DOMContentLoaded', () => {
+			NAF.schemas.add((def as any).NAFSchema);
+		});
+	}
 }
 
 

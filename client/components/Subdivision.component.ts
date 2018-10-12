@@ -1,7 +1,7 @@
 import { SubdivisionModifier } from '../lib/SubdivisionModifier';
-import { htmlToElement } from '../tools';
+import { ClickSequenceComponent } from '../commands/CommandDecorators';
 
-export interface SubdivisionComp extends AFrame.Component {
+export interface SubdivisionComp extends ClickSequenceComponent {
 	data: {
 		levels: number;
 		showWire: boolean;
@@ -9,9 +9,9 @@ export interface SubdivisionComp extends AFrame.Component {
 	};
 	baseMesh: THREE.Mesh;
 	subdivMesh: THREE.Mesh;
-	subdivEl: AFrame.Entity;
-	edges: THREE.LineSegments;
+	wireObject: THREE.LineSegments;
 	modifier: SubdivisionModifier;
+	parentEl: AFrame.Entity;
 
 	updateWireframe: (this: SubdivisionComp, vertexIds?: number[]) => void;
 	updateSubdivision: (this: SubdivisionComp, vertexIds?: number[]) => void;
@@ -34,6 +34,14 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 		levels: { default: 3 },
 		edgeSharpness: { default: 3 },
 		showWire: { default: false }
+	},
+
+	NAFSchema: {
+		template: '#subdivision-template',
+		components: [
+			'grid-mat',
+			'subdivision',
+		]
 	},
 
 	update: function(oldData) {
@@ -59,16 +67,12 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 
 		if (data.showWire !== oldData.showWire) {
 			if (data.showWire) {
-				this.edges.visible = true;
-				if (this.subdivEl) {
-					this.subdivEl.setAttribute('grid-mat', 'opacity', 0.5);
-				}
+				this.wireObject.visible = true;
+				this.el.setAttribute('grid-mat', 'opacity', 0.5);
 
 			} else {
-				this.edges.visible = false;
-				if (this.subdivEl) {
-					this.subdivEl.setAttribute('grid-mat', 'opacity', 1);
-				}
+				this.wireObject.visible = false;
+				this.el.setAttribute('grid-mat', 'opacity', 1);
 			}
 		}
 	},
@@ -82,8 +86,11 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 	},
 
 	init: function() {
+
+		this.parentEl = this.el.parentElement as AFrame.Entity;
+
 		// Look for a mesh to use as the base.
-		this.el.object3D.traverse((object) => {
+		(this.parentEl as AFrame.Entity).object3D.traverse((object) => {
 			if (!this.baseMesh && object instanceof AFRAME.THREE.Mesh) {
 				this.baseMesh = object;
 			}
@@ -98,63 +105,46 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 			// Calculate subdivision.
 			this.modifier.modify();
 
-			// Copy mesh to a child entity which will hold the subdivided object.
+			// Copy mesh to this entity which will hold the subdivided object.
 			this.subdivMesh = new AFRAME.THREE.Mesh( this.modifier.geometry );
 
 			// Get transformation of mesh relative to the root element
 			// (Usually no translation. Sometimes a gltf export creates one though.)
 			const matrix = this.baseMesh.matrixWorld;
 			const inverseThisMatrix = new AFRAME.THREE.Matrix4();
-			inverseThisMatrix.getInverse(this.el.object3D.matrixWorld);
+			inverseThisMatrix.getInverse(this.parentEl.object3D.matrixWorld);
 			matrix.premultiply(inverseThisMatrix);
 
 			// Set transform members using calculated matrix. (If we switch to disabling autoUpdate, we can assign the matrix directly.)
 			matrix.decompose(this.subdivMesh.position, this.subdivMesh.quaternion, this.subdivMesh.scale);
 
-			this.subdivEl = htmlToElement<AFrame.Entity>(`
-				<a-entity
-					class="hoverable-main modified subdivision collidable env-world"
-					position="0 0 0" rotation="0 0 0" scale="1 1 1"
-					grid-mat="opacity: 0.5"
-				</a-entity>
-			`);
-
-			this.el.appendChild(this.subdivEl);
-
-			this.subdivEl.setObject3D('mesh', this.subdivMesh);
-
 			// Base mesh is now the frame. Display as wireframe, and make mesh transparent so raycasting still works.
-
-			const geo = new AFRAME.THREE.EdgesGeometry( this.baseMesh.geometry, 1 ); // or WireframeGeometry( geometry ) for all triangles.
+			const geo = new AFRAME.THREE.EdgesGeometry( this.baseMesh.geometry, 1 );
 			const mat = new AFRAME.THREE.LineBasicMaterial( { color: 0xdddddd, linewidth: 1 } );
-			this.edges = new AFRAME.THREE.LineSegments( geo, mat );
-			matrix.decompose(this.edges.position, this.edges.quaternion, this.edges.scale);
-
-			const wireEl = htmlToElement<AFrame.Entity>(`
-				<a-entity
-					class="edges"
-					position="0 0 0" rotation="0 0 0" scale="1 1 1"
-				</a-entity>
-			`);
-
-			this.el.appendChild(wireEl);
-
-			wireEl.setObject3D('edges', this.edges);
+			this.wireObject = new AFRAME.THREE.LineSegments( geo, mat );
+			matrix.decompose(this.wireObject.position, this.wireObject.quaternion, this.wireObject.scale);
 
 			this.baseMesh.material = new AFRAME.THREE.MeshBasicMaterial();
 			this.baseMesh.material.visible = false;
 
-			this.el.classList.remove('hoverable');
-			this.el.classList.add('hoverable-base');
+			this.parentEl.classList.remove('hoverable');
+			this.parentEl.classList.add('hoverable-base');
 
-			this.el.addState(HAROLD.States.modified);
+			this.parentEl.addState(HAROLD.States.modified);
+
+			this.el.setObject3D('mesh', this.subdivMesh);
+			this.el.components['grid-mat'].applyToMesh();
+
+			window.setTimeout(() => {
+				(this.el.querySelector('.edges') as AFrame.Entity).setObject3D('mesh', this.wireObject);
+			}, 0);
 		}
 	},
 
 	updateWireframe: function(vertexIds) {
 		const geo = new AFRAME.THREE.EdgesGeometry( this.baseMesh.geometry, 1 );
 
-		this.edges.geometry = geo;
+		this.wireObject.geometry = geo;
 
 		this.updateSubdivision(vertexIds);
 	},

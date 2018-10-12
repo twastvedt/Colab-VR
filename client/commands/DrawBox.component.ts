@@ -19,14 +19,8 @@ export const DrawBoxCompDef: AFrame.ComponentDefinition<ClickSequenceComponent> 
 			'position',
 			'rotation',
 			'scale',
-			{
-				selector: '.box',
-				component: 'grid-mat'
-			},
-			{
-				selector: '.box',
-				component: 'shadow'
-			}
+			'grid-mat',
+			'shadow'
 		]
 	},
 
@@ -53,18 +47,25 @@ export const DrawBoxCompDef: AFrame.ComponentDefinition<ClickSequenceComponent> 
 
 				startPoint = cursorPos.clone();
 
+				// window.setTimeout(() => {
+				// 	const mesh: THREE.Mesh = newParent.getObject3D('mesh') as any;
+
+				// 	(mesh.geometry as THREE.Geometry).copy( mesh.geometry as THREE.Geometry );
+
+				// 	const pointer = (document.querySelector('#pointer') as AFrame.Entity);
+				// 	(pointer.components['raycaster'] as any).refreshObjects();
+				// });
+
 				break;
 
 			case 1:
 				this.el.setAttribute('dynamic-cursor', 'locked', LockedState.line);
 
-				newBox = newParent.children[0] as AFrame.Entity;
-
 				break;
 
 			case 2:
-				newBox.setAttribute('grid-mat', 'opacity', 1);
-				newBox.setAttribute('shadow', {
+				newParent.setAttribute('grid-mat', 'opacity', 1);
+				newParent.setAttribute('shadow', {
 					cast: true,
 					receive: true
 				});
