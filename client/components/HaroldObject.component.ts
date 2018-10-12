@@ -6,6 +6,7 @@ let uiSystem: UISystem;
 export interface HaroldObjectComp extends HAROLD.Component {
 	data: { };
 
+	handleEvent: (this: HaroldObjectComp, e: AFrame.DetailEvent<HAROLD.States>) => void;
 	isFocused: boolean;
 }
 
@@ -22,51 +23,48 @@ export const haroldObjectCompDef: AFrame.ComponentDefinition<HaroldObjectComp> =
 		}
 	},
 
+	handleEvent: function(e) {
+		// Currently this only shows the base wireframe when editing and hovering over subdivided entities.
+		// If those entities are owned by someone else, or the command isn't targeting the base object, don't show anything.
+		if (!this.el.classList.contains('editable') || uiSystem.d.target !== 'base') return;
+
+		switch (e.type) {
+			case 'stateadded':
+				if (this.el.is(HAROLD.States.modified)) {
+					(this.el.querySelector('.subdivision') as AFrame.Entity).setAttribute('subdivision', 'showWire', true);
+				}
+
+				break;
+
+			case 'stateremoved':
+				switch (e.detail) {
+					case HAROLD.States.hovered:
+						if (this.el.is(HAROLD.States.modified)
+								&& !this.el.is(HAROLD.States.baseEditing)) {
+
+							(this.el.querySelector('.subdivision') as AFrame.Entity).setAttribute('subdivision', 'showWire', false);
+						}
+
+						break;
+
+					case HAROLD.States.baseEditing:
+						if (this.el.is(HAROLD.States.modified)
+								&& !this.el.is(HAROLD.States.hovered)) {
+
+							(this.el.querySelector('.subdivision') as AFrame.Entity).setAttribute('subdivision', 'showWire', false);
+						}
+
+						break;
+				}
+
+				break;
+		}
+	},
+
 	init: function() {
 		uiSystem = this.el.sceneEl.systems.ui;
 
-		this.el.addEventListener('stateadded', (e) => {
-			switch (e.detail as any as HAROLD.States) {
-				case HAROLD.States.hovered:
-					if (this.el.is(HAROLD.States.modified)) {
-						if (uiSystem.d.target === 'base') {
-							this.el.setAttribute('subdivision', 'showWire', true);
-						}
-					}
-
-					break;
-
-				case HAROLD.States.baseEditing:
-					if (this.el.is(HAROLD.States.modified)) {
-						if (uiSystem.d.target === 'base') {
-							this.el.setAttribute('subdivision', 'showWire', true);
-						}
-					}
-
-					break;
-			}
-		});
-
-		this.el.addEventListener('stateremoved', (e) => {
-			switch (e.detail as any as HAROLD.States) {
-				case HAROLD.States.hovered:
-					if (this.el.is(HAROLD.States.modified) && !this.el.is(HAROLD.States.baseEditing)) {
-						if (uiSystem.d.target === 'base') {
-							this.el.setAttribute('subdivision', 'showWire', false);
-						}
-					}
-
-					break;
-
-				case HAROLD.States.baseEditing:
-					if (this.el.is(HAROLD.States.modified) && !this.el.is(HAROLD.States.hovered)) {
-						if (uiSystem.d.target === 'base') {
-							this.el.setAttribute('subdivision', 'showWire', false);
-						}
-					}
-
-					break;
-			}
-		});
+		this.el.addEventListener('stateadded', this);
+		this.el.addEventListener('stateremoved', this);
 	}
 };

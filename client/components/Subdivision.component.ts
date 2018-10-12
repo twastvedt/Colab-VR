@@ -39,8 +39,14 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 	NAFSchema: {
 		template: '#subdivision-template',
 		components: [
-			'grid-mat',
-			'subdivision',
+			{
+				component: 'subdivision',
+				property: 'levels'
+			},
+			{
+				component: 'subdivision',
+				property: 'edgeSharpness'
+			}
 		]
 	},
 
@@ -97,6 +103,11 @@ export const subdivisionCompDef: AFrame.ComponentDefinition<SubdivisionComp> = {
 		});
 
 		if (this.baseMesh) {
+
+			// Copy the geometry to dissociate it from the template.
+			const geometry = this.baseMesh.geometry.clone();
+			this.baseMesh.geometry = geometry;
+
 			// Initialize subdivision modifier.
 			this.modifier = new SubdivisionModifier( this.baseMesh.geometry as THREE.Geometry, this.data.levels );
 

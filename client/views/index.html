@@ -54,7 +54,7 @@
 
 				<a-entity id="camera" position="0 1.5 0" camera>
 
-					<a-entity id="pointer" laser-controls cursor raycaster="far: 10000">
+					<a-entity id="pointer" laser-controls cursor raycaster="far: 10000; recursive: false">
 						<a-ring class="ui ui-fps" position="0 0 -0.1" radius-outer="0.001" radius-inner="0.0007" material="transparent: true; opacity: 0.5; color: #444444"></ring>
 					</a-entity>
 

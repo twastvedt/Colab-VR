@@ -7,20 +7,20 @@ import { htmlToElement } from '../tools';
 
 const matrix = new AFRAME.THREE.Matrix4();
 
-let target: THREE.Mesh & AFrame.Entity['object3D'],
-	cursorPos: THREE.Vector3,
-	newVert: THREE.Vector3,
-	subdivision: SubdivisionComp,
+let cursorPos: THREE.Vector3,
 	subdivEl: AFrame.Entity,
-	originalGeo: THREE.Geometry,
-	geometry = new AFRAME.THREE.Geometry(),
 	uiSystem: UISystem;
 
 interface DeformComp extends ClickSequenceComponent {
 
 	activeVertexId: number;
 	clickedFaceIndex: number;
+	newVert: THREE.Vector3;
+	target: THREE.Mesh & AFrame.Entity['object3D'];
+	originalGeo: THREE.Geometry;
+	subdivision: SubdivisionComp;
 
+	setUpDeform: (this: DeformComp, e: AFrame.EntityEventMap['click']) => void;
 	doStep: (this: DeformComp, step: number, e: AFrame.EntityEventMap['click']) => void;
 }
 
@@ -30,118 +30,100 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 		cursorPos = this.el.object3D.position;
 		uiSystem = this.el.sceneEl.systems['ui'];
 
+		// Show face normal (direction of deformation).
 		this.el.setAttribute('dynamic-cursor', {
 			'ui': UIState.line
 		});
 
+		// Raycaster targets base objects, not modified (subdivided).
 		uiSystem.d.target = 'base';
 	},
 
 	doStep: function(step, e) {
 		switch (step) {
 			case 0:
+				this.target = e.detail.intersection.object as any;
+
+				const el = this.target.el;
+
+				// Ignore objects which aren't editable or aren't owned by us.
+				if (!el.classList.contains('editable')) {
+					this.currentStep --;
+					return;
+				}
+
 				this.system.addAnchor(cursorPos);
 
+				// Constrain deformation to line normal to clicked surface.
 				this.el.setAttribute('dynamic-cursor', 'locked', LockedState.line);
 
-				target = e.detail.intersection.object as any;
-				target.el.addState(HAROLD.States.baseEditing);
+				el.addState(HAROLD.States.baseEditing);
 				uiSystem.d.target = 'main';
 
 				// Switch to geometry to facilitate vertex manipulation. SubdivisionModifier would do this anyway to the deformed mesh.
-				if ( (target.geometry as any).isBufferGeometry ) {
-					target.geometry = new AFRAME.THREE.Geometry().fromBufferGeometry( target.geometry as THREE.BufferGeometry );
+				if ( (this.target.geometry as any).isBufferGeometry ) {
+					this.target.geometry = new AFRAME.THREE.Geometry().fromBufferGeometry( this.target.geometry as THREE.BufferGeometry );
 
-					target.geometry.mergeVertices();
-				}
-
-				// If this is the first time a deform command has been run on this object, copy the geometry to dissociate it from the template.
-				if (!target.el.classList.contains('deformed')) {
-					geometry = (target.geometry as THREE.Geometry).clone();
-					target.geometry = geometry;
-					target.el.classList.add('deformed');
-
-				} else {
-					geometry = target.geometry as THREE.Geometry;
+					this.target.geometry.mergeVertices();
 				}
 
 				this.clickedFaceIndex = e.detail.intersection.faceIndex;
 
-				const point = e.detail.intersection.point,
-					face = geometry.faces[ this.clickedFaceIndex ],
-					newIndex = geometry.vertices.length,
-					newUV = e.detail.intersection.uv,
-					faceUVs = geometry.faceVertexUvs[0][ this.clickedFaceIndex ];
-
-				// Backup for cancellation of command.
-				originalGeo = geometry.clone();
-
-				// Add new vertex at clicked point on object.
-				newVert = point.clone();
-				newVert.applyMatrix4( matrix.getInverse( target.matrixWorld ) );
-				geometry.vertices.push( newVert );
-
-				// Create two new faces to complete the stellation.
-				geometry.faces.push( new AFRAME.THREE.Face3(face.b, face.c, newIndex) );
-				geometry.faces.push( new AFRAME.THREE.Face3(face.c, face.a, newIndex) );
-				// Move third vertex of clicked face to clicked point.
-				face.c = newIndex;
-
-				if (faceUVs) {
-					// Update face uvs to match.
-					geometry.faceVertexUvs[0].push( [ faceUVs[1], faceUVs[2], newUV ] );
-					geometry.faceVertexUvs[0].push( [ faceUVs[2], faceUVs[0], newUV ] );
-					faceUVs[2] = newUV;
-
-					geometry.uvsNeedUpdate = true;
-				}
-
-				geometry.computeFaceNormals();
-				geometry.elementsNeedUpdate = true;
-				geometry.normalsNeedUpdate = true;
-
 				// Create a new edges geometry to include the new vertex.
-				if (target.el.classList.contains('subdivision')) {
-					subdivEl = target.el.querySelector('.subdivision') as AFrame.Entity;
+				if (el.classList.contains('subdivision')) {
+					this.setUpDeform(e);
 
-					subdivision = subdivEl.components['subdivision'];
+					subdivEl = el.querySelector('.subdivision') as AFrame.Entity;
+
+					this.subdivision = subdivEl.components['subdivision'];
 
 					subdivEl.setAttribute('subdivision', 'showWire', true);
 
-					subdivision.reset(true);
+					this.subdivision.reset(true);
 
 				} else {
+					// Start subdivision as owned by dummy other person so that the template isn't synced immediately.
 					subdivEl = htmlToElement<AFrame.Entity>(`
 						<a-entity
 							networked="template:#subdivision-template; owner:dummy">
 						</a-entity>
 					`);
 
-					target.el.appendChild(subdivEl);
+					el.appendChild(subdivEl);
+					el.classList.add('subdivision');
+
+					const that = this;
 
 					window.setTimeout(() => {
-						subdivision = subdivEl.components['subdivision'];
+						that.setUpDeform(e);
+						this.subdivision = subdivEl.components['subdivision'];
+						this.subdivision.reset(true);
+						subdivEl.setAttribute('subdivision', 'showWire', true);
 					}, 0);
 				}
-
-				this.activeVertexId = newIndex;
 
 				break;
 
 			case 1:
+				// Now that the deform is done, take ownership of the subdivision entity so that it will sync.
+				NAF.utils.takeOwnership(subdivEl);
+
 				// Apply base mesh changes to the subdivided mesh.
-				subdivision.updateSubdivision();
+				this.subdivision.updateSubdivision();
 				subdivEl.setAttribute('subdivision', 'showWire', false);
 
-				originalGeo = undefined;
+				this.originalGeo = undefined;
 
 				this.system.endCommand( this.name );
 
-				if (target.el.hasAttribute('networked')) {
+				if (this.target.el.hasAttribute('networked')) {
+					// Compile changes made by deform, to be broadcast.
+
+					const geometry = (this.target.geometry as THREE.Geometry);
 					const faceCount = geometry.faces.length;
 
 					const verticesDiff: DeformData['verticesDiff'] = {};
-					verticesDiff[this.activeVertexId] = newVert;
+					verticesDiff[this.activeVertexId] = this.newVert;
 
 					const facesDiff: DeformData['facesDiff'] = {};
 					facesDiff[this.clickedFaceIndex] = geometry.faces[this.clickedFaceIndex];
@@ -154,7 +136,7 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 					uvsDiff[faceCount - 1] = geometry.faceVertexUvs[0][faceCount - 1];
 
 					const data: DeformData = {
-						id: target.el.getAttribute('networked').networkId,
+						id: this.target.el.getAttribute('networked').networkId,
 						verticesDiff,
 						facesDiff,
 						uvsDiff
@@ -164,27 +146,64 @@ export const DeformCompDef: AFrame.ComponentDefinition<DeformComp> = {
 
 				}
 
-				NAF.utils.takeOwnership(subdivEl);
-
 				break;
 		}
 	},
 
-	remove: function() {
-		// Reset to original mesh.
-		if (originalGeo) {
-			target.geometry = originalGeo;
+	setUpDeform: function(e) {
+		const geometry = this.target.geometry as THREE.Geometry;
+
+		const point = e.detail.intersection.point,
+			face = geometry.faces[ this.clickedFaceIndex ],
+			newIndex = geometry.vertices.length,
+			newUV = e.detail.intersection.uv,
+			faceUVs = geometry.faceVertexUvs[0][ this.clickedFaceIndex ];
+
+		this.activeVertexId = newIndex;
+
+		// Backup for cancellation of command.
+		this.originalGeo = geometry.clone();
+
+		// Add new vertex at clicked point on object.
+		this.newVert = point.clone();
+		this.newVert.applyMatrix4( matrix.getInverse( this.target.matrixWorld ) );
+		geometry.vertices.push( this.newVert );
+
+		// Create two new faces to complete the stellation.
+		geometry.faces.push( new AFRAME.THREE.Face3(face.b, face.c, newIndex) );
+		geometry.faces.push( new AFRAME.THREE.Face3(face.c, face.a, newIndex) );
+		// Move third vertex of clicked face to clicked point.
+		face.c = newIndex;
+
+		if (faceUVs) {
+			// Update face uvs to match.
+			geometry.faceVertexUvs[0].push( [ faceUVs[1], faceUVs[2], newUV ] );
+			geometry.faceVertexUvs[0].push( [ faceUVs[2], faceUVs[0], newUV ] );
+			faceUVs[2] = newUV;
+
+			geometry.uvsNeedUpdate = true;
 		}
 
-		target.el.removeState(HAROLD.States.baseEditing);
+		geometry.computeFaceNormals();
+		geometry.elementsNeedUpdate = true;
+		geometry.normalsNeedUpdate = true;
+	},
+
+	remove: function() {
+		// Reset to original mesh.
+		if (this.originalGeo) {
+			this.target.geometry = this.originalGeo;
+		}
+
+		this.target.el.removeState(HAROLD.States.baseEditing);
 	},
 
 	tick: function() {
-		if (this.currentStep === 1 && subdivision !== undefined) {
-			newVert.copy(cursorPos);
-			newVert.applyMatrix4( matrix.getInverse( target.matrixWorld ) );
+		if (this.currentStep === 1 && this.subdivision !== undefined) {
+			this.newVert.copy(cursorPos);
+			this.newVert.applyMatrix4( matrix.getInverse( this.target.matrixWorld ) );
 
-			subdivision.updateWireframe( [this.activeVertexId] );
+			this.subdivision.updateWireframe( [this.activeVertexId] );
 		}
 	}
 };
@@ -198,22 +217,15 @@ interface DeformData {
 	uvsDiff: {[key: number]: THREE.Vector2[]};
 }
 
+/**
+ * Apply broadcast deform changes to corresponding object on other clients.
+ */
 function syncDeform(senderId: string, dataType: string, data: DeformData, targetId: string) {
 	const localEntity = document.querySelector('#naf-' + data.id) as AFrame.Entity;
 
 	if (!localEntity) return;
 
-	let localGeo: THREE.Geometry;
-
-	// If this is the first time this object has been deformed, copy the geometry to dissociate it from the template.
-	if (!localEntity.classList.contains('deformed')) {
-		localGeo = (localEntity.getObject3D('mesh') as any).geometry.clone();
-		(localEntity.getObject3D('mesh') as any).geometry = localGeo;
-		localEntity.classList.add('deformed');
-
-	} else {
-		localGeo = (localEntity.getObject3D('mesh') as any).geometry;
-	}
+	const localGeo: THREE.Geometry = (localEntity.getObject3D('mesh') as any).geometry;
 
 	for (const key in data.verticesDiff) {
 		const v = data.verticesDiff[key];
@@ -261,7 +273,7 @@ function syncDeform(senderId: string, dataType: string, data: DeformData, target
 	subdivEl = localEntity.querySelector('.subdivision') as AFrame.Entity;
 
 	if (subdivEl) {
-		subdivision = subdivEl.components['subdivision'];
+		const subdivision = subdivEl.components['subdivision'];
 		subdivision.reset(true);
 	}
 }

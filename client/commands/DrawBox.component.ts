@@ -69,6 +69,7 @@ export const DrawBoxCompDef: AFrame.ComponentDefinition<ClickSequenceComponent> 
 					cast: true,
 					receive: true
 				});
+				newParent.classList.add('editable');
 
 				newParent = undefined;
 
