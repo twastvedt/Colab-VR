@@ -1,7 +1,7 @@
 ## What
 Collaborative 3D modeling in VR! This project builds on [Networked A-Frame](https://github.com/networked-aframe/networked-aframe) to create a 3D modeling environment.
 
-Right now, you can make boxes. And a sphere. 'v' and 'p' lock the cursor to a line perpendicular and a plane tangent to the surface under the cursor. 'g' applies a subdivision modifier to an object and 'grabs' it at the clicked point. Still working on sharp edges so cubes don't turn into blobs!
+Right now, you can make boxes. And a sphere. Not sure about the sphere yet, so it's mostly about boxes. UI is up next, so right now the commands are primarily undiscoverable keyboard shortcuts. 'v' and 'p' lock the cursor to a line perpendicular and a plane tangent to the surface under the cursor. 'g' applies a subdivision modifier to an object and 'grabs' it at the clicked point. 's' toggles snapping to the grid.
 
 ![Demo GIF](https://raw.githubusercontent.com/twastvedt/Colab-VR/master/docs/demo.gif)
 
