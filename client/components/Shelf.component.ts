@@ -36,7 +36,7 @@ export const shelfCompDef: AFrame.ComponentDefinition<ShelfComp> = {
 			if (element.hasLoaded) {
 				this.placeItem(element, i);
 			} else {
-				element.addEventListener('loaded', () => this.placeItem(element, i));
+				element.addEventListener('loaded', (() => this.placeItem(element, i)).bind(this));
 			}
 		}
 

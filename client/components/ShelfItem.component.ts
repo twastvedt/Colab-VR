@@ -9,6 +9,7 @@ export interface ShelfItemComp extends AFrame.Component {
 	iconObject: THREE.Object3D;
 	hoverOffset: number;
 
+	scaleIcon: (this: ShelfItemComp) => void;
 	onHover: (this: ShelfItemComp) => void;
 	onLeave: (this: ShelfItemComp) => void;
 
@@ -30,7 +31,23 @@ export const shelfItemCompDef: AFrame.ComponentDefinition<ShelfItemComp> = {
 		// When scaling we adjust the position so that the icon scales from its base.
 		this.hoverOffset = (this.data.hoverScaleFactor - 1) / 2;
 
-		this.iconObject = this.el.querySelector<AFrame.Entity>('.icon').object3D;
+		const iconEl = this.el.querySelector<AFrame.Entity>('.icon');
+
+		if (iconEl.hasLoaded) {
+			this.iconObject = iconEl.object3D;
+			this.scaleIcon();
+
+		} else {
+			iconEl.addEventListener('loaded', (() => {
+				this.iconObject = iconEl.object3D;
+				this.scaleIcon();
+			}).bind(this));
+		}
+		this.boundOnHover = this.onHover.bind(this);
+		this.boundOnLeave = this.onLeave.bind(this);
+	},
+
+	scaleIcon: function() {
 		const iconObject = this.iconObject;
 
 		boundingBox.setFromObject( iconObject );
@@ -39,9 +56,6 @@ export const shelfItemCompDef: AFrame.ComponentDefinition<ShelfItemComp> = {
 			scale = 1 / max;
 
 		iconObject.scale.setScalar( scale );
-
-		this.boundOnHover = this.onHover.bind(this);
-		this.boundOnLeave = this.onLeave.bind(this);
 	},
 
 	onHover: function() {
